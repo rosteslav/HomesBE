@@ -1,8 +1,10 @@
+using Demo.Application.Auth;
 using Demo.Application.Features.Items.Commands.AddItem;
 using Demo.Application.Features.Items.Commands.DeleteItem;
 using Demo.Application.Features.Items.Queries.GetAllItems;
 using Demo.Domain.Enities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuildingMarket.Api.Controllers
@@ -14,6 +16,7 @@ namespace BuildingMarket.Api.Controllers
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<ItemsController> _logger = logger;
 
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Item>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get()
@@ -23,6 +26,7 @@ namespace BuildingMarket.Api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Add([FromBody] AddItemCommand addItemCommand)
@@ -32,6 +36,7 @@ namespace BuildingMarket.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([FromQuery] int id)

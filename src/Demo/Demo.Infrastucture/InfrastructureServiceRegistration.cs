@@ -19,7 +19,8 @@ namespace Demo.Infrastucture
                     .UseLazyLoadingProxies();
             }, 
             ServiceLifetime.Transient);
-            services.AddSingleton<IItemRepository, ItemRepository>();
+            services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<ISecurityService, SecurityService>();
 
             return services;
         }

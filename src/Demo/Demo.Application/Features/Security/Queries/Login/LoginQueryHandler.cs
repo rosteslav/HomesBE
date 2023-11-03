@@ -18,6 +18,11 @@ namespace Demo.Application.Features.Security.Queries.Login
         {
             var authClaims = await _securityService.GetLoginClaims(request.LoginModel.Username, request.LoginModel.Password);
 
+            if (authClaims == null)
+            {
+                return null;
+            }
+
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Secret));
 
             var token = new JwtSecurityToken(

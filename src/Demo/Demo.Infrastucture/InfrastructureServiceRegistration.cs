@@ -13,7 +13,7 @@ namespace Demo.Infrastucture
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionsConfig = configuration.GetSection("ConnectionStrings").Get<ConnectionsConfig>();
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ItemContext>(options =>
             {
                 options.UseNpgsql(connectionsConfig.PostgresConnectionString)
                     .UseLazyLoadingProxies();

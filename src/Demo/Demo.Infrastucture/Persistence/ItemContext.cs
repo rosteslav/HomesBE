@@ -1,23 +1,18 @@
 ﻿using Demo.Domain.Enities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Infrastucture.Persistence
 {
-    public partial class ItemContext : DbContext
+    public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<IdentityUser>(options)
     {
-        public ItemContext()
-        {
-        }
-
-        public ItemContext(DbContextOptions<ItemContext> options)
-            : base(options)
-        {
-        }
-
         public virtual DbSet<Item> Items { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Item>(entity =>
             {
                 entity.ToTable("Items", "public");
@@ -32,7 +27,13 @@ namespace Demo.Infrastucture.Persistence
                     .HasMaxLength(255);
             });
 
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<IdentityUser>().ToTable("Users", "security");
+            modelBuilder.Entity<IdentityRole>().ToTable("Roles", "security");
+            modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims", "security");
+            modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", "security");
+            modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins", "security");
+            modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", "security");
+            modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", "security");
         }
     }
 }

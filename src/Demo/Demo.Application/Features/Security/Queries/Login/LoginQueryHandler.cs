@@ -3,8 +3,6 @@ using Demo.Application.Models.Security;
 using MediatR;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
-using System.Security.Claims;
 using System.Text;
 
 namespace Demo.Application.Features.Security.Queries.Login
@@ -16,7 +14,7 @@ namespace Demo.Application.Features.Security.Queries.Login
 
         public async Task<JwtSecurityToken> Handle(LoginQuery request, CancellationToken cancellationToken)
         {
-            var authClaims = await _securityService.GetLoginClaims(request.LoginModel.Username, request.LoginModel.Password);
+            var authClaims = await _securityService.GetLoginClaims(request.Model.Username, request.Model.Password);
 
             if (authClaims == null)
             {

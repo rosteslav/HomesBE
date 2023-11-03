@@ -1,4 +1,4 @@
-﻿namespace Demo.Application.Models.Security
+﻿namespace Demo.Application.Models.Security.Enums
 {
     public enum RegistrationResult
     {

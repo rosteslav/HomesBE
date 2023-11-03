@@ -1,7 +1,7 @@
-﻿using Demo.Application.Auth;
-using Demo.Application.Features.Security.Commands.Register;
+﻿using Demo.Application.Features.Security.Commands.Register;
 using Demo.Application.Features.Security.Queries.Login;
 using Demo.Application.Models.Security;
+using Demo.Application.Models.Security.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,7 +22,7 @@ namespace Demo.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var token = await _mediator.Send(new LoginQuery { LoginModel = model });
+            var token = await _mediator.Send(new LoginQuery { Model = model });
             _logger.LogInformation($"Login attempt with Username: {model.Username}");
             if (token == null)
             {
@@ -46,7 +46,7 @@ namespace Demo.Api.Controllers
             _logger.LogInformation($"Register attempt with Username: {model.Username}");
             var token = await _mediator.Send(new RegisterCommand 
             {
-                RegisterModel = model,
+                Model = model,
                 Roles = new string[]
                 {
                     UserRoles.User
@@ -75,7 +75,7 @@ namespace Demo.Api.Controllers
             _logger.LogInformation($"Ademin register attempt with Username: {model.Username}");
             var token = await _mediator.Send(new RegisterCommand 
             {
-                RegisterModel = model,
+                Model = model,
                 Roles = new string[] 
                 {
                     UserRoles.User,

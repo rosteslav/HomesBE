@@ -1,5 +1,5 @@
 ﻿using Demo.Application.Contracts;
-using Demo.Application.Models.Security;
+using Demo.Application.Models.Security.Enums;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -42,7 +42,7 @@ namespace Demo.Infrastucture.Repositories
             if (userExists != null)
                 return RegistrationResult.AlreadyExists;
 
-            IdentityUser user = new()
+            var user = new IdentityUser
             {
                 Email = email,
                 SecurityStamp = Guid.NewGuid().ToString(),

@@ -6,10 +6,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Demo.Infrastucture.Repositories
 {
-    public class ItemRepository(ILogger<ItemRepository> logger, ApplicationDbContext context) : IItemRepository
+    public class ItemRepository(ApplicationDbContext context, ILogger<ItemRepository> logger) : IItemRepository
     {
-        private readonly ILogger<ItemRepository> _logger = logger;
         private readonly ApplicationDbContext _context = context;
+        private readonly ILogger<ItemRepository> _logger = logger;
 
         public async Task Add(Item item)
         {

@@ -1,4 +1,4 @@
-﻿namespace Demo.Application.Auth
+﻿namespace Demo.Application.Models.Security
 {
     public static class UserRoles
     {

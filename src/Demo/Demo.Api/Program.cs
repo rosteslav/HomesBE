@@ -2,10 +2,8 @@ using Demo.Application;
 using Demo.Application.Models.Security;
 using Demo.Infrastucture;
 using Demo.Infrastucture.Persistence;
-using Demo.Infrastucture.Persistence.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -48,14 +46,6 @@ services.AddSwaggerGen(delegate (SwaggerGenOptions c)
         }
     });
 });
-
-var connectionsConfig = configuration.GetSection("ConnectionStrings").Get<ConnectionsConfig>();
-services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseNpgsql(connectionsConfig.PostgresConnectionString)
-        .UseLazyLoadingProxies();
-},
-ServiceLifetime.Transient);
 
 services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {

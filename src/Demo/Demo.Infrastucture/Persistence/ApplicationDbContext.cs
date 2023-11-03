@@ -23,7 +23,7 @@ namespace Demo.Infrastucture.Persistence
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
-                    .HasColumnType("character varying")
+                    .HasColumnType("character varying(255)")
                     .HasMaxLength(255);
             });
 

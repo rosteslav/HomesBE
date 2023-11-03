@@ -1,4 +1,4 @@
-﻿using Demo.Application.Models.Security;
+﻿using Demo.Application.Models.Security.Enums;
 using System.Security.Claims;
 
 namespace Demo.Application.Contracts

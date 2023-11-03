@@ -1,7 +1,7 @@
-using Demo.Application.Auth;
 using Demo.Application.Features.Items.Commands.AddItem;
 using Demo.Application.Features.Items.Commands.DeleteItem;
 using Demo.Application.Features.Items.Queries.GetAllItems;
+using Demo.Application.Models.Security;
 using Demo.Domain.Enities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

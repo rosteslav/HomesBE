@@ -6,6 +6,6 @@ namespace Demo.Application.Features.Security.Queries.Login
 {
     public class LoginQuery : IRequest<JwtSecurityToken>
     {
-        public LoginModel LoginModel { get; set; }
+        public LoginModel Model { get; set; }
     }
 }

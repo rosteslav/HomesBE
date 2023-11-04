@@ -1,7 +1,7 @@
 using Demo.Application;
 using Demo.Application.Models.Security;
-using Demo.Infrastucture;
-using Demo.Infrastucture.Persistence;
+using Demo.Infrastructure;
+using Demo.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

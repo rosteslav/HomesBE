@@ -1,10 +1,10 @@
 ﻿using Demo.Application.Contracts;
 using Demo.Domain.Enities;
-using Demo.Infrastucture.Persistence;
+using Demo.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Demo.Infrastucture.Repositories
+namespace Demo.Infrastructure.Repositories
 {
     public class ItemRepository(ApplicationDbContext context, ILogger<ItemRepository> logger) : IItemRepository
     {

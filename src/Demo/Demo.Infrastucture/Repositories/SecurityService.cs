@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Demo.Infrastucture.Repositories
+namespace Demo.Infrastructure.Repositories
 {
     public class SecurityService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager) : ISecurityService
     {

@@ -56,7 +56,7 @@ namespace Demo.Api.Controllers
             switch (token)
             {
                 case RegistrationResult.Success:
-                    _logger.LogInformation($"User created successfullyt with Username: {model.Username}");
+                    _logger.LogInformation($"User created successfully with Username: {model.Username}");
                     return Ok(new Response { Status = "Success", Message = "User created successfully!" });
                 case RegistrationResult.AlreadyExists:
                     _logger.LogInformation($"User already exists with Username: {model.Username}");
@@ -72,7 +72,7 @@ namespace Demo.Api.Controllers
         [Route("admin/register")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
-            _logger.LogInformation($"Ademin register attempt with Username: {model.Username}");
+            _logger.LogInformation($"Admin register attempt with Username: {model.Username}");
             var token = await _mediator.Send(new RegisterCommand 
             {
                 Model = model,
@@ -86,7 +86,7 @@ namespace Demo.Api.Controllers
             switch (token)
             {
                 case RegistrationResult.Success:
-                    _logger.LogInformation($"Admin created successfullyt with Username: {model.Username}");
+                    _logger.LogInformation($"Admin created successfully with Username: {model.Username}");
                     return Ok(new Response { Status = "Success", Message = "Admin created successfully!" });
                 case RegistrationResult.AlreadyExists:
                     _logger.LogInformation($"User already exists with Username: {model.Username}");
@@ -97,7 +97,5 @@ namespace Demo.Api.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "Admin creation failed! Please check user details and try again." });
             }
         }
-
-
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Demo.Infrastucture.Persistence.Configuration
+﻿namespace Demo.Infrastructure.Persistence.Configuration
 {
     public class ConnectionsConfig
     {

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Application", "src\Dem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Domain", "src\Demo\Demo.Domain\Demo.Domain.csproj", "{40DA53BE-00CF-4B71-89A8-5F0AD9E45F00}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Infrastucture", "src\Demo\Demo.Infrastucture\Demo.Infrastucture.csproj", "{6587C62D-FC63-47F9-AD93-1F82F26CE402}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Infrastructure", "src\Demo\Demo.Infrastucture\Demo.Infrastructure.csproj", "{6587C62D-FC63-47F9-AD93-1F82F26CE402}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

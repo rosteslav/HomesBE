@@ -1,12 +1,12 @@
 ﻿using Demo.Application.Contracts;
-using Demo.Infrastucture.Persistence;
-using Demo.Infrastucture.Persistence.Configuration;
-using Demo.Infrastucture.Repositories;
+using Demo.Infrastructure.Persistence;
+using Demo.Infrastructure.Persistence.Configuration;
+using Demo.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Demo.Infrastucture
+namespace Demo.Infrastructure
 {
     public static class InfrastructureServiceRegistration
     {

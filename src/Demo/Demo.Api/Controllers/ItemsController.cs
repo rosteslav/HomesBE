@@ -43,7 +43,7 @@ namespace BuildingMarket.Api.Controllers
         {
             var command = new DeleteItemCommand { Id = id };
             await _mediator.Send(command);
-            _logger.LogInformation($"Delete Itme with id: {id}");
+            _logger.LogInformation($"Delete Item with id: {id}");
             return NoContent();
         }
     }

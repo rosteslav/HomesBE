@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Demo.Infrastucture.Persistence
+namespace Demo.Infrastructure.Persistence
 {
     public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<IdentityUser>(options)
     {
@@ -23,7 +23,7 @@ namespace Demo.Infrastucture.Persistence
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
-                    .HasColumnType("character varying")
+                    .HasColumnType("character varying(255)")
                     .HasMaxLength(255);
             });
 

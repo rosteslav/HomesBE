@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Users.Api.Migrations
+namespace Demo.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -13,7 +13,24 @@ namespace Users.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
+                name: "public");
+
+            migrationBuilder.EnsureSchema(
                 name: "security");
+
+            migrationBuilder.CreateTable(
+                name: "Items",
+                schema: "public",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "character varying", maxLength: 255, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Items", x => x.id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Roles",
@@ -221,6 +238,10 @@ namespace Users.Api.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Items",
+                schema: "public");
+
             migrationBuilder.DropTable(
                 name: "RoleClaims",
                 schema: "security");

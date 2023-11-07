@@ -1,29 +1,20 @@
-﻿using Demo.Application.Auth;
+﻿using Demo.Application.Features.Security.Commands.Register;
 using Demo.Application.Features.Security.Queries.Login;
 using Demo.Application.Models.Security;
+using Demo.Application.Models.Security.Enums;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Demo.Api.Controllers
 {
     [ApiController]
     public class AuthenticateController(
         IMediator mediator, 
-        ILogger<AuthenticateController> logger,
-        UserManager<IdentityUser> userManager,
-        RoleManager<IdentityRole> roleManager,
-        IConfiguration configuration) : ControllerBase
+        ILogger<AuthenticateController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<AuthenticateController> _logger = logger;
-        private readonly UserManager<IdentityUser> _userManager = userManager;
-        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-        private readonly IConfiguration _configuration = configuration;
 
         [HttpPost]
         [Route("login")]
@@ -31,18 +22,18 @@ namespace Demo.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var result = await _mediator.Send(new LoginQuery { loginModel = model });
+            var token = await _mediator.Send(new LoginQuery { Model = model });
             _logger.LogInformation($"Login attempt with Username: {model.Username}");
-            if (result == null)
+            if (token == null)
             {
                 return Unauthorized();
             }
 
-            return Ok(result);
-
-
-
-            
+            return Ok(new TokenObject
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiration = token.ValidTo
+            });
         }
 
         [HttpPost]
@@ -52,55 +43,59 @@ namespace Demo.Api.Controllers
         [ProducesResponseType(typeof(Response), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User already exists!" });
-
-            IdentityUser user = new()
+            _logger.LogInformation($"Register attempt with Username: {model.Username}");
+            var token = await _mediator.Send(new RegisterCommand 
             {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
+                Model = model,
+                Roles = new string[]
+                {
+                    UserRoles.User
+                }
+            });
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            switch (token)
+            {
+                case RegistrationResult.Success:
+                    _logger.LogInformation($"User created successfully with Username: {model.Username}");
+                    return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+                case RegistrationResult.AlreadyExists:
+                    _logger.LogInformation($"User already exists with Username: {model.Username}");
+                    return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User already exists!" });
+                case RegistrationResult.Failure:
+                default:
+                    _logger.LogInformation($"User creation failed with Username: {model.Username}");
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            }
         }
 
         [HttpPost]
         [Route("admin/register")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User already exists!" });
-
-            IdentityUser user = new()
+            _logger.LogInformation($"Admin register attempt with Username: {model.Username}");
+            var token = await _mediator.Send(new RegisterCommand 
             {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                Model = model,
+                Roles = new string[] 
+                {
+                    UserRoles.User,
+                    UserRoles.Admin 
+                } 
+            });
 
-            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-
-            await _userManager.AddToRoleAsync(user, UserRoles.Admin);
-
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-
-            await _userManager.AddToRoleAsync(user, UserRoles.User);
-
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            switch (token)
+            {
+                case RegistrationResult.Success:
+                    _logger.LogInformation($"Admin created successfully with Username: {model.Username}");
+                    return Ok(new Response { Status = "Success", Message = "Admin created successfully!" });
+                case RegistrationResult.AlreadyExists:
+                    _logger.LogInformation($"User already exists with Username: {model.Username}");
+                    return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User already exists!" });
+                case RegistrationResult.Failure:
+                default:
+                    _logger.LogInformation($"Admin creation failed with Username: {model.Username}");
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "Admin creation failed! Please check user details and try again." });
+            }
         }
-
-
     }
 }

@@ -10,7 +10,7 @@ namespace Demo.Api.Controllers
 {
     [ApiController]
     public class AuthenticateController(
-        IMediator mediator, 
+        IMediator mediator,
         ILogger<AuthenticateController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -41,15 +41,16 @@ namespace Demo.Api.Controllers
         [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Response), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Response), StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterUserModel model)
         {
             _logger.LogInformation($"Register attempt with Username: {model.Username}");
-            var token = await _mediator.Send(new RegisterCommand 
+            var token = await _mediator.Send(new RegisterCommand
             {
                 Model = model,
                 Roles = new string[]
                 {
-                    UserRoles.User
+                    UserRoles.User,
+                    model.Role
                 }
             });
 
@@ -73,14 +74,14 @@ namespace Demo.Api.Controllers
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
             _logger.LogInformation($"Admin register attempt with Username: {model.Username}");
-            var token = await _mediator.Send(new RegisterCommand 
+            var token = await _mediator.Send(new RegisterCommand
             {
                 Model = model,
-                Roles = new string[] 
+                Roles = new string[]
                 {
                     UserRoles.User,
-                    UserRoles.Admin 
-                } 
+                    UserRoles.Admin
+                }
             });
 
             switch (token)

@@ -17,7 +17,7 @@ namespace BuildingMarket.Auth.Infrastructure
             {
                 options.UseNpgsql(connectionsConfig.PostgresConnectionString)
                     .UseLazyLoadingProxies();
-            }, 
+            },
             ServiceLifetime.Transient);
 
             services.AddScoped<ISecurityService, SecurityService>();

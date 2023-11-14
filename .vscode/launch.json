@@ -1,22 +1,25 @@
 {
     "configurations": [
         {
-            "name": "Properties.Api",
-            "type": "dotnet",
-            "request": "launch",
-            "projectPath": "${workspaceFolder}\\src\\Properties\\Properties.Api\\Properties.Api.csproj"
-        },
-        {
             "name": "Auth.Api",
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}\\src\\Auth\\Auth.Api\\Auth.Api.csproj"
+        },
+        {
+            "name": "Properties.Api",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Properties\\Properties.Api\\Properties.Api.csproj"
         }
     ],
     "compounds": [
         {
             "name": "BE",
-            "configurations": ["Auth.Api", "Properties.Api"]
+            "configurations": [
+                "Auth.Api",
+                "Properties.Api"
+            ]
         }
     ]
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BuildingMarket.Auth.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
             modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins", "security");
             modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", "security");
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", "security");
+            modelBuilder.Entity<AdditionalUserData>().ToTable("AdditionalData", "security");
         }
     }
 }

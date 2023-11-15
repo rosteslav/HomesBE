@@ -27,21 +27,32 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
 
             modelBuilder.Entity("BuildingMarket.Auth.Domain.Entities.AdditionalUserData", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("first_name");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("last_name");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying")
+                        .HasColumnName("phone_number");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 

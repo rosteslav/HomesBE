@@ -25,9 +25,33 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                 .ToTable("RoleClaims", "security");
             modelBuilder.Entity<IdentityUserToken<string>>()
                 .ToTable("UserTokens", "security");
-            modelBuilder.Entity<AdditionalUserData>()
-                .ToTable("AdditionalData", "security")
-                .HasKey(au => au.Id);
+            modelBuilder.Entity<AdditionalUserData>(entity =>
+            {
+                entity.ToTable("AdditionalData", "security");
+                entity.HasKey(addData => addData.Id);
+
+                entity.Property(addData => addData.Id)
+                    .HasColumnName("id");
+
+                entity.Property(addData => addData.FirstName)
+                    .HasColumnName("first_name")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.Property(addData => addData.LastName)
+                    .HasColumnName("last_name")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.Property(addData => addData.PhoneNumber)
+                    .HasColumnName("phone_number")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(15);
+
+                entity.Property(addData => addData.UserId)
+                    .HasColumnName("user_id")
+                    .IsRequired(true);
+            });
         }
     }
 }

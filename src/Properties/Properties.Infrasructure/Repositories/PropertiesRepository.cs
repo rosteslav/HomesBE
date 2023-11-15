@@ -13,7 +13,7 @@ namespace BuildingMarket.Properties.Infrasructure.Repositories
 
         public async Task Add(Property item)
         {
-            _logger.LogInformation($"DB add property: {item.Name}");
+            _logger.LogInformation($"DB add property: {item.Type}");
 
             try
             {
@@ -22,7 +22,7 @@ namespace BuildingMarket.Properties.Infrasructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while adding property: {item.Name}");
+                _logger.LogError(ex, $"Error while adding property: {item.Type}");
             }
         }
 

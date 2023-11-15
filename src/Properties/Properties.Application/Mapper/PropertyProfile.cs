@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
+using AutoMapper;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 
 namespace BuildingMarket.Properties.Application.Mapper
 {
@@ -12,10 +12,9 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<Property, PropertyModel>()
                 .ReverseMap();
 
-            CreateMap<AddPropertyCommand, Property>()
-                .ForMember(x => x.Name, opt => opt.MapFrom(src => src.Model.Name))
-                .ForMember(x => x.BrokerId, opt => opt.MapFrom(src => src.Model.BrokerId))
-                .ReverseMap();
+            CreateMap<Property, AddPropertyCommand>()
+               .ForMember(x => x.Model, opt => opt.MapFrom(src => src))
+               .ReverseMap();
         }
     }
 }

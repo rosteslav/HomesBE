@@ -17,10 +17,11 @@ namespace BuildingMarket.Auth.Infrastructure
             {
                 options.UseNpgsql(connectionsConfig.PostgresConnectionString)
                     .UseLazyLoadingProxies();
-            }, 
+            },
             ServiceLifetime.Transient);
 
             services.AddScoped<ISecurityService, SecurityService>();
+            services.AddScoped<IAdditionalUserDataRepository, AdditionalUserDataRepository>();
 
             return services;
         }

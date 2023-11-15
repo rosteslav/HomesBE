@@ -1,5 +1,4 @@
-﻿using BuildingMarket.Auth.Application.Models.Security;
-using BuildingMarket.Common.Models.Security;
+﻿using BuildingMarket.Common.Models.Security;
 using System.ComponentModel.DataAnnotations;
 
 namespace BuildingMarket.Auth.Application.Attributes.Security

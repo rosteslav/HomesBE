@@ -1,4 +1,5 @@
-﻿using BuildingMarket.Auth.Application.Models.Security.Enums;
+﻿using BuildingMarket.Auth.Application.Models.Security;
+using BuildingMarket.Auth.Application.Models.Security.Enums;
 using System.Security.Claims;
 
 namespace BuildingMarket.Auth.Application.Contracts
@@ -7,6 +8,6 @@ namespace BuildingMarket.Auth.Application.Contracts
     {
         Task<IEnumerable<Claim>> GetLoginClaims(string username, string password);
 
-        Task<RegistrationResult> Registration(string username, string email, string password, IEnumerable<string> roles);
+        Task<RegistrationResult> Registration(RegisterModel model, IEnumerable<string> roles);
     }
 }

@@ -4,35 +4,20 @@ namespace BuildingMarket.Properties.Application.Models
 {
     public class PropertyModel
     {
-        [Required]
-        public string Type { get; set; }
+        public required string Type { get; set; }
 
-        [Required]
-        public short NumberOfRooms { get; set; }
+        public required int NumberOfRooms { get; set; }
 
-        [Required]
-        public string District { get; set; }
+        public required string District { get; set; }
 
-        [Required]
-        public float Space { get; set; }
+        public required decimal Space { get; set; }
 
-        [Required]
-        public short Floor { get; set; }
+        public required int Floor { get; set; }
 
-        [Required]
-        public short TotalFloorsInBuilding { get; set; }
+        public required int TotalFloorsInBuilding { get; set; }
 
-        public String? BrokerId { get; set; }
+        public required string SellerId { get; set; }
 
-        public override String ToString()
-        {
-            return $"Type:{Type},\n" +
-                $"Number Of Rooms:{NumberOfRooms},\n" +
-                $"District:{District},\n" +
-                $"Space:{Space},\n" +
-                $"Floor{Floor},\n" +
-                $"Total Floors In Building:{TotalFloorsInBuilding},\n" +
-                $"Broker Id: {(BrokerId == null ? BrokerId : "No broker added yet")}";
-        }
+        public string BrokerId { get; set; }
     }
 }

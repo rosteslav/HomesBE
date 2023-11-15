@@ -21,6 +21,7 @@ namespace BuildingMarket.Auth.Infrastructure
             ServiceLifetime.Transient);
 
             services.AddScoped<ISecurityService, SecurityService>();
+            services.AddScoped<IAdditionalUserDataRepository, AdditionalUserDataRepository>();
 
             return services;
         }

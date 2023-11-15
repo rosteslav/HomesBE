@@ -7,6 +7,8 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
 {
     public partial class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<IdentityUser>(options)
     {
+        public virtual DbSet<AdditionalUserData> AdditionalUserData { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

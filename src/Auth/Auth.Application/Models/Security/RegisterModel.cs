@@ -13,5 +13,11 @@ namespace BuildingMarket.Auth.Application.Models.Security
 
         [Required(ErrorMessage = "Password is required")]
         public required string Password { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string PhoneNumber { get; set; }
     }
 }

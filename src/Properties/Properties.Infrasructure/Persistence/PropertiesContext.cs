@@ -26,8 +26,8 @@ namespace BuildingMarket.Properties.Infrasructure.Persistence
 
                 // Used value type smallint as it would fit the purpose.
                 entity.Property(e => e.NumberOfRooms)
-                    .HasColumnName("number of rooms")
-                    .HasColumnType("smallint");
+                    .HasColumnName("number_of_rooms")
+                    .HasColumnType("int");
 
                 entity.Property(e => e.District)
                     .HasColumnName("district")
@@ -43,11 +43,11 @@ namespace BuildingMarket.Properties.Infrasructure.Persistence
 
                 entity.Property(e => e.Floor)
                     .HasColumnName("floor")
-                    .HasColumnType("smallint");
+                    .HasColumnType("int");
 
                 entity.Property(e => e.TotalFloorsInBuilding)
-                    .HasColumnName("total floors in building")
-                    .HasColumnType("smallint");
+                    .HasColumnName("total_floors_in_building")
+                    .HasColumnType("int");
 
                 entity.Property(e => e.SellerId)
                     .HasColumnName("seller_id");

@@ -6,27 +6,20 @@ namespace BuildingMarket.Properties.Domain.Entities
     {
         public int Id { get; set; }
 
-        [Required]
-        public string Type { get; set; }
+        public required string Type { get; set; }
 
-        [Required]
-        public short NumberOfRooms { get; set; }
+        public required int NumberOfRooms { get; set; }
 
-        [Required]
-        public string District { get; set; }
+        public required string District { get; set; }
 
-        [Required]
-        public float Space { get; set; }
+        public required decimal Space { get; set; }
 
-        [Required]
-        public short Floor { get; set; }
+        public required int Floor { get; set; }
 
-        [Required]
-        public short TotalFloorsInBuilding { get; set; }
+        public required int TotalFloorsInBuilding { get; set; }
 
-        [Required]
-        public string SellerId { get; set; }
+        public required string SellerId { get; set; }
 
-        public string? BrokerId { get; set; }
+        public string BrokerId { get; set; }
     }
 }

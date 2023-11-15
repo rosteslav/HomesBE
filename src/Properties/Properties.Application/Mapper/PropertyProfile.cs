@@ -12,16 +12,6 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<Property, PropertyModel>()
                 .ReverseMap();
 
-            CreateMap<PropertyModel, Property>()
-               .ForMember(x => x.Type, opt => opt.MapFrom(src => src.Type))
-               .ForMember(x => x.NumberOfRooms, opt => opt.MapFrom(src => src.NumberOfRooms))
-               .ForMember(x => x.District, opt => opt.MapFrom(src => src.District))
-               .ForMember(x => x.Space, opt => opt.MapFrom(src => src.Space))
-               .ForMember(x => x.Floor, opt => opt.MapFrom(src => src.Floor))
-               .ForMember(x => x.TotalFloorsInBuilding, opt => opt.MapFrom(src => src.TotalFloorsInBuilding))
-               .ForMember(x => x.BrokerId, opt => opt.MapFrom(src => src.BrokerId))
-               .ReverseMap();
-
             CreateMap<AddPropertyCommand, Property>()
                .ForMember(x => x.Type, opt => opt.MapFrom(src => src.Model.Type))
                .ForMember(x => x.NumberOfRooms, opt => opt.MapFrom(src => src.Model.NumberOfRooms))

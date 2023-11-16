@@ -1,5 +1,7 @@
 using AutoMapper;
 using BuildingMarket.Common.Models.Security;
+using BuildingMarket.Properties.Application.Attributes;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties.Commands;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
@@ -9,12 +11,13 @@ using BuildingMarket.Properties.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace BuildingMarket.Properties.Api.Controllers
 {
     [ApiController]
-    [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
+    [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker + "," + UserRoles.Admin)]
     [Route("[controller]")]
     public class PropertiesController(IMediator mediator, ILogger<PropertiesController> logger, IMapper mapper) : ControllerBase
     {
@@ -37,6 +40,25 @@ namespace BuildingMarket.Properties.Api.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        [Route("/Admins/Properties")]
+        [Authorize(Roles = UserRoles.Admin)]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> AddMultiple([Required][ValidCsvFile] IFormFile csvFile)
+        {
+            var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            int result = await _mediator.Send(new AddMultiplePropertiesCommand
+            {
+                SellerId = userId,
+                File = csvFile
+            });
+
+            return Ok(new Response { Status = "Success", Message = $"{result} properties have been successfully added" });
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<PropertyModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get()
@@ -45,19 +67,19 @@ namespace BuildingMarket.Properties.Api.Controllers
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
             if (User.IsInRole(UserRoles.Seller))
             {
-                properties =  await _mediator.Send(new GetBySellerQuery
+                properties = await _mediator.Send(new GetBySellerQuery
                 {
                     SellerId = userId
                 });
             }
-            else if(User.IsInRole(UserRoles.Broker))
+            else if (User.IsInRole(UserRoles.Broker))
             {
                 properties = await _mediator.Send(new GetByBrokerQuery
                 {
                     BrokerId = userId
                 });
             }
-            
+
             var result = _mapper.Map<IEnumerable<PropertyModel>>(properties);
             return Ok(properties);
         }
@@ -73,4 +95,4 @@ namespace BuildingMarket.Properties.Api.Controllers
             return Ok(properties);
         }
     }
-} 
+}

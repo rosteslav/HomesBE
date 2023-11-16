@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
-namespace BuildingMarket.Properties.Application.Attributes
+namespace BuildingMarket.Admins.Application.Attributes
 {
     public class ValidCsvFileAttribute : ValidationAttribute
     {

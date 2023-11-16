@@ -1,11 +1,10 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using BuildingMarket.Properties.Application.Models;
+using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties.Commands
 {
-    public class AddMultiplePropertiesCommand : IRequest<int>
+    public class AddMultiplePropertiesCommand : IRequest<Response>
     {
-        public string SellerId { get; set; }
-        public IFormFile File { get; set; }
+        public IEnumerable<PropertyModel> Properties { get; set; }
     }
 }

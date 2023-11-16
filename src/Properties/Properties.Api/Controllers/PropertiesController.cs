@@ -1,6 +1,5 @@
 using AutoMapper;
 using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Properties.Application.Attributes;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties.Commands;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
@@ -47,16 +46,10 @@ namespace BuildingMarket.Properties.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> AddMultiple([Required][ValidCsvFile] IFormFile csvFile)
+        public async Task<IActionResult> AddMultiple([FromBody] IEnumerable<PropertyModel> properties)
         {
-            var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
-            int result = await _mediator.Send(new AddMultiplePropertiesCommand
-            {
-                SellerId = userId,
-                File = csvFile
-            });
-
-            return Ok(new Response { Status = "Success", Message = $"{result} properties have been successfully added" });
+            var command = new AddMultiplePropertiesCommand { Properties = properties };
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpGet]

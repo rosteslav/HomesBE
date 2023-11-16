@@ -46,7 +46,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> AddMultiple([FromBody] IEnumerable<PropertyModel> properties)
+        public async Task<IActionResult> AddMultiple([Required][FromBody] IEnumerable<PropertyModel> properties)
         {
             var command = new AddMultiplePropertiesCommand { Properties = properties };
             return Ok(await _mediator.Send(command));

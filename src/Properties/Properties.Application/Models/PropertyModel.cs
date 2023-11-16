@@ -16,8 +16,6 @@ namespace BuildingMarket.Properties.Application.Models
 
         public required int TotalFloorsInBuilding { get; set; }
 
-        public required string SellerId { get; set; }
-
         public string BrokerId { get; set; }
     }
 }

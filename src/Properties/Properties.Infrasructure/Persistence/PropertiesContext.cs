@@ -24,30 +24,23 @@ namespace BuildingMarket.Properties.Infrasructure.Persistence
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
 
-                // Used value type smallint as it would fit the purpose.
                 entity.Property(e => e.NumberOfRooms)
-                    .HasColumnName("number_of_rooms")
-                    .HasColumnType("int");
+                    .HasColumnName("number_of_rooms");
 
                 entity.Property(e => e.District)
                     .HasColumnName("district")
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
 
-                // Intechangable values for area of the property.
-                // The property is defined as a float in C# context
-                // and as real in PostgreSQL context.
                 entity.Property(e => e.Space)
                     .HasColumnName("space")
                     .HasColumnType("real");
 
                 entity.Property(e => e.Floor)
-                    .HasColumnName("floor")
-                    .HasColumnType("int");
+                    .HasColumnName("floor");
 
                 entity.Property(e => e.TotalFloorsInBuilding)
-                    .HasColumnName("total_floors_in_building")
-                    .HasColumnType("int");
+                    .HasColumnName("total_floors_in_building");
 
                 entity.Property(e => e.SellerId)
                     .HasColumnName("seller_id");

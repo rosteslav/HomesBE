@@ -84,11 +84,11 @@ namespace BuildingMarket.Admins.Application.Features.Admins.Commands.AddMultiple
             return model;
         }
 
-        private async Task<Response> SendProperties(IEnumerable<PropertyModel> properties, StringValues jwt)
+        private async Task<Response> SendProperties(IEnumerable<PropertyModel> properties, string jwt)
         {
             string host = _configuration.GetValue<string>("PropertiesMicroserviceHost");
             string apiEndpoint = "/Admins/Properties";
-            string[] jwtData = jwt.ToString().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            string[] jwtData = jwt.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             using HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(host);

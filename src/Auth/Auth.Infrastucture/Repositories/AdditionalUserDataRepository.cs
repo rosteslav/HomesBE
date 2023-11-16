@@ -25,23 +25,5 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 _logger.LogError(ex, $"Couldn't add Additional User Data! {item.FirstName} {item.LastName} {item.PhoneNumber}.");
             }
         }
-
-        public async Task<IEnumerable<AdditionalUserData>> GetAllAsync()
-        {
-            try
-            {
-                _logger.LogInformation("Trying to retrieve all the users additional data.");
-
-                var additionalUsersData = await _context.AdditionalUserData.ToListAsync();
-
-                return additionalUsersData;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Couldn't retrieve data!");
-            }
-
-            return Enumerable.Empty<AdditionalUserData>();
-        }
     }
 }

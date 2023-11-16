@@ -5,7 +5,7 @@ using BuildingMarket.Properties.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties.Commands
+namespace BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties
 {
     public class AddMultiplePropertiesCommandHandler(
         IPropertiesRepository propertiesRepository,

@@ -1,6 +1,6 @@
 using AutoMapper;
 using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties.Commands;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;

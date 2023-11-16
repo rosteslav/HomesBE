@@ -1,7 +1,7 @@
 ﻿using BuildingMarket.Properties.Application.Models;
 using MediatR;
 
-namespace BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties.Commands
+namespace BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties
 {
     public class AddMultiplePropertiesCommand : IRequest<Response>
     {

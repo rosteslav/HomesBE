@@ -18,7 +18,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Dev",
         "ConnectionStrings__PostgresConnectionString": "Host=isabelle.db.elephantsql.com;Port=5432;Database=vvizkylm;Username=vvizkylm;Password=7mXXhXO5jLwqLNrCFx1Vmzt97nLcpabv;ApplicationName=BuildingMarket;",
-        "PropertiesMicroserviceHost": "http://localhost:5220",
         "JWT__Secret": "JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr",
         "JWT__ValidAudience": "http://localhost:4200",
         "JWT__ValidIssuer": "http://localhost:5000",

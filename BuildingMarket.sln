@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Properties.Api", "src\Prope
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Properties.Application", "src\Properties\Properties.Application\Properties.Application.csproj", "{91E4ED5A-2BF3-431B-A975-57E98F35E84E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Properties.Infrasructure", "src\Properties\Properties.Infrasructure\Properties.Infrasructure.csproj", "{5A0A5575-D1CB-4914-8681-6030C5B42609}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Properties.Infrastructure", "src\Properties\Properties.Infrasructure\Properties.Infrastructure.csproj", "{5A0A5575-D1CB-4914-8681-6030C5B42609}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Properties.Domain", "src\Properties\Properties.Domain\Properties.Domain.csproj", "{BB7F59C7-3129-47BD-986B-AC357F405B04}"
 EndProject

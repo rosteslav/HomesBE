@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BuildingMarket.Properties.Infrasructure.Migrations
+namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class PropertiesUpdate : Migration

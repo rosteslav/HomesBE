@@ -42,14 +42,16 @@ namespace BuildingMarket.Properties.Api.Controllers
         [HttpPost]
         [Route("/Admins/Properties")]
         [Authorize(Roles = UserRoles.Admin)]
-        [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> AddMultiple([Required][FromBody] IEnumerable<PropertyModel> properties)
         {
-            var command = new AddMultiplePropertiesCommand { Properties = properties };
-            return Ok(await _mediator.Send(command));
+            var adminId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            _logger.LogInformation($"Attempt to add a multiple properties from the admin with ID: {adminId}");
+            await _mediator.Send(new AddMultiplePropertiesCommand { Properties = properties });
+            return NoContent();
         }
 
         [HttpGet]

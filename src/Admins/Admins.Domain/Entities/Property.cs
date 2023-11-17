@@ -1,7 +1,9 @@
-namespace BuildingMarket.Admins.Application.Models
+namespace BuildingMarket.Admins.Domain.Entities
 {
-    public class PropertyModel
+    public class Property
     {
+        public int Id { get; set; }
+
         public required string Type { get; set; }
 
         public required int NumberOfRooms { get; set; }

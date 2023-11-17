@@ -12,6 +12,6 @@ namespace BuildingMarket.Properties.Application.Contracts
 
         Task Add(Property item);
 
-        Task<int> AddMultiple(IEnumerable<Property> properties);
+        Task AddMultiple(IEnumerable<Property> properties);
     }
 }

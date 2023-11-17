@@ -7,8 +7,8 @@ using BuildingMarket.Common.Models.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace BuildingMarket.Admins.Api.Controllers
 {
@@ -28,6 +28,8 @@ namespace BuildingMarket.Admins.Api.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAllBrokers()
         {
+            var adminId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            _logger.LogInformation($"Attempt to retrieve all brokers from the admin with ID {adminId}");
             var brokers = await _mediator.Send(new GetAllBrokersQuery());
             var result = _mapper.Map<IEnumerable<BrokerModel>>(brokers);
             return Ok(result);
@@ -35,20 +37,17 @@ namespace BuildingMarket.Admins.Api.Controllers
 
         [HttpPost]
         [Route("properties")]
-        [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddMultipleProperties([Required][ValidCsvFile] IFormFile csvFile)
         {
-            Request.Headers.TryGetValue("Authorization", out StringValues jwt);
-            var response = await _mediator.Send(new AddMultiplePropertiesCommand
-            {
-                JWT = jwt,
-                File = csvFile
-            });
-
-            return Ok(response);
+            var adminId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            _logger.LogInformation($"Attempt to insert multiple properties from the admin with ID {adminId}");
+            await _mediator.Send(new AddMultiplePropertiesCommand { File = csvFile });
+            return NoContent();
         }
     }
 }

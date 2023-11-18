@@ -25,7 +25,6 @@ namespace BuildingMarket.Images.Infrastructure
 
             services.AddScoped<IImgbbService, ImgbbService>();
             services.AddScoped<IImagesRepository, ImagesRepository>();
-            services.AddSingleton(configuration);
 
             return services;
         }

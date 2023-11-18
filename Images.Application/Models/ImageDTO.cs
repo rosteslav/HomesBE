@@ -1,8 +1,11 @@
-﻿namespace BuildingMarket.Images.Application.Models
+﻿using Microsoft.AspNetCore.Http;
+
+namespace BuildingMarket.Images.Application.Models
 {
     public class ImageDTO
     {
-        public byte[] MemoryStream { get; set; }
+        public IFormFile FormFile { get; set; }
         public string FileName { get; set; }
+        public string FileExtension { get; set; }
     }
 }

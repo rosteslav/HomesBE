@@ -24,10 +24,10 @@ namespace BuildingMarket.Images.Application.Features.Image.Commands.Add
                 return string.Empty;
             }
 
-            await _repository.AddAsync(new()
+            await _repository.Add(new()
             {
                 PropertyId = request.PropertyId,
-                ImageName = request.Image.FileName,
+                ImageName = $"{request.PropertyId}-{Guid.NewGuid()}{request.Image.FileExtension}",
                 ImageURL = imageData.DisplayUrl,
                 DeleteURL = imageData.DeleteUrl
             });

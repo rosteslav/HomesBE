@@ -10,6 +10,6 @@ namespace BuildingMarket.Images.Application.Features.Image.Queries.GetAll
         public async Task<IEnumerable<Domain.Entities.Image>> Handle(
             GetAllCommand request,
             CancellationToken cancellationToken)
-        => await _repository.GetAllForPropertyAsync(request.PropertyId);
+        => await _repository.GetAllForProperty(request.PropertyId);
     }
 }

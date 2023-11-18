@@ -1,7 +1,7 @@
 ﻿using BuildingMarket.Images.Application.Contracts;
 using MediatR;
 
-namespace Images.Application.Features.Image.Commands.Delete
+namespace BuildingMarket.Images.Application.Features.Image.Commands.Delete
 {
     public class DeleteCommandHandler(
         IImagesRepository repository,
@@ -15,7 +15,7 @@ namespace Images.Application.Features.Image.Commands.Delete
             CancellationToken cancellationToken)
         {
             await _imgbbService.DeleteImage(request.DeleteURL);
-            await _repository.DeleteAsync(request.DeleteURL);
+            await _repository.Delete(request.DeleteURL);
         }
     }
 }

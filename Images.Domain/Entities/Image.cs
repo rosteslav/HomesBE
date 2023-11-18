@@ -9,16 +9,12 @@ namespace BuildingMarket.Images.Domain.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        public int PropertyId { get; set; }
+        public required int PropertyId { get; set; }
 
-        [Required]
-        public string ImageName { get; set; } = null!;
+        public required string ImageName { get; set; } = null!;
 
-        [Required]
-        public string ImageURL { get; set; } = null!;
+        public required string ImageURL { get; set; } = null!;
 
-        [Required]
-        public string DeleteURL { get; set; } = null!;
+        public required string DeleteURL { get; set; } = null!;
     }
 }

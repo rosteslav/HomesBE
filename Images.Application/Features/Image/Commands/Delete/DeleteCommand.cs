@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Images.Application.Features.Image.Commands.Delete
+namespace BuildingMarket.Images.Application.Features.Image.Commands.Delete
 {
     public class DeleteCommand : IRequest
     {

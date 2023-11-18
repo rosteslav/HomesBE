@@ -1,4 +1,5 @@
 ﻿using BuildingMarket.Images.Application.Contracts;
+using BuildingMarket.Images.Application.Extensions;
 using BuildingMarket.Images.Application.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -41,8 +42,11 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             {
                 _logger.LogInformation("Attempting to upload image to imgbb with filename: {FileName}", image.FileName);
 
+                var memoryStream = await FormFileExtensions
+                    .ToMemoryStream(image.FormFile);
+
                 string base64Image = Convert
-                    .ToBase64String(image.MemoryStream);
+                    .ToBase64String(memoryStream);
 
                 using HttpClient client = new();
 

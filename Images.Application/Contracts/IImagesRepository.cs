@@ -4,8 +4,8 @@ namespace BuildingMarket.Images.Application.Contracts
 {
     public interface IImagesRepository
     {
-        Task<IEnumerable<Image>> GetAllForPropertyAsync(int propertyId);
-        Task AddAsync(Image image);
-        Task DeleteAsync(string imageUrl);
+        Task<IEnumerable<Image>> GetAllForProperty(int propertyId);
+        Task Add(Image image);
+        Task Delete(string imageUrl);
     }
 }

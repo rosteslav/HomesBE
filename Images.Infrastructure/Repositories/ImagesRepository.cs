@@ -13,7 +13,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         private readonly ImagesDbContext _context = context;
         private readonly ILogger<ImagesRepository> _logger = logger;
 
-        public async Task AddAsync(Image image)
+        public async Task Add(Image image)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
         }
 
-        public async Task DeleteAsync(string imageUrl)
+        public async Task Delete(string imageUrl)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<Image>> GetAllForPropertyAsync(int propertyId)
+        public async Task<IEnumerable<Image>> GetAllForProperty(int propertyId)
         {
             try
             {

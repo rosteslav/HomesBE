@@ -25,13 +25,11 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
 
                 entity.Property(img => img.ImageURL)
                     .HasColumnName("image_url")
-                    .HasColumnType("text")
-                    .HasMaxLength(255);
+                    .HasColumnType("text");
 
                 entity.Property(img => img.DeleteURL)
                     .HasColumnName("delete_url")
-                    .HasColumnType("text")
-                    .HasMaxLength(255);
+                    .HasColumnType("text");
 
                 entity.Property(img => img.PropertyId)
                     .HasColumnName("property_id");

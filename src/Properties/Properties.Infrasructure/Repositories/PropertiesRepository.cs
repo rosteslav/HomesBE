@@ -1,10 +1,10 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Domain.Entities;
-using BuildingMarket.Properties.Infrasructure.Persistence;
+using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace BuildingMarket.Properties.Infrasructure.Repositories
+namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
     public class PropertiesRepository(PropertiesDbContext context, ILogger<PropertiesRepository> logger) : IPropertiesRepository
     {
@@ -23,6 +23,23 @@ namespace BuildingMarket.Properties.Infrasructure.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error while adding property: {item.Type}");
+            }
+        }
+
+        public async Task AddMultiple(IEnumerable<Property> properties)
+        {
+            _logger.LogInformation($"DB add multiple properties");
+
+            try
+            {
+                await _context.Properties.AddRangeAsync(properties);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"DB the properties have been successfully added");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while adding multiple properties");
             }
         }
 

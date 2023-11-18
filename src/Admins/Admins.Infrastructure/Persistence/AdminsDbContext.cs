@@ -1,15 +1,21 @@
-using BuildingMarket.Properties.Domain.Entities;
+﻿using BuildingMarket.Admins.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BuildingMarket.Properties.Infrastructure.Persistence
+namespace BuildingMarket.Admins.Infrastructure.Persistence
 {
-    public class PropertiesDbContext(DbContextOptions<PropertiesDbContext> options) : DbContext(options)
+    public class AdminsDbContext(DbContextOptions<AdminsDbContext> options) : IdentityDbContext<IdentityUser>(options)
     {
-        public virtual DbSet<Property> Properties { get; set; }
+        public DbSet<Property> Properties { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityUser>().ToTable("Users", "security");
+            modelBuilder.Entity<IdentityRole>().ToTable("Roles", "security");
+            modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", "security");
 
             modelBuilder.Entity<Property>(entity =>
             {

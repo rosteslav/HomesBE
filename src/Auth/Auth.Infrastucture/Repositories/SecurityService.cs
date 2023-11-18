@@ -1,14 +1,18 @@
 ﻿using BuildingMarket.Auth.Application.Contracts;
 using BuildingMarket.Auth.Application.Models.Security;
 using BuildingMarket.Auth.Application.Models.Security.Enums;
-using BuildingMarket.Auth.Domain.Entities;
+using BuildingMarket.Common.Models.Security;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace BuildingMarket.Auth.Infrastructure.Repositories
 {
-    public class SecurityService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IAdditionalUserDataRepository repository) : ISecurityService
+    public class SecurityService(
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IAdditionalUserDataRepository repository)
+        : ISecurityService
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
@@ -38,6 +42,16 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             }
 
             return authClaims;
+        }
+
+        public async Task<UserRolesModel> GetUserRoles()
+        {
+            await Task.Yield();
+
+            return new UserRolesModel
+            {
+                Roles = [UserRoles.Buyer, UserRoles.Seller, UserRoles.Broker]
+            };
         }
 
         public async Task<RegistrationResult> Registration(RegisterModel model, IEnumerable<string> roles)

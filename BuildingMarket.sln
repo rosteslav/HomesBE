@@ -27,16 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{B4FBA9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "src\Common\Common.csproj", "{F7A34574-EC47-4497-8D05-AD25711D8999}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{1AB9C6CB-8E73-4D9E-975A-2EDE7E5B5CD6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Api", "Images.Api\Images.Api.csproj", "{C150F31D-CD45-4C66-90D3-DF697D97CD29}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Application", "Images.Application\Images.Application.csproj", "{FC9B9706-E848-45FE-807B-3F6891BCBD4D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Infrastructure", "Images.Infrastructure\Images.Infrastructure.csproj", "{6E58EE67-A376-4940-BE89-F0233AE6D790}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Domain", "Images.Domain\Images.Domain.csproj", "{2B27A9AC-19B4-4CA9-BE68-B8964E80FA9F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Admins.Api", "src\Admins\Admins.Api\Admins.Api.csproj", "{20D9FE54-1B43-49DA-A2B9-CAE5168426F7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Admins.Application", "src\Admins\Admins.Application\Admins.Application.csproj", "{9040DFFE-7789-4521-89E5-87D8823178B0}"
@@ -46,6 +36,16 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Admins.Infrastructure", "src\Admins\Admins.Infrastructure\Admins.Infrastructure.csproj", "{912522E9-658B-4F22-B10B-BD5891D895F3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admins", "Admins", "{6C7D333D-4FC0-4A41-A04A-00AD7E744714}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{1AB9C6CB-8E73-4D9E-975A-2EDE7E5B5CD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Api", "Images.Api\Images.Api.csproj", "{C150F31D-CD45-4C66-90D3-DF697D97CD29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Application", "Images.Application\Images.Application.csproj", "{FC9B9706-E848-45FE-807B-3F6891BCBD4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Infrastructure", "Images.Infrastructure\Images.Infrastructure.csproj", "{6E58EE67-A376-4940-BE89-F0233AE6D790}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Domain", "Images.Domain\Images.Domain.csproj", "{2B27A9AC-19B4-4CA9-BE68-B8964E80FA9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

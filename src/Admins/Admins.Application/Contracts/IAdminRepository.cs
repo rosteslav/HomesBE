@@ -1,4 +1,4 @@
-﻿using BuildingMarket.Admins.Domain.Entities;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace BuildingMarket.Admins.Application.Contracts
@@ -6,6 +6,6 @@ namespace BuildingMarket.Admins.Application.Contracts
     public interface IAdminRepository
     {
         Task<IEnumerable<IdentityUser>> GetAllBrokers();
-        Task AddMultipleProperties(IEnumerable<Property> properties);
+        Task AddMultiplePropertiesFromCsvFile(IFormFile csvFile);
     }
 }

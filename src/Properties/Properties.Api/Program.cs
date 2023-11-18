@@ -1,6 +1,7 @@
 using BuildingMarket.Common;
 using BuildingMarket.Properties.Application;
-using BuildingMarket.Properties.Infrasructure;
+using BuildingMarket.Properties.Infrastructure;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;

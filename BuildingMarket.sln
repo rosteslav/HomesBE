@@ -37,16 +37,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Admins.Infrastructure", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admins", "Admins", "{6C7D333D-4FC0-4A41-A04A-00AD7E744714}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{1AB9C6CB-8E73-4D9E-975A-2EDE7E5B5CD6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Api", "Images.Api\Images.Api.csproj", "{C150F31D-CD45-4C66-90D3-DF697D97CD29}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Application", "Images.Application\Images.Application.csproj", "{FC9B9706-E848-45FE-807B-3F6891BCBD4D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Infrastructure", "Images.Infrastructure\Images.Infrastructure.csproj", "{6E58EE67-A376-4940-BE89-F0233AE6D790}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Images.Domain", "Images.Domain\Images.Domain.csproj", "{2B27A9AC-19B4-4CA9-BE68-B8964E80FA9F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

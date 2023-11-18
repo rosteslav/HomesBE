@@ -26,7 +26,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
                     { new StringContent(_configuration.GetSection("Imgbb").Value), "key" }
                 };
 
-                var response = await client
+                await client
                     .GetAsync(deleteUrl);
             }
             catch (Exception ex)

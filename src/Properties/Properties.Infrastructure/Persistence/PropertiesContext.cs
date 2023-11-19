@@ -51,23 +51,38 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.Property(e => e.Floor)
                     .HasColumnName("floor");
 
-                entity.Property(e => e.BuildingTypeId)
-                    .HasColumnName("building_type_id");
+                entity.Property(e => e.TotalFloorsInBuilding)
+                    .HasColumnName("total_floors_in_building");
 
-                entity.Property(e => e.FinishId)
-                    .HasColumnName("finish_id");
+                entity.Property(e => e.BuildingType)
+                    .HasColumnName("building_type")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.FurnishmentId)
-                    .HasColumnName("furnishment_id");
+                entity.Property(e => e.Finish)
+                    .HasColumnName("finish")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.GarageId)
-                    .HasColumnName("garage_id");
+                entity.Property(e => e.Furnishment)
+                    .HasColumnName("furnishment")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.HeatingId)
-                    .HasColumnName("heating_id");
+                entity.Property(e => e.Garage)
+                    .HasColumnName("garage")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.NeighboourhoodId)
-                    .HasColumnName("neighboourhood_id");
+                entity.Property(e => e.Heating)
+                    .HasColumnName("heating")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Neighbourhood)
+                    .HasColumnName("neighbourhood")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.SellerId)
                     .HasColumnName("seller_id");
@@ -79,10 +94,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<Neighborhood>(entity =>
             {
-                entity.ToTable("Neighbourhoods", "neighbourhoods");
+                entity.ToTable("Neighbourhoods", "properties");
 
-                entity.HasKey(e => e.Id)
-                .HasName("id");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
                 entity.Property(e => e.Description)
                 .HasColumnName("region")
@@ -92,10 +108,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<Heating>(entity =>
             {
-                entity.ToTable("Heating", "heating");
+                entity.ToTable("Heating", "properties");
 
-                entity.HasKey(e => e.Id)
-                .HasName("id");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
                 entity.Property(e => e.Description)
                 .HasColumnName("heating_type")
@@ -105,10 +122,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<Garage>(entity =>
             {
-                entity.ToTable("Garage", "garage");
+                entity.ToTable("Garage", "properties");
 
-                entity.HasKey(e => e.Id)
-                .HasName("id");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
                 entity.Property(e => e.Description)
                 .HasColumnName("garage_type")
@@ -118,10 +136,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<Furnishment>(entity =>
             {
-                entity.ToTable("Furnishment", "furnishment");
+                entity.ToTable("Furnishment", "properties");
 
-                entity.HasKey(e => e.Id)
-                .HasName("id");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
                 entity.Property(e => e.Description)
                 .HasColumnName("furnishment_type")
@@ -131,10 +150,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<Finish>(entity =>
             {
-                entity.ToTable("Finish", "finish");
+                entity.ToTable("Finish", "properties");
 
-                entity.HasKey(e => e.Id)
-                .HasName("id");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
                 entity.Property(e => e.Description)
                 .HasColumnName("finish_type")
@@ -144,10 +164,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<BuildingType>(entity =>
             {
-                entity.ToTable("BuildingType", "building_type");
+                entity.ToTable("BuildingType", "properties");
 
-                entity.HasKey(e => e.Id)
-                .HasName("id");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
                 entity.Property(e => e.Description)
                 .HasColumnName("building_type")
@@ -157,102 +178,102 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<Neighborhood>()
              .HasData(
-                new { Description = "Банишора", Region = "Север" },
-                new { Description = "Белите брези", Region = "Юг" },
-                new { Description = "Бенковски", Region = "Север" },
-                new { Description = "Борово", Region = "Юг" },
-                new { Description = "Бояна", Region = "Юг" },
-                new { Description = "Бъкстон", Region = "Юг" },
-                new { Description = "Витоша", Region = "Юг" },
-                new { Description = "Гевгелийски квартал", Region = "Запад" },
-                new { Description = "Гео Милев", Region = "Изток" },
-                new { Description = "Гоце Делчев", Region = "Юг" },
-                new { Description = "Дианабад", Region = "Юг" },
-                new { Description = "Драгалевци", Region = "Юг" },
-                new { Description = "Дружба", Region = "Изток" },
-                new { Description = "Дървеница", Region = "Юг" },
-                new { Description = "Западен парк", Region = "Запад" },
-                new { Description = "Захарна фабрика", Region = "Север" },
-                new { Description = "Иван Вазов", Region = "Юг" },
-                new { Description = "Изгрев", Region = "Юг" },
-                new { Description = "Изток", Region = "Изток" },
-                new { Description = "Илинден", Region = "Север" },
-                new { Description = "Илиянци", Region = "Север" },
-                new { Description = "Княжево", Region = "Юг" },
-                new { Description = "Красна поляна", Region = "Запад" },
-                new { Description = "Красно село", Region = "Юг" },
-                new { Description = "Крива река", Region = "Юг" },
-                new { Description = "Кръстова вада", Region = "Юг" },
-                new { Description = "Лагерът", Region = "Запад" },
-                new { Description = "Левски", Region = "Изток" },
-                new { Description = "Лозенец", Region = "Юг" },
-                new { Description = "Люлин", Region = "Запад" },
-                new { Description = "Малашевци", Region = "Изток" },
-                new { Description = "Малинова долина", Region = "Юг" },
-                new { Description = "Манастирски ливади", Region = "Юг" },
-                new { Description = "Младост", Region = "Юг" },
-                new { Description = "Модерно предградие", Region = "Север" },
-                new { Description = "Мусагеница", Region = "Юг" },
-                new { Description = "Надежда", Region = "Север" },
-                new { Description = "Обеля", Region = "Север" },
-                new { Description = "Оборище", Region = "Изток" },
-                new { Description = "Овча купел", Region = "Запад" },
-                new { Description = "Орландовци", Region = "Север" },
-                new { Description = "Павлово", Region = "Юг" },
-                new { Description = "Подуяне", Region = "Изток" },
-                new { Description = "Разсадника-Коньовица", Region = "Запад" },
-                new { Description = "Редута", Region = "Изток" },
-                new { Description = "Света Троица", Region = "Запад" },
-                new { Description = "Симеоново", Region = "Юг" },
-                new { Description = "Славия", Region = "Запад" },
-                new { Description = "Слатина", Region = "Изток" },
-                new { Description = "Стрелбище", Region = "Юг" },
-                new { Description = "Студентски град", Region = "Юг" },
-                new { Description = "Сухата река", Region = "Изток" },
-                new { Description = "Факултета", Region = "Запад" },
-                new { Description = "Хаджи Димитър", Region = "Изток" },
-                new { Description = "Хиподрумът", Region = "Запад" },
-                new { Description = "Хладилникът", Region = "Юг" },
-                new { Description = "Христо Ботев", Region = "Изток" },
-                new { Description = "Център", Region = "Централен" },
-                new { Description = "Яворов", Region = "Изток" });
+                new { Id = 1, Description = "Банишора", Region = "Север" },
+                new { Id = 2, Description = "Белите брези", Region = "Юг" },
+                new { Id = 3, Description = "Бенковски", Region = "Север" },
+                new { Id = 4, Description = "Борово", Region = "Юг" },
+                new { Id = 5, Description = "Бояна", Region = "Юг" },
+                new { Id = 6, Description = "Бъкстон", Region = "Юг" },
+                new { Id = 7, Description = "Витоша", Region = "Юг" },
+                new { Id = 8, Description = "Гевгелийски квартал", Region = "Запад" },
+                new { Id = 9, Description = "Гео Милев", Region = "Изток" },
+                new { Id = 10, Description = "Гоце Делчев", Region = "Юг" },
+                new { Id = 12, Description = "Дианабад", Region = "Юг" },
+                new { Id = 13, Description = "Драгалевци", Region = "Юг" },
+                new { Id = 14, Description = "Дружба", Region = "Изток" },
+                new { Id = 15, Description = "Дървеница", Region = "Юг" },
+                new { Id = 16, Description = "Западен парк", Region = "Запад" },
+                new { Id = 17, Description = "Захарна фабрика", Region = "Север" },
+                new { Id = 18, Description = "Иван Вазов", Region = "Юг" },
+                new { Id = 19, Description = "Изгрев", Region = "Юг" },
+                new { Id = 20, Description = "Изток", Region = "Изток" },
+                new { Id = 21, Description = "Илинден", Region = "Север" },
+                new { Id = 22, Description = "Илиянци", Region = "Север" },
+                new { Id = 23, Description = "Княжево", Region = "Юг" },
+                new { Id = 24, Description = "Красна поляна", Region = "Запад" },
+                new { Id = 25, Description = "Красно село", Region = "Юг" },
+                new { Id = 26, Description = "Крива река", Region = "Юг" },
+                new { Id = 27, Description = "Кръстова вада", Region = "Юг" },
+                new { Id = 28, Description = "Лагерът", Region = "Запад" },
+                new { Id = 29, Description = "Левски", Region = "Изток" },
+                new { Id = 30, Description = "Лозенец", Region = "Юг" },
+                new { Id = 31, Description = "Люлин", Region = "Запад" },
+                new { Id = 32, Description = "Малашевци", Region = "Изток" },
+                new { Id = 33, Description = "Малинова долина", Region = "Юг" },
+                new { Id = 34, Description = "Манастирски ливади", Region = "Юг" },
+                new { Id = 35, Description = "Младост", Region = "Юг" },
+                new { Id = 36, Description = "Модерно предградие", Region = "Север" },
+                new { Id = 37, Description = "Мусагеница", Region = "Юг" },
+                new { Id = 38, Description = "Надежда", Region = "Север" },
+                new { Id = 39, Description = "Обеля", Region = "Север" },
+                new { Id = 40, Description = "Оборище", Region = "Изток" },
+                new { Id = 41, Description = "Овча купел", Region = "Запад" },
+                new { Id = 42, Description = "Орландовци", Region = "Север" },
+                new { Id = 43, Description = "Павлово", Region = "Юг" },
+                new { Id = 44, Description = "Подуяне", Region = "Изток" },
+                new { Id = 45, Description = "Разсадника-Коньовица", Region = "Запад" },
+                new { Id = 46, Description = "Редута", Region = "Изток" },
+                new { Id = 47, Description = "Света Троица", Region = "Запад" },
+                new { Id = 48, Description = "Симеоново", Region = "Юг" },
+                new { Id = 49, Description = "Славия", Region = "Запад" },
+                new { Id = 50, Description = "Слатина", Region = "Изток" },
+                new { Id = 51, Description = "Стрелбище", Region = "Юг" },
+                new { Id = 52, Description = "Студентски град", Region = "Юг" },
+                new { Id = 53, Description = "Сухата река", Region = "Изток" },
+                new { Id = 54, Description = "Факултета", Region = "Запад" },
+                new { Id = 55, Description = "Хаджи Димитър", Region = "Изток" },
+                new { Id = 56, Description = "Хиподрумът", Region = "Запад" },
+                new { Id = 57, Description = "Хладилникът", Region = "Юг" },
+                new { Id = 58, Description = "Христо Ботев", Region = "Изток" },
+                new { Id = 59, Description = "Център", Region = "Централен" },
+                new { Id = 60, Description = "Яворов", Region = "Изток" });
 
             // Heating Type
             modelBuilder.Entity<Heating>()
             .HasData(
-            new { Description = "Без" },
-            new { Description = "ТЕЦ" },
-            new { Description = "Електричество" });
+            new { Id = 1, Description = "Без" },
+            new { Id = 2, Description = "ТЕЦ" },
+            new { Id = 3, Description = "Електричество" });
 
             // Garage Types
             modelBuilder.Entity<Garage>()
                .HasData(
-            new { Description = "Без" },
-            new { Description = "Включен в цената" },
-            new { Description = "С възможност" });
+            new { Id = 1, Description = "Без" },
+            new { Id = 2, Description = "Включен в цената" },
+            new { Id = 3, Description = "С възможност" });
 
             //Furnishment Types
             modelBuilder.Entity<Furnishment>()
                .HasData(
-            new { Description = "еобзаведен" },
-            new { Description = "Обзаведен" },
-            new { Description = "До ключ" });
+            new { Id = 1, Description = "Необзаведен" },
+            new { Id = 2, Description = "Обзаведен" },
+            new { Id = 3, Description = "До ключ" });
 
             //Finishing Types
             modelBuilder.Entity<Finish>()
               .HasData(
-            new { Description = "Акт 16" },
-            new { Description = "Акт 15" },
-            new { Description = "Акт 14" },
-            new { Description = "В Строеж" },
-            new { Description = "На Зелено" });
+            new { Id = 1, Description = "Акт 16" },
+            new { Id = 2, Description = "Акт 15" },
+            new { Id = 3, Description = "Акт 14" },
+            new { Id = 4, Description = "В Строеж" },
+            new { Id = 5, Description = "На Зелено" });
 
             //Building Types
             modelBuilder.Entity<BuildingType>()
               .HasData(
-            new { Description = "Тухла" },
-            new { Description = "ЕПК" },
-            new { Description = "Панел" });
+            new { Id = 1, Description = "Тухла" },
+            new { Id = 2, Description = "ЕПК" },
+            new { Id = 3, Description = "Панел" });
         }
     }
 }

@@ -5,33 +5,19 @@ namespace BuildingMarket.Properties.Domain.Entities
     public class Property
     {
         public int Id { get; set; }
-
         public required string Type { get; set; }
-
         public required int NumberOfRooms { get; set; }
-
         public required string District { get; set; }
-
         public required decimal Space { get; set; }
-
         public required int Floor { get; set; }
-
         public required int TotalFloorsInBuilding { get; set; }
-
-        public int BuildingTypeId { get; set; }
-        
-        public int FinishId { get; set; }
-        
-        public int FurnishmentId { get; set; }
-        
-        public int GarageId { get; set; }
-        
-        public int HeatingId { get; set; }
-
-        public int NeighboourhoodId { get; set; }
-
+        public required string BuildingType { get; set; }
+        public required string Finish { get; set; }
+        public required string Furnishment { get; set; }
+        public required string Garage { get; set; }
+        public required string Heating { get; set; }
+        public required string Neighbourhood { get; set; }
         public required string SellerId { get; set; }
-
         public string BrokerId { get; set; }
     }
 }

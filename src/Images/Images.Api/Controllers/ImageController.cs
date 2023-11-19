@@ -1,11 +1,15 @@
 ﻿using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Images.Application.Extensions;
 using BuildingMarket.Images.Application.Features.Image.Commands.Add;
 using BuildingMarket.Images.Application.Features.Image.Queries.GetAll;
 using BuildingMarket.Images.Application.Features.Image.Commands.Delete;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using BuildingMarket.Images.Application.Contracts;
+using AutoMapper;
+using BuildingMarket.Images.Application.Models;
+using BuildingMarket.Images.Domain.Entities;
 
 namespace BuildingMarket.Images.Api.Controllers
 {
@@ -14,10 +18,14 @@ namespace BuildingMarket.Images.Api.Controllers
     [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker},{UserRoles.Admin}")]
     public class ImageController(
         IMediator mediator,
-        ILogger<ImageController> logger) : ControllerBase
+        ILogger<ImageController> logger,
+        IMapper mapper,
+        IPropertiesService ownerValidatorService) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<ImageController> _logger = logger;
+        private readonly IMapper _mapper = mapper;
+        private readonly IPropertiesService _ownerValidatorService = ownerValidatorService;
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -34,15 +42,26 @@ namespace BuildingMarket.Images.Api.Controllers
                 return BadRequest("File size should be up to 32MB!");
             }
 
+            if (!await _ownerValidatorService.PropertyExists(propertyId))
+            {
+                return BadRequest($"Property with id: {propertyId} does not exist!");
+            }
+
+            var userId = User.Claims
+                .First(x => x.Type == ClaimTypes.Sid).Value;
+
+            if (!await _ownerValidatorService.IsPropertyOwner(propertyId, userId))
+            {
+                _logger.LogWarning("User with id: {userId} tried to add image to property with Id: {propertyId}", userId, propertyId);
+
+                return Unauthorized("You do not have access to this property!");
+            }
+
             _logger.LogInformation("Attempting to add new image.");
 
-            var imageUrl = await _mediator.Send(new AddCommand
+            var imageUrl = await _mediator.Send(new AddImageCommand
             {
-                Image = new()
-                {
-                    FormFile = image,
-                    FileExtension = Path.GetExtension(image.FileName)
-                },
+                FormFile = image,
                 PropertyId = propertyId
             });
 
@@ -62,12 +81,15 @@ namespace BuildingMarket.Images.Api.Controllers
         public async Task<IActionResult> GetAllImages([FromQuery] int propertyId)
         {
             _logger.LogInformation("Getting all images for property with Id {propertyId}", propertyId);
-            var imageUrls = await _mediator.Send(new GetAllCommand
+
+            var images = await _mediator.Send(new GetAllImagesCommand
             {
                 PropertyId = propertyId
             });
 
-            return Ok(imageUrls);
+            var result = _mapper.Map<IEnumerable<ImagesResult>>(images);
+
+            return Ok(result);
         }
 
         [HttpDelete]
@@ -79,9 +101,9 @@ namespace BuildingMarket.Images.Api.Controllers
         {
             _logger.LogInformation("Deleting image with id: {id}", id);
 
-            await _mediator.Send(new DeleteCommand
+            await _mediator.Send(new DeleteImageCommand
             {
-                DeleteURL = id.ToString(),
+                ImageId = id,
             });
 
             return NoContent();

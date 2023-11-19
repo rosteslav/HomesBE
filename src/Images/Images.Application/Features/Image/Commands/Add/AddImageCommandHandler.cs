@@ -4,20 +4,23 @@ using MediatR;
 
 namespace BuildingMarket.Images.Application.Features.Image.Commands.Add
 {
-    public class AddCommandHandler(
+    public class AddImageCommandHandler(
         IImagesRepository repository,
         IImgbbService imgbbService)
-        : IRequestHandler<AddCommand, string>
+        : IRequestHandler<AddImageCommand, string>
     {
         private readonly IImagesRepository _repository = repository;
         private readonly IImgbbService _imgbbService = imgbbService;
 
         public async Task<string> Handle(
-            AddCommand request,
+            AddImageCommand request,
             CancellationToken cancellationToken)
         {
+            string ext = Path.GetExtension(request.FormFile.FileName);
+            var imageName = $"{request.PropertyId}-{Guid.NewGuid()}{ext}";
+
             ImageData imageData = await _imgbbService
-                .UploadImage(request.Image);
+                .UploadImage(request.FormFile, imageName);
 
             if (imageData is null)
             {
@@ -27,7 +30,7 @@ namespace BuildingMarket.Images.Application.Features.Image.Commands.Add
             await _repository.Add(new()
             {
                 PropertyId = request.PropertyId,
-                ImageName = $"{request.PropertyId}-{Guid.NewGuid()}{request.Image.FileExtension}",
+                ImageName = imageName,
                 ImageURL = imageData.DisplayUrl,
                 DeleteURL = imageData.DeleteUrl
             });

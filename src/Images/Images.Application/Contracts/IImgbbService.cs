@@ -1,10 +1,10 @@
 ﻿using BuildingMarket.Images.Application.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BuildingMarket.Images.Application.Contracts
 {
     public interface IImgbbService
     {
-        Task<ImageData> UploadImage(ImageDTO image);
-        Task DeleteImage(string deleteUrl);
+        Task<ImageData> UploadImage(IFormFile image, string fileName);
     }
 }

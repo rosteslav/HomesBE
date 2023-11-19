@@ -18,6 +18,18 @@ namespace BuildingMarket.Properties.Domain.Entities
 
         public required int TotalFloorsInBuilding { get; set; }
 
+        public int BuildingTypeId { get; set; }
+        
+        public int FinishId { get; set; }
+        
+        public int FurnishmentId { get; set; }
+        
+        public int GarageId { get; set; }
+        
+        public int HeatingId { get; set; }
+
+        public int NeighboourhoodId { get; set; }
+
         public required string SellerId { get; set; }
 
         public string BrokerId { get; set; }

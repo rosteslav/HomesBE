@@ -1,5 +1,4 @@
 using BuildingMarket.Properties.Domain.Entities;
-using BuildingMarket.Properties.Domain.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuildingMarket.Properties.Infrastructure.Persistence
@@ -17,7 +16,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
         public virtual DbSet<Garage> Garages { get; set; }
 
         public virtual DbSet<Heating> Heatings { get; set; }
-        
+
         public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -52,8 +51,23 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.Property(e => e.Floor)
                     .HasColumnName("floor");
 
-                entity.Property(e => e.TotalFloorsInBuilding)
-                    .HasColumnName("total_floors_in_building");
+                entity.Property(e => e.BuildingTypeId)
+                    .HasColumnName("building_type_id");
+
+                entity.Property(e => e.FinishId)
+                    .HasColumnName("finish_id");
+
+                entity.Property(e => e.FurnishmentId)
+                    .HasColumnName("furnishment_id");
+
+                entity.Property(e => e.GarageId)
+                    .HasColumnName("garage_id");
+
+                entity.Property(e => e.HeatingId)
+                    .HasColumnName("heating_id");
+
+                entity.Property(e => e.NeighboourhoodId)
+                    .HasColumnName("neighboourhood_id");
 
                 entity.Property(e => e.SellerId)
                     .HasColumnName("seller_id");
@@ -70,12 +84,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.HasKey(e => e.Id)
                 .HasName("id");
 
-                entity.Property(e => e.Name)
-                    .HasColumnName("name")
-                    .HasColumnType("character varying")
-                    .HasMaxLength(255);
-
-                entity.Property(e => e.Region)
+                entity.Property(e => e.Description)
                 .HasColumnName("region")
                 .HasColumnType("character varying")
                 .HasMaxLength(255);
@@ -88,7 +97,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.HasKey(e => e.Id)
                 .HasName("id");
 
-                entity.Property(e => e.Type)
+                entity.Property(e => e.Description)
                 .HasColumnName("heating_type")
                 .HasColumnType("character varying")
                 .HasMaxLength(255);
@@ -101,7 +110,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.HasKey(e => e.Id)
                 .HasName("id");
 
-                entity.Property(e => e.Type)
+                entity.Property(e => e.Description)
                 .HasColumnName("garage_type")
                 .HasColumnType("character varying")
                 .HasMaxLength(255);
@@ -114,7 +123,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.HasKey(e => e.Id)
                 .HasName("id");
 
-                entity.Property(e => e.Type)
+                entity.Property(e => e.Description)
                 .HasColumnName("furnishment_type")
                 .HasColumnType("character varying")
                 .HasMaxLength(255);
@@ -127,7 +136,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.HasKey(e => e.Id)
                 .HasName("id");
 
-                entity.Property(e => e.Type)
+                entity.Property(e => e.Description)
                 .HasColumnName("finish_type")
                 .HasColumnType("character varying")
                 .HasMaxLength(255);
@@ -140,531 +149,531 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.HasKey(e => e.Id)
                 .HasName("id");
 
-                entity.Property(e => e.Type)
+                entity.Property(e => e.Description)
                 .HasColumnName("building_type")
                 .HasColumnType("character varying")
                 .HasMaxLength(255);
             });
 
             modelBuilder.Entity<Neighborhood>()
+             .HasData(new Neighborhood()
+             {
+                 Description = "Банишора",
+                 Region = "Север"
+             });
+
+            modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Банишора",
-                Region = Region.North
+                Description = "Белите брези",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Белите брези",
-                Region = Region.South
+                Description = "Бенковски",
+                Region = "Север"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Бенковски",
-                Region = Region.North
+                Description = "Борово",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Борово",
-                Region = Region.South
+                Description = "Бояна",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Бояна",
-                Region = Region.South
+                Description = "Бъкстон",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Бъкстон",
-                Region = Region.South
+                Description = "Витоша",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Витоша",
-                Region = Region.South
+                Description = "Гевгелийски квартал",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Гевгелийски квартал",
-                Region = Region.West
-
+                Description = "Гео Милев",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Гео Милев",
-                Region = Region.East
+                Description = "Гоце Делчев",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Гоце Делчев",
-                Region = Region.South
+                Description = "Дианабад",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Дианабад",
-                Region = Region.South
+                Description = "Драгалевци",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Драгалевци",
-                Region = Region.South
+                Description = "Дружба",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Дружба",
-                Region = Region.East
+                Description = "Дървеница",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Дървеница",
-                Region = Region.South
+                Description = "Западен парк",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Западен парк",
-                Region = Region.West
+                Description = "Захарна фабрика",
+                Region = "Север"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Захарна фабрика",
-                Region = Region.North
+                Description = "Иван Вазов",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Иван Вазов",
-                Region = Region.South
+                Description = "Изгрев",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Изгрев",
-                Region = Region.South
+                Description = "Изток",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Изток",
-                Region = Region.East
+                Description = "Илинден",
+                Region = "Север"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Илинден",
-                Region = Region.North
+                Description = "Илиянци",
+                Region = "Север"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Илиянци",
-                Region = Region.North
+                Description = "Княжево",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Княжево",
-                Region = Region.South
+                Description = "Красна поляна",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Красна поляна",
-                Region = Region.West
+                Description = "Красно село",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Красно село",
-                Region = Region.South
+                Description = "Крива река",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Крива река",
-                Region = Region.South
+                Description = "Кръстова вада",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Кръстова вада",
-                Region = Region.South
+                Description = "Лагерът",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Лагерът",
-                Region = Region.West
+                Description = "Левски",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Левски",
-                Region = Region.East
+                Description = "Лозенец",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Лозенец",
-                Region = Region.South
+                Description = "Люлин",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Люлин",
-                Region = Region.West
+                Description = "Малашевци",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Малашевци",
-                Region = Region.East
+                Description = "Малинова долина",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Малинова долина",
-                Region = Region.South
+                Description = "Манастирски ливади",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Манастирски ливади",
-                Region = Region.South
+                Description = "Младост",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Младост",
-                Region = Region.South
+                Description = "Модерно предградие",
+                Region = "Север"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Модерно предградие",
-                Region = Region.North
+                Description = "Мусагеница",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Мусагеница",
-                Region = Region.South
+                Description = "Надежда",
+                Region = "Север"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Надежда",
-                Region = Region.North
+                Description = "Обеля",
+                Region = "Север"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Обеля",
-                Region = Region.North
+                Description = "Оборище",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Оборище",
-                Region = Region.East
+                Description = "Овча купел",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Овча купел",
-                Region = Region.West
+                Description = "Орландовци",
+                Region = "Север"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Орландовци",
-                Region = Region.North
+                Description = "Павлово",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Павлово",
-                Region = Region.South
+                Description = "Подуяне",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Подуяне",
-                Region = Region.East
+                Description = "Разсадника-Коньовица",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Разсадника-Коньовица",
-                Region = Region.West
+                Description = "Редута",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Редута",
-                Region = Region.East
+                Description = "Света Троица",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Света Троица",
-                Region = Region.West
+                Description = "Симеоново",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Симеоново",
-                Region = Region.South
+                Description = "Славия",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Славия",
-                Region = Region.West
+                Description = "Слатина",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Слатина",
-                Region = Region.East
+                Description = "Стрелбище",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Стрелбище",
-                Region = Region.South
+                Description = "Студентски град",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Студентски град",
-                Region = Region.South
+                Description = "Сухата река",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Сухата река",
-                Region = Region.East
+                Description = "Факултета",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Факултета",
-                Region = Region.West
+                Description = "Хаджи Димитър",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Хаджи Димитър",
-                Region = Region.East
+                Description = "Хиподрумът",
+                Region = "Запад"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Хиподрумът",
-                Region = Region.South
+                Description = "Хладилникът",
+                Region = "Юг"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Хладилникът",
-                Region = Region.South
+                Description = "Христо Ботев",
+                Region = "Изток"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Христо Ботев",
-                Region = Region.East
+                Description = "Център",
+                Region = "Централен"
             });
 
             modelBuilder.Entity<Neighborhood>()
             .HasData(new Neighborhood()
             {
-                Name = "Център",
-                Region = Region.Central
-            });
+                Description = "Яворов",
+                Region = "Изток"
 
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Name = "Яворов",
-                Region = Region.East
             });
 
             // Heating Type
             modelBuilder.Entity<Heating>()
             .HasData(new Heating()
             {
-                Type = HeatingType.None
+                Description = "Без"
             });
 
             modelBuilder.Entity<Heating>()
             .HasData(new Heating()
             {
-                Type = HeatingType.TPP
+                Description = "ТЕЦ"
             });
 
             modelBuilder.Entity<Heating>()
             .HasData(new Heating()
             {
-                Type = HeatingType.Electrical
+                Description = "Електричество"
             });
 
             //Garage Types
             modelBuilder.Entity<Garage>()
                .HasData(new Garage()
                {
-                   Type = GarageType.None
+                   Description = "Без"
                });
 
             modelBuilder.Entity<Garage>()
                .HasData(new Garage()
                {
-                   Type = GarageType.IncludedInPrice
+                   Description = "Включен в цената"
                });
 
             modelBuilder.Entity<Garage>()
                .HasData(new Garage()
                {
-                   Type = GarageType.WithPossibility
+                   Description = "С възможност"
                });
 
             //Furnishment Types
             modelBuilder.Entity<Furnishment>()
                .HasData(new Furnishment()
                {
-                   Type = FurnishmentType.Unfurnished
+                   Description = "еобзаведен"
                });
 
             modelBuilder.Entity<Furnishment>()
                .HasData(new Furnishment()
                {
-                   Type = FurnishmentType.Furnished
+                   Description = "Обзаведен"
                });
 
             modelBuilder.Entity<Furnishment>()
                .HasData(new Furnishment()
                {
-                   Type = FurnishmentType.Turnkey
+                   Description = "До ключ"
                });
 
             //Finishing Types
             modelBuilder.Entity<Finish>()
               .HasData(new Finish()
               {
-                  Type = FinishType.Act16
+                  Description = "Акт 16"
               });
 
             modelBuilder.Entity<Finish>()
               .HasData(new Finish()
               {
-                  Type = FinishType.Act15
+                  Description = "Акт 15"
               });
 
             modelBuilder.Entity<Finish>()
               .HasData(new Finish()
               {
-                  Type = FinishType.Act14
+                  Description = "Акт 14"
               });
 
             modelBuilder.Entity<Finish>()
               .HasData(new Finish()
               {
-                  Type = FinishType.BeingBuilt
+                  Description = "В Строеж"
               });
 
             modelBuilder.Entity<Finish>()
               .HasData(new Finish()
               {
-                  Type = FinishType.InPlanning
+                  Description = "На Зелено"
               });
 
             //Building Types
             modelBuilder.Entity<BuildingType>()
               .HasData(new BuildingType()
               {
-                  Type = BuildingMaterial.Brick
+                  Description = "Тухла"
               });
 
             modelBuilder.Entity<BuildingType>()
               .HasData(new BuildingType()
               {
-                  Type = BuildingMaterial.ReinforcedConcrete
+                  Description = "ЕПК"
               });
 
             modelBuilder.Entity<BuildingType>()
               .HasData(new BuildingType()
               {
-                  Type = BuildingMaterial.Panel
+                  Description = "Панел"
               });
         }
     }

@@ -1,13 +1,7 @@
-﻿using BuildingMarket.Properties.Domain.Entities.Enums;
-
-namespace BuildingMarket.Properties.Domain.Entities
+﻿namespace BuildingMarket.Properties.Domain.Entities
 {
-    public class Neighborhood
+    public class Neighborhood : PropertyInfo
     {
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public Region Region { get; set; }
+        public string Region { get; set; }
     }
 }

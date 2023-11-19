@@ -14,7 +14,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5221",
+      "applicationUrl": "http://localhost:5222",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Dev",
         "ConnectionStrings__PostgresConnectionString": "Host=isabelle.db.elephantsql.com;Port=5432;Database=vvizkylm;Username=vvizkylm;Password=7mXXhXO5jLwqLNrCFx1Vmzt97nLcpabv;ApplicationName=BuildingMarket;",
@@ -29,7 +29,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5221",
+      "applicationUrl": "http://localhost:5222",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Test"
       }
@@ -39,7 +39,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5221",
+      "applicationUrl": "http://localhost:5222",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Prod"
       }

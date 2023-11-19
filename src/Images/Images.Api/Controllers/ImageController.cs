@@ -25,7 +25,7 @@ namespace BuildingMarket.Images.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddImage(int propertyId, [FromBody] IFormFile image)
+        public async Task<IActionResult> AddImage([FromQuery] int propertyId, IFormFile image)
         {
             var imgSize = image.Length / 1024 / 1024;
 
@@ -40,7 +40,6 @@ namespace BuildingMarket.Images.Api.Controllers
             {
                 Image = new()
                 {
-                    FileName = image.FileName,
                     FormFile = image,
                     FileExtension = Path.GetExtension(image.FileName)
                 },
@@ -75,13 +74,14 @@ namespace BuildingMarket.Images.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> DeleteImage(string deleteURL)
+        [Route("/{id}")]
+        public async Task<IActionResult> DeleteImage(int id)
         {
-            _logger.LogInformation("Deleting image with deleteURL {deleteURL}", deleteURL);
+            _logger.LogInformation("Deleting image with id: {id}", id);
 
             await _mediator.Send(new DeleteCommand
             {
-                DeleteURL = deleteURL
+                DeleteURL = id.ToString(),
             });
 
             return NoContent();

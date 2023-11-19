@@ -40,7 +40,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         {
             try
             {
-                _logger.LogInformation("Attempting to upload image to imgbb with filename: {FileName}", image.FileName);
+                _logger.LogInformation("Attempting to upload image to imgbb with filename: {FileName}", image.FormFile.Name);
 
                 var memoryStream = await FormFileExtensions
                     .ToMemoryStream(image.FormFile);
@@ -54,7 +54,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
                 {
                     { new StringContent(_configuration.GetSection("Imgbb").Value), "key" },
                     { new StringContent(base64Image), "image" },
-                    { new StringContent(image.FileName), "name" }
+                    { new StringContent(image.FormFile.Name), "name" }
                 };
 
                 var response = await client
@@ -68,7 +68,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message} Image upload with filename: {FileName} was not successful!", ex.Message, image.FileName);
+                _logger.LogError("{Message} Image upload with filename: {FileName} was not successful!", ex.Message, image.FormFile.Name);
             }
 
             return null;

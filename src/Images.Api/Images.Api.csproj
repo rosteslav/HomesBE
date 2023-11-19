@@ -17,8 +17,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Common\Common.csproj" />
 		<ProjectReference Include="..\Images.Infrastructure\Images.Infrastructure.csproj" />
-		<ProjectReference Include="..\src\Common\Common.csproj" />
 	</ItemGroup>
 
 </Project>

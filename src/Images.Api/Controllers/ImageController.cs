@@ -25,7 +25,7 @@ namespace BuildingMarket.Images.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddImage(int propertyId, IFormFile image)
+        public async Task<IActionResult> AddImage(int propertyId, [FromBody] IFormFile image)
         {
             var imgSize = image.Length / 1024 / 1024;
 
@@ -60,7 +60,7 @@ namespace BuildingMarket.Images.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAllImages(int propertyId)
+        public async Task<IActionResult> GetAllImages([FromQuery] int propertyId)
         {
             _logger.LogInformation("Getting all images for property with Id {propertyId}", propertyId);
             var imageUrls = await _mediator.Send(new GetAllCommand

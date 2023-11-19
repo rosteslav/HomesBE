@@ -1,5 +1,6 @@
 using AutoMapper;
 using BuildingMarket.Common.Models.Security;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
@@ -9,12 +10,13 @@ using BuildingMarket.Properties.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace BuildingMarket.Properties.Api.Controllers
 {
     [ApiController]
-    [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
+    [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker + "," + UserRoles.Admin)]
     [Route("[controller]")]
     public class PropertiesController(IMediator mediator, ILogger<PropertiesController> logger, IMapper mapper) : ControllerBase
     {
@@ -37,6 +39,21 @@ namespace BuildingMarket.Properties.Api.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        [Route("/Admins/Properties")]
+        [Authorize(Roles = UserRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> AddMultiple([Required][FromBody] IEnumerable<PropertyModel> properties)
+        {
+            var adminId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            _logger.LogInformation($"Attempt to add a multiple properties from the admin with ID: {adminId}");
+            await _mediator.Send(new AddMultiplePropertiesCommand { Properties = properties });
+            return NoContent();
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<PropertyModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get()
@@ -45,19 +62,19 @@ namespace BuildingMarket.Properties.Api.Controllers
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
             if (User.IsInRole(UserRoles.Seller))
             {
-                properties =  await _mediator.Send(new GetBySellerQuery
+                properties = await _mediator.Send(new GetBySellerQuery
                 {
                     SellerId = userId
                 });
             }
-            else if(User.IsInRole(UserRoles.Broker))
+            else if (User.IsInRole(UserRoles.Broker))
             {
                 properties = await _mediator.Send(new GetByBrokerQuery
                 {
                     BrokerId = userId
                 });
             }
-            
+
             var result = _mapper.Map<IEnumerable<PropertyModel>>(properties);
             return Ok(properties);
         }
@@ -73,4 +90,4 @@ namespace BuildingMarket.Properties.Api.Controllers
             return Ok(properties);
         }
     }
-} 
+}

@@ -26,6 +26,23 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
         }
 
+        public async Task AddMultiple(IEnumerable<Property> properties)
+        {
+            _logger.LogInformation($"DB add multiple properties");
+
+            try
+            {
+                await _context.Properties.AddRangeAsync(properties);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"DB the properties have been successfully added");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while adding multiple properties");
+            }
+        }
+
         public async Task<IEnumerable<Property>> Get()
         {
             _logger.LogInformation("DB get all properties");

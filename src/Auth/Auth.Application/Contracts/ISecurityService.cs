@@ -8,6 +8,8 @@ namespace BuildingMarket.Auth.Application.Contracts
     {
         Task<IEnumerable<Claim>> GetLoginClaims(string username, string password);
 
+        Task<UserRolesModel> GetUserRoles();
+
         Task<RegistrationResult> Registration(RegisterModel model, IEnumerable<string> roles);
     }
 }

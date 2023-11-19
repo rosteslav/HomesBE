@@ -156,525 +156,103 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
             });
 
             modelBuilder.Entity<Neighborhood>()
-             .HasData(new Neighborhood()
-             {
-                 Description = "Банишора",
-                 Region = "Север"
-             });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Белите брези",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Бенковски",
-                Region = "Север"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Борово",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Бояна",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Бъкстон",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Витоша",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Гевгелийски квартал",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Гео Милев",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Гоце Делчев",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Дианабад",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Драгалевци",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Дружба",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Дървеница",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Западен парк",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Захарна фабрика",
-                Region = "Север"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Иван Вазов",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Изгрев",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Изток",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Илинден",
-                Region = "Север"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Илиянци",
-                Region = "Север"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Княжево",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Красна поляна",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Красно село",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Крива река",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Кръстова вада",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Лагерът",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Левски",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Лозенец",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Люлин",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Малашевци",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Малинова долина",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Манастирски ливади",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Младост",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Модерно предградие",
-                Region = "Север"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Мусагеница",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Надежда",
-                Region = "Север"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Обеля",
-                Region = "Север"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Оборище",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Овча купел",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Орландовци",
-                Region = "Север"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Павлово",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Подуяне",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Разсадника-Коньовица",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Редута",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Света Троица",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Симеоново",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Славия",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Слатина",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Стрелбище",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Студентски град",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Сухата река",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Факултета",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Хаджи Димитър",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Хиподрумът",
-                Region = "Запад"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Хладилникът",
-                Region = "Юг"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Христо Ботев",
-                Region = "Изток"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Център",
-                Region = "Централен"
-            });
-
-            modelBuilder.Entity<Neighborhood>()
-            .HasData(new Neighborhood()
-            {
-                Description = "Яворов",
-                Region = "Изток"
-
-            });
+             .HasData(
+                new { Description = "Банишора", Region = "Север" },
+                new { Description = "Белите брези", Region = "Юг" },
+                new { Description = "Бенковски", Region = "Север" },
+                new { Description = "Борово", Region = "Юг" },
+                new { Description = "Бояна", Region = "Юг" },
+                new { Description = "Бъкстон", Region = "Юг" },
+                new { Description = "Витоша", Region = "Юг" },
+                new { Description = "Гевгелийски квартал", Region = "Запад" },
+                new { Description = "Гео Милев", Region = "Изток" },
+                new { Description = "Гоце Делчев", Region = "Юг" },
+                new { Description = "Дианабад", Region = "Юг" },
+                new { Description = "Драгалевци", Region = "Юг" },
+                new { Description = "Дружба", Region = "Изток" },
+                new { Description = "Дървеница", Region = "Юг" },
+                new { Description = "Западен парк", Region = "Запад" },
+                new { Description = "Захарна фабрика", Region = "Север" },
+                new { Description = "Иван Вазов", Region = "Юг" },
+                new { Description = "Изгрев", Region = "Юг" },
+                new { Description = "Изток", Region = "Изток" },
+                new { Description = "Илинден", Region = "Север" },
+                new { Description = "Илиянци", Region = "Север" },
+                new { Description = "Княжево", Region = "Юг" },
+                new { Description = "Красна поляна", Region = "Запад" },
+                new { Description = "Красно село", Region = "Юг" },
+                new { Description = "Крива река", Region = "Юг" },
+                new { Description = "Кръстова вада", Region = "Юг" },
+                new { Description = "Лагерът", Region = "Запад" },
+                new { Description = "Левски", Region = "Изток" },
+                new { Description = "Лозенец", Region = "Юг" },
+                new { Description = "Люлин", Region = "Запад" },
+                new { Description = "Малашевци", Region = "Изток" },
+                new { Description = "Малинова долина", Region = "Юг" },
+                new { Description = "Манастирски ливади", Region = "Юг" },
+                new { Description = "Младост", Region = "Юг" },
+                new { Description = "Модерно предградие", Region = "Север" },
+                new { Description = "Мусагеница", Region = "Юг" },
+                new { Description = "Надежда", Region = "Север" },
+                new { Description = "Обеля", Region = "Север" },
+                new { Description = "Оборище", Region = "Изток" },
+                new { Description = "Овча купел", Region = "Запад" },
+                new { Description = "Орландовци", Region = "Север" },
+                new { Description = "Павлово", Region = "Юг" },
+                new { Description = "Подуяне", Region = "Изток" },
+                new { Description = "Разсадника-Коньовица", Region = "Запад" },
+                new { Description = "Редута", Region = "Изток" },
+                new { Description = "Света Троица", Region = "Запад" },
+                new { Description = "Симеоново", Region = "Юг" },
+                new { Description = "Славия", Region = "Запад" },
+                new { Description = "Слатина", Region = "Изток" },
+                new { Description = "Стрелбище", Region = "Юг" },
+                new { Description = "Студентски град", Region = "Юг" },
+                new { Description = "Сухата река", Region = "Изток" },
+                new { Description = "Факултета", Region = "Запад" },
+                new { Description = "Хаджи Димитър", Region = "Изток" },
+                new { Description = "Хиподрумът", Region = "Запад" },
+                new { Description = "Хладилникът", Region = "Юг" },
+                new { Description = "Христо Ботев", Region = "Изток" },
+                new { Description = "Център", Region = "Централен" },
+                new { Description = "Яворов", Region = "Изток" });
 
             // Heating Type
             modelBuilder.Entity<Heating>()
-            .HasData(new Heating()
-            {
-                Description = "Без"
-            });
+            .HasData(
+            new { Description = "Без" },
+            new { Description = "ТЕЦ" },
+            new { Description = "Електричество" });
 
-            modelBuilder.Entity<Heating>()
-            .HasData(new Heating()
-            {
-                Description = "ТЕЦ"
-            });
-
-            modelBuilder.Entity<Heating>()
-            .HasData(new Heating()
-            {
-                Description = "Електричество"
-            });
-
-            //Garage Types
+            // Garage Types
             modelBuilder.Entity<Garage>()
-               .HasData(new Garage()
-               {
-                   Description = "Без"
-               });
-
-            modelBuilder.Entity<Garage>()
-               .HasData(new Garage()
-               {
-                   Description = "Включен в цената"
-               });
-
-            modelBuilder.Entity<Garage>()
-               .HasData(new Garage()
-               {
-                   Description = "С възможност"
-               });
+               .HasData(
+            new { Description = "Без" },
+            new { Description = "Включен в цената" },
+            new { Description = "С възможност" });
 
             //Furnishment Types
             modelBuilder.Entity<Furnishment>()
-               .HasData(new Furnishment()
-               {
-                   Description = "еобзаведен"
-               });
-
-            modelBuilder.Entity<Furnishment>()
-               .HasData(new Furnishment()
-               {
-                   Description = "Обзаведен"
-               });
-
-            modelBuilder.Entity<Furnishment>()
-               .HasData(new Furnishment()
-               {
-                   Description = "До ключ"
-               });
+               .HasData(
+            new { Description = "еобзаведен" },
+            new { Description = "Обзаведен" },
+            new { Description = "До ключ" });
 
             //Finishing Types
             modelBuilder.Entity<Finish>()
-              .HasData(new Finish()
-              {
-                  Description = "Акт 16"
-              });
-
-            modelBuilder.Entity<Finish>()
-              .HasData(new Finish()
-              {
-                  Description = "Акт 15"
-              });
-
-            modelBuilder.Entity<Finish>()
-              .HasData(new Finish()
-              {
-                  Description = "Акт 14"
-              });
-
-            modelBuilder.Entity<Finish>()
-              .HasData(new Finish()
-              {
-                  Description = "В Строеж"
-              });
-
-            modelBuilder.Entity<Finish>()
-              .HasData(new Finish()
-              {
-                  Description = "На Зелено"
-              });
+              .HasData(
+            new { Description = "Акт 16" },
+            new { Description = "Акт 15" },
+            new { Description = "Акт 14" },
+            new { Description = "В Строеж" },
+            new { Description = "На Зелено" });
 
             //Building Types
             modelBuilder.Entity<BuildingType>()
-              .HasData(new BuildingType()
-              {
-                  Description = "Тухла"
-              });
-
-            modelBuilder.Entity<BuildingType>()
-              .HasData(new BuildingType()
-              {
-                  Description = "ЕПК"
-              });
-
-            modelBuilder.Entity<BuildingType>()
-              .HasData(new BuildingType()
-              {
-                  Description = "Панел"
-              });
+              .HasData(
+            new { Description = "Тухла" },
+            new { Description = "ЕПК" },
+            new { Description = "Панел" });
         }
     }
 }

@@ -1,6 +1,5 @@
 using AutoMapper;
 using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Properties.Application.Features.Properties.Commands.AddMultipleProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
@@ -10,7 +9,6 @@ using BuildingMarket.Properties.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace BuildingMarket.Properties.Api.Controllers
@@ -36,21 +34,6 @@ namespace BuildingMarket.Properties.Api.Controllers
                 Model = model
             });
 
-            return NoContent();
-        }
-
-        [HttpPost]
-        [Route("/Admins/Properties")]
-        [Authorize(Roles = UserRoles.Admin)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> AddMultiple([Required][FromBody] IEnumerable<PropertyModel> properties)
-        {
-            var adminId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
-            _logger.LogInformation($"Attempt to add a multiple properties from the admin with ID: {adminId}");
-            await _mediator.Send(new AddMultiplePropertiesCommand { Properties = properties });
             return NoContent();
         }
 

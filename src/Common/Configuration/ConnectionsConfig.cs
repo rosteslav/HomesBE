@@ -1,4 +1,4 @@
-﻿namespace BuildingMarket.Common.Configuration
+namespace BuildingMarket.Common.Configuration
 {
     public class ConnectionsConfig
     {

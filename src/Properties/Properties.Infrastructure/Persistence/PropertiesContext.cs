@@ -1,7 +1,7 @@
 using BuildingMarket.Properties.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BuildingMarket.Properties.Infrasructure.Persistence
+namespace BuildingMarket.Properties.Infrastructure.Persistence
 {
     public class PropertiesDbContext(DbContextOptions<PropertiesDbContext> options) : DbContext(options)
     {

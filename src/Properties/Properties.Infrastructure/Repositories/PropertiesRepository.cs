@@ -1,10 +1,10 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Domain.Entities;
-using BuildingMarket.Properties.Infrasructure.Persistence;
+using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace BuildingMarket.Properties.Infrasructure.Repositories
+namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
     public class PropertiesRepository(PropertiesDbContext context, ILogger<PropertiesRepository> logger) : IPropertiesRepository
     {

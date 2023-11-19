@@ -1,4 +1,4 @@
-﻿namespace BuildingMarket.Properties.Infrasructure.Persistence.Configuration
+﻿namespace BuildingMarket.Properties.Infrastructure.Persistence.Configuration
 {
     public class ConnectionsConfig
     {

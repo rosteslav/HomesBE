@@ -1,12 +1,12 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
-using BuildingMarket.Properties.Infrasructure.Persistence;
-using BuildingMarket.Properties.Infrasructure.Persistence.Configuration;
-using BuildingMarket.Properties.Infrasructure.Repositories;
+using BuildingMarket.Properties.Infrastructure.Persistence;
+using BuildingMarket.Properties.Infrastructure.Persistence.Configuration;
+using BuildingMarket.Properties.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BuildingMarket.Properties.Infrasructure
+namespace BuildingMarket.Properties.Infrastructure
 {
     public static class InfrastructureServiceRegistration
     {

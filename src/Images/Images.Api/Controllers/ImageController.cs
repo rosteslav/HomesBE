@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Images.Application.Contracts;
 using BuildingMarket.Images.Application.Features.Image.Commands.Add;
 using BuildingMarket.Images.Application.Features.Image.Commands.Delete;
 using BuildingMarket.Images.Application.Features.Image.Queries.GetAll;
+using BuildingMarket.Images.Application.Features.Property.Queries.IsPropertyOwner;
+using BuildingMarket.Images.Application.Features.Property.Queries.PropertyExists;
 using BuildingMarket.Images.Application.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -18,13 +19,11 @@ namespace BuildingMarket.Images.Api.Controllers
     public class ImageController(
         IMediator mediator,
         ILogger<ImageController> logger,
-        IMapper mapper,
-        IPropertiesService ownerValidatorService) : ControllerBase
+        IMapper mapper) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<ImageController> _logger = logger;
         private readonly IMapper _mapper = mapper;
-        private readonly IPropertiesService _ownerValidatorService = ownerValidatorService;
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -44,8 +43,7 @@ namespace BuildingMarket.Images.Api.Controllers
             var userId = User.Claims
                 .First(x => x.Type == ClaimTypes.Sid).Value;
 
-            if (!await _ownerValidatorService.PropertyExists(propertyId) ||
-                !await _ownerValidatorService.IsPropertyOwner(propertyId, userId))
+            if (await IsValidRequest(propertyId, userId))
             {
                 _logger.LogError("Invalid request for property with Id: {propertyId}!", propertyId);
 
@@ -95,6 +93,8 @@ namespace BuildingMarket.Images.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteImage([FromRoute] int id)
         {
+            // TODO: Is owner of property with image id {id}
+
             _logger.LogInformation("Deleting image with id: {id}", id);
 
             await _mediator.Send(new DeleteImageCommand
@@ -103,6 +103,22 @@ namespace BuildingMarket.Images.Api.Controllers
             });
 
             return NoContent();
+        }
+
+        private async Task<bool> IsValidRequest(int propertyId, string userId)
+        {
+            bool propertyExists = await _mediator.Send(new PropertyExistsQuery
+            {
+                PropertyId = propertyId
+            });
+
+            bool isPropertyOwner = await _mediator.Send(new IsPropertyOwnerQuery
+            {
+                PropertyId = propertyId,
+                UserId = userId
+            });
+
+            return !propertyExists || !isPropertyOwner;
         }
     }
 }

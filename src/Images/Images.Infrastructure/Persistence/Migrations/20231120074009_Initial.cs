@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-#nullable disable
-
-namespace BuildingMarket.Images.Infrastructure.Migrations
+namespace BuildingMarket.Images.Infrastructure.Persistence.Migrations
 {
     public partial class Initial : Migration
     {
@@ -20,9 +18,7 @@ namespace BuildingMarket.Images.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     property_id = table.Column<int>(type: "integer", nullable: false),
-                    image_name = table.Column<string>(type: "character varying", maxLength: 255, nullable: false),
-                    image_url = table.Column<string>(type: "text", maxLength: 255, nullable: false),
-                    delete_url = table.Column<string>(type: "text", maxLength: 255, nullable: false)
+                    image_url = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

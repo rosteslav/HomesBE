@@ -1,6 +1,6 @@
 ﻿namespace BuildingMarket.Images.Application.Contracts
 {
-    public interface IPropertiesService
+    public interface IPropertiesRepository
     {
         Task<bool> IsPropertyOwner(int propertyId, string userId);
 

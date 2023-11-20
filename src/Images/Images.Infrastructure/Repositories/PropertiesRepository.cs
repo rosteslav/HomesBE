@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingMarket.Images.Infrastructure.Repositories
 {
-    public class PropertiesService(ImagesDbContext context)
-        : IPropertiesService
+    public class PropertiesRepository(ImagesDbContext context)
+        : IPropertiesRepository
     {
         private readonly ImagesDbContext _context = context;
 

@@ -15,6 +15,9 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<Property, AddPropertyCommand>()
                .ForMember(x => x.Model, opt => opt.MapFrom(src => src))
                .ReverseMap();
+
+            CreateMap<Property, GetAllPropertiesOutputModel>()
+                .ForMember(x => x.Details, opt => opt.MapFrom(src => string.Join(',', src.BuildingType, src.Finish, src.Furnishment, src.Heating)));
         }
     }
 }

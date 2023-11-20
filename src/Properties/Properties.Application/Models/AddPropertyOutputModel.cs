@@ -1,6 +1,6 @@
 ﻿namespace BuildingMarket.Properties.Application.Models
 {
-    public class PropertyOutputModel
+    public class AddPropertyOutputModel
     {
         public int Id { get; set; }
     }

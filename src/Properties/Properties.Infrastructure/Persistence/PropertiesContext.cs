@@ -15,7 +15,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
         public virtual DbSet<Garage> Garages { get; set; }
 
-        public virtual DbSet<Heating> Heatings { get; set; }
+        public virtual DbSet<Heating> Heating { get; set; }
 
         public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
 
@@ -31,21 +31,19 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.Property(e => e.Id)
                     .HasColumnName("id");
 
-                entity.Property(e => e.Type)
-                    .HasColumnName("type")
-                    .HasColumnType("character varying")
-                    .HasMaxLength(255);
-
                 entity.Property(e => e.NumberOfRooms)
                     .HasColumnName("number_of_rooms");
 
-                entity.Property(e => e.District)
-                    .HasColumnName("district")
-                    .HasColumnType("character varying")
-                    .HasMaxLength(255);
-
                 entity.Property(e => e.Space)
                     .HasColumnName("space")
+                    .HasColumnType("real");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasColumnType("text");
+
+                entity.Property(e => e.Price)
+                    .HasColumnName("price")
                     .HasColumnType("real");
 
                 entity.Property(e => e.Floor)

@@ -23,18 +23,20 @@ namespace BuildingMarket.Properties.Api.Controllers
         private readonly IMapper _mapper = mapper;
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(PropertyOutputModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Add([FromBody] PropertyModel model)
         {
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
-            await _mediator.Send(new AddPropertyCommand
+            _logger.LogInformation($"Attempt to add a new property from the user with ID {userId}");
+
+            return Ok(await _mediator.Send(new AddPropertyCommand
             {
                 SellerId = userId,
                 Model = model
-            });
-
-            return NoContent();
+            }));
         }
 
         [HttpGet]

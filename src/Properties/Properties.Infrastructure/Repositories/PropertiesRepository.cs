@@ -1,4 +1,5 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
+using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
 using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -11,19 +12,13 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly ILogger<PropertiesRepository> _logger = logger;
         private readonly PropertiesDbContext _context = context;
 
-        public async Task Add(Property item)
+        public async Task<PropertyOutputModel> Add(Property item)
         {
             _logger.LogInformation($"DB add property: {item.Type}");
+            await _context.Properties.AddAsync(item);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                await _context.Properties.AddAsync(item);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error while adding property: {item.Type}");
-            }
+            return new PropertyOutputModel { Id = item.Id };
         }
 
         public async Task<IEnumerable<Property>> Get()

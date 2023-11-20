@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace BuildingMarket.Images.Domain.Entities
 {
     public class Property

@@ -30,9 +30,7 @@ namespace BuildingMarket.Images.Application.Features.Image.Commands.Add
             await _repository.Add(new()
             {
                 PropertyId = request.PropertyId,
-                ImageName = imageName,
-                ImageURL = imageData.DisplayUrl,
-                DeleteURL = imageData.DeleteUrl
+                ImageURL = imageData.DisplayUrl
             });
 
             return imageData.DisplayUrl;

@@ -34,14 +34,11 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             {
                 _logger.LogInformation("Attempting to delete Image with Id: {imageId}", imageId);
 
-                var img = await _context.Images
-                    .FirstOrDefaultAsync(img => img.Id == imageId);
+                await _context.Images
+                        .Where(i => i.Id == imageId)
+                        .ExecuteDeleteAsync();
 
-                if (img is not null)
-                {
-                    _context.Images.Remove(img);
-                    await _context.SaveChangesAsync();
-                }
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {

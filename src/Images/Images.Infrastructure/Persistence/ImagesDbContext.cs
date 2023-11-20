@@ -19,17 +19,8 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
 
                 entity.HasKey(img => img.Id);
 
-                entity.Property(img => img.ImageName)
-                    .HasColumnName("image_name")
-                    .HasColumnType("character varying")
-                    .HasMaxLength(255);
-
                 entity.Property(img => img.ImageURL)
                     .HasColumnName("image_url")
-                    .HasColumnType("text");
-
-                entity.Property(img => img.DeleteURL)
-                    .HasColumnName("delete_url")
                     .HasColumnType("text");
 
                 entity.Property(img => img.PropertyId)

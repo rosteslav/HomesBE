@@ -12,7 +12,7 @@ namespace BuildingMarket.Images.Application.Features.Image.Commands.Delete
         public async Task Handle(DeleteImageCommand request,
             CancellationToken cancellationToken)
         {
-            await _repository.Delete(request.ImageId);
+            await _repository.Delete(request.Id);
         }
     }
 }

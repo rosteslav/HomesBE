@@ -8,11 +8,7 @@ namespace BuildingMarket.Images.Application.Mapper
     {
         public ImagesProfile()
         {
-            CreateMap<Image, ImagesResult>()
-                .ForMember(dest => dest.Id,
-                            opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.ImageURL,
-                            opt => opt.MapFrom(src => src.ImageURL));
+            CreateMap<Image, ImagesResult>();
         }
     }
 }

@@ -6,8 +6,5 @@ namespace BuildingMarket.Images.Application.Models
     {
         [JsonProperty("display_url")]
         public string DisplayUrl { get; set; }
-
-        [JsonProperty("delete_url")]
-        public string DeleteUrl { get; set; }
     }
 }

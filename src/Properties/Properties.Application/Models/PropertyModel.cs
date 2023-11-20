@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace BuildingMarket.Properties.Application.Models
 {
     public class PropertyModel
@@ -15,6 +13,8 @@ namespace BuildingMarket.Properties.Application.Models
         public required int Floor { get; set; }
 
         public required int TotalFloorsInBuilding { get; set; }
+
+        public required PropertyOptionsModel PropertyOptions { get; set; }
 
         public string BrokerId { get; set; }
     }

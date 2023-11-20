@@ -19,7 +19,7 @@ namespace BuildingMarket.Properties.Infrastructure
                     .UseLazyLoadingProxies();
             },
             ServiceLifetime.Transient);
-            services.AddScoped<IPropertiesRepository, PropertiesRepository>();
+            services.AddScoped<IPropertyOptionsRepository, PropertiesRepository>();
 
             return services;
         }

@@ -1,5 +1,4 @@
-﻿using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
-using BuildingMarket.Properties.Application.Models;
+﻿using BuildingMarket.Properties.Application.Models;
 using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty

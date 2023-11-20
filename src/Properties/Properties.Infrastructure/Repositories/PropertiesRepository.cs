@@ -1,6 +1,6 @@
-﻿using BuildingMarket.Properties.Application.Contracts;
+﻿using BuildingMarket.Properties.Infrastructure.Persistence;
+using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Domain.Entities;
-using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

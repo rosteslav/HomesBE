@@ -1,4 +1,5 @@
 using AutoMapper;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Common.Models.Security;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
@@ -23,18 +24,33 @@ namespace BuildingMarket.Properties.Api.Controllers
         private readonly IMapper _mapper = mapper;
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(PropertyOutputModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Add([FromBody] PropertyModel model)
         {
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
-            await _mediator.Send(new AddPropertyCommand
-            {
-                SellerId = userId,
-                Model = model
-            });
+            _logger.LogInformation($"Attempt to add a new property from the user with ID {userId}");
 
-            return NoContent();
+            try
+            {
+                return Ok(await _mediator.Send(new AddPropertyCommand
+                {
+                    SellerId = userId,
+                    Model = model
+                }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while adding property: {model.Type}");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response
+                {
+                    Status = "Internal Server Error",
+                    Message = "Sorry, something went wrong. Our team has been notified."
+                });
+            }
         }
 
         [HttpGet]

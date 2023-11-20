@@ -1,4 +1,5 @@
-﻿using BuildingMarket.Properties.Domain.Entities;
+﻿using BuildingMarket.Properties.Application.Models;
+using BuildingMarket.Properties.Domain.Entities;
 
 namespace BuildingMarket.Properties.Application.Contracts
 {
@@ -10,6 +11,6 @@ namespace BuildingMarket.Properties.Application.Contracts
 
         Task<IEnumerable<Property>> GetByBroker(string brokerId);
 
-        Task Add(Property item);
+        Task<PropertyOutputModel> Add(Property item);
     }
 }

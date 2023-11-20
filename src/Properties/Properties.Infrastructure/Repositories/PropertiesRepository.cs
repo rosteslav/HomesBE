@@ -1,4 +1,6 @@
-﻿using BuildingMarket.Properties.Application.Contracts;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
 using BuildingMarket.Properties.Infrastructure.Persistence;
@@ -7,18 +9,23 @@ using Microsoft.Extensions.Logging;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
-    public class PropertiesRepository(PropertiesDbContext context, ILogger<PropertiesRepository> logger) : IPropertiesRepository
+    public class PropertiesRepository(
+        PropertiesDbContext context,
+        IMapper mapper,
+        ILogger<PropertiesRepository> logger)
+        : IPropertiesRepository
     {
-        private readonly ILogger<PropertiesRepository> _logger = logger;
         private readonly PropertiesDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
+        private readonly ILogger<PropertiesRepository> _logger = logger;
 
-        public async Task<PropertyOutputModel> Add(Property item)
+        public async Task<AddPropertyOutputModel> Add(Property item)
         {
-            _logger.LogInformation($"DB add property: {item.Type}");
+            _logger.LogInformation($"DB add property with seller ID: {item.SellerId}");
             await _context.Properties.AddAsync(item);
             await _context.SaveChangesAsync();
 
-            return new PropertyOutputModel { Id = item.Id };
+            return new AddPropertyOutputModel { Id = item.Id };
         }
 
         public async Task<IEnumerable<Property>> Get()
@@ -36,6 +43,16 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
 
             return Enumerable.Empty<Property>();
+        }
+
+        public async Task<PropertyModel> GetById(int id)
+        {
+            _logger.LogInformation($"DB get property with ID {id}");
+
+            return await _context.Properties
+                .Where(x => x.Id == id)
+                .ProjectTo<PropertyModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Property>> GetByBroker(string brokerId)

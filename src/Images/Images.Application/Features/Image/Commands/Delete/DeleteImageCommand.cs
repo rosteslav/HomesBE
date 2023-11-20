@@ -2,8 +2,8 @@
 
 namespace BuildingMarket.Images.Application.Features.Image.Commands.Delete
 {
-    public class DeleteCommand : IRequest
+    public class DeleteImageCommand : IRequest
     {
-        public string DeleteURL { get; set; }
+        public int Id { get; set; }
     }
 }

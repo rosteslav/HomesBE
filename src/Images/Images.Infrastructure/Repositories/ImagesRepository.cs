@@ -28,24 +28,21 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
         }
 
-        public async Task Delete(string imageUrl)
+        public async Task Delete(int imageId)
         {
             try
             {
-                _logger.LogInformation("Attempting to delete Image with ImageURL: {ImageURL}", imageUrl);
+                _logger.LogInformation("Attempting to delete Image with Id: {imageId}", imageId);
 
-                var img = await _context.Images
-                    .FirstOrDefaultAsync(img => img.ImageURL == imageUrl);
+                await _context.Images
+                        .Where(i => i.Id == imageId)
+                        .ExecuteDeleteAsync();
 
-                if (img is not null)
-                {
-                    _context.Images.Remove(img);
-                    await _context.SaveChangesAsync();
-                }
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message}. An error occured while trying to remove image with ImageURL: {ImageURL} from the database.", ex.Message, imageUrl);
+                _logger.LogError("{Message}. An error occured while trying to remove image with Id: {imageId} from the database.", ex.Message, imageId);
             }
         }
 

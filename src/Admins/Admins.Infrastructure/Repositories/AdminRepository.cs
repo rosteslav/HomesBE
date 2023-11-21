@@ -15,15 +15,21 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
         ILogger<AdminRepository> logger)
         : IAdminRepository
     {
-        private const int TypePosition = 0;
-        private const int NumberOfRoomsPosition = 1;
-        private const int DistrictPosition = 2;
-        private const int SpacePosition = 3;
-        private const int FloorPosition = 4;
-        private const int TotalFloorsInBuildingPosition = 5;
-        private const int SellerIdPosition = 6;
-        private const int BrokerIdPosition = 7;
-        private const int TotalNumberOfPositions = 8;
+        private const int NumberOfRoomsPosition = 0;
+        private const int SpacePosition = 1;
+        private const int PricePosition = 2;
+        private const int FloorPosition = 3;
+        private const int TotalFloorsInBuildingPosition = 4;
+        private const int BuildingTypePosition = 5;
+        private const int FinishPosition = 6;
+        private const int FurnishmentPosition = 7;
+        private const int GaragePosition = 8;
+        private const int HeatingPosition = 9;
+        private const int NeighborhoodPosition = 10;
+        private const int SellerIdPosition = 11;
+        private const int BrokerIdPosition = 12;
+        private const int DescriptionPosition = 13;
+        private const int TotalNumberOfPositions = 14;
 
         private readonly AdminsDbContext _context = context;
         private readonly UserManager<IdentityUser> _userManager = userManager;
@@ -32,7 +38,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
         public async Task AddMultiplePropertiesFromCsvFile(IFormFile csvFile)
         {
             _logger.LogInformation($"DB add multiple properties");
-            
+
             var properties = await MapPropertiesFromCsvFile(csvFile);
             if (properties.Any())
             {
@@ -81,7 +87,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
                 string line = await streamReader.ReadLineAsync();
                 while (!string.IsNullOrWhiteSpace(line))
                 {
-                    string[] data = line.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    string[] data = line.Split(',');
                     if (data.Length < TotalNumberOfPositions)
                     {
                         _logger.LogWarning($"The property data is invalid on row {row++}.");
@@ -109,14 +115,28 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
         private static Property MapProperty(string[] data)
             => new Property
             {
-                Type = data[TypePosition],
                 NumberOfRooms = int.Parse(data[NumberOfRoomsPosition]),
-                District = data[DistrictPosition],
                 Space = decimal.Parse(data[SpacePosition]),
+                Price = decimal.Parse(data[PricePosition]),
+                BuildingType = SetValueOrThrow(data[BuildingTypePosition]),
+                Finish = SetValueOrThrow(data[FinishPosition]),
+                Furnishment = SetValueOrThrow(data[FurnishmentPosition]),
+                Garage = SetValueOrThrow(data[GaragePosition]),
+                Heating = SetValueOrThrow(data[HeatingPosition]),
+                Neighbourhood = SetValueOrThrow(data[NeighborhoodPosition]),
                 Floor = int.Parse(data[FloorPosition]),
                 TotalFloorsInBuilding = int.Parse(data[TotalFloorsInBuildingPosition]),
-                SellerId = data[SellerIdPosition],
-                BrokerId = data[BrokerIdPosition]
+                SellerId = SetValueOrThrow(data[SellerIdPosition]),
+                BrokerId = SetValueOrNull(data[BrokerIdPosition]),
+                Description = SetValueOrNull(data[DescriptionPosition])
             };
+
+        private static string SetValueOrThrow(string value)
+            => string.IsNullOrWhiteSpace(value)
+                ? throw new FormatException("The value cannot be null, empty or white space!")
+                : value;
+
+        private static string SetValueOrNull(string value)
+            => string.IsNullOrWhiteSpace(value) ? null : value;
     }
 }

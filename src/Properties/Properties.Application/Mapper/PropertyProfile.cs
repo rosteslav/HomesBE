@@ -9,15 +9,18 @@ namespace BuildingMarket.Properties.Application.Mapper
     {
         public PropertyProfile()
         {
+            CreateMap<AddPropertyInputModel, Property>();
+
             CreateMap<Property, PropertyModel>()
-                .ReverseMap();
+                .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()));
 
             CreateMap<Property, AddPropertyCommand>()
                .ForMember(x => x.Model, opt => opt.MapFrom(src => src))
                .ReverseMap();
 
             CreateMap<Property, GetAllPropertiesOutputModel>()
-                .ForMember(x => x.Details, opt => opt.MapFrom(src => string.Join(',', src.BuildingType, src.Finish, src.Furnishment, src.Heating)));
+                .ForMember(x => x.Details, opt => opt.MapFrom(src => string.Join(',', src.BuildingType, src.Finish, src.Furnishment, src.Heating)))
+                .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()));
         }
     }
 }

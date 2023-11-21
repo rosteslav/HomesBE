@@ -8,5 +8,6 @@
         public required decimal Space { get; set; }
         public required decimal Price { get; set; }
         public required string Details { get; set; }
+        public required DateTime CreatedOnLocalTime { get; set; }
     }
 }

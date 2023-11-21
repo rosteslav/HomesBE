@@ -5,7 +5,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Commands.Add
 {
     public class AddPropertyCommand : IRequest<AddPropertyOutputModel>
     {
-        public PropertyModel Model { get; set; }
+        public AddPropertyInputModel Model { get; set; }
 
         public string SellerId { get; set; }
     }

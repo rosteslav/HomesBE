@@ -28,7 +28,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Add([FromBody] PropertyModel model)
+        public async Task<IActionResult> Add([FromBody] AddPropertyInputModel model)
         {
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
             _logger.LogInformation($"Attempt to add a new property from the user with ID {userId}");

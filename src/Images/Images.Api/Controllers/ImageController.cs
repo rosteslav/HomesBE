@@ -3,9 +3,8 @@ using BuildingMarket.Common.Models.Security;
 using BuildingMarket.Images.Application.Features.Image.Commands.Add;
 using BuildingMarket.Images.Application.Features.Image.Commands.Delete;
 using BuildingMarket.Images.Application.Features.Image.Queries.GetAll;
-using BuildingMarket.Images.Application.Features.Property.Queries.IsPropertyOwner;
-using BuildingMarket.Images.Application.Features.Property.Queries.PropertyExists;
 using BuildingMarket.Images.Application.Models;
+using BuildingMarket.Images.Application.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,35 +32,29 @@ namespace BuildingMarket.Images.Api.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddImage([FromQuery] int propertyId, IFormFile image)
         {
-            var imgSize = image.Length / 1024 / 1024;
+            var imgInMB = image.Length / 1024 / 1024;
 
-            if (imgSize > 32)
+            if (imgInMB > 32)
             {
-                return BadRequest("File size should be up to 32MB!");
-            }
-
-            var userId = User.Claims
-                .First(x => x.Type == ClaimTypes.Sid).Value;
-
-            if (await IsValidRequest(propertyId, userId))
-            {
-                _logger.LogError("Invalid request for property with Id: {propertyId}!", propertyId);
-
-                return BadRequest($"Invalid request for property with Id: {propertyId}!");
+                return BadRequest();
             }
 
             _logger.LogInformation("Attempting to add new image.");
 
+            var userId = User.Claims
+                .First(x => x.Type == ClaimTypes.Sid).Value;
+
             var imageUrl = await _mediator.Send(new AddImageCommand
             {
                 FormFile = image,
-                PropertyId = propertyId
+                PropertyId = propertyId,
+                UserId = userId
             });
 
             if (string.IsNullOrEmpty(imageUrl))
             {
                 _logger.LogError("Image upload was not successful.");
-                return BadRequest("Image upload was unsuccessful!");
+                return BadRequest();
             }
 
             return Ok(imageUrl);
@@ -93,32 +86,31 @@ namespace BuildingMarket.Images.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteImage([FromRoute] int id)
         {
-            // TODO: Is owner of property with image id {id}
+            var userId = User.Claims
+               .First(x => x.Type == ClaimTypes.Sid).Value;
 
-            _logger.LogInformation("Deleting image with id: {id}", id);
+            _logger.LogInformation("User with id: {userId} attempts to delete image with id: {id}", userId, id);
 
-            await _mediator.Send(new DeleteImageCommand
+            var result = await _mediator.Send(new DeleteImageCommand
             {
-                Id = id,
-            });
-
-            return NoContent();
-        }
-
-        private async Task<bool> IsValidRequest(int propertyId, string userId)
-        {
-            bool propertyExists = await _mediator.Send(new PropertyExistsQuery
-            {
-                PropertyId = propertyId
-            });
-
-            bool isPropertyOwner = await _mediator.Send(new IsPropertyOwnerQuery
-            {
-                PropertyId = propertyId,
+                ImageId = id,
                 UserId = userId
             });
 
-            return !propertyExists || !isPropertyOwner;
+            switch (result)
+            {
+                case DeleteImageResult.Success:
+                    _logger.LogInformation("Image with Id: {id} deleted successfully!", id);
+                    return Ok();
+                case DeleteImageResult.ImageNotFound:
+                case DeleteImageResult.PropertyNotFound:
+                    _logger.LogInformation("Image with Id: {id} or it's property was not found!", id);
+                    return NotFound();
+                case DeleteImageResult.UserHasNoAccess:
+                default:
+                    _logger.LogInformation("User with Id: {userId} who has no access tried to delete image with Id: {id}", userId, id);
+                    return BadRequest();
+            }
         }
     }
 }

@@ -7,5 +7,6 @@ namespace BuildingMarket.Images.Application.Features.Image.Commands.Add
     {
         public IFormFile FormFile { get; set; }
         public int PropertyId { get; set; }
+        public string UserId { get; set; }
     }
 }

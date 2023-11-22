@@ -7,5 +7,7 @@ namespace BuildingMarket.Images.Application.Contracts
         Task<IEnumerable<Image>> GetAllForProperty(int propertyId);
         Task Add(Image image);
         Task Delete(int imageId);
+        Task<int> GetPropertyIdOfImageById(int imageId);
+        Task<bool> Exists(int imageId);
     }
 }

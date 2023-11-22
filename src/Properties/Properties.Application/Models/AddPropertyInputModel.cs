@@ -1,8 +1,7 @@
-namespace BuildingMarket.Properties.Domain.Entities
+﻿namespace BuildingMarket.Properties.Application.Models
 {
-    public class Property
+    public class AddPropertyInputModel
     {
-        public int Id { get; set; }
         public required int NumberOfRooms { get; set; }
         public required decimal Space { get; set; }
         public string Description { get; set; }
@@ -15,8 +14,6 @@ namespace BuildingMarket.Properties.Domain.Entities
         public required string Garage { get; set; }
         public required string Heating { get; set; }
         public required string Neighbourhood { get; set; }
-        public required string SellerId { get; set; }
         public string BrokerId { get; set; }
-        public required DateTime CreatedOnUtcTime { get; set; }
     }
 }

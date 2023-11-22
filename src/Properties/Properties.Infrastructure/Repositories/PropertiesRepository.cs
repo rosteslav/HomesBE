@@ -22,6 +22,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         public async Task<AddPropertyOutputModel> Add(Property item)
         {
             _logger.LogInformation($"DB add property with seller ID: {item.SellerId}");
+            item.CreatedOnUtcTime = DateTime.UtcNow;
             await _context.Properties.AddAsync(item);
             await _context.SaveChangesAsync();
 

@@ -2,12 +2,9 @@
 using BuildingMarket.Common.Models.Security;
 using BuildingMarket.Images.Application.Features.Image.Commands.Add;
 using BuildingMarket.Images.Application.Features.Image.Commands.Delete;
-using BuildingMarket.Images.Application.Features.Image.Queries.ExistsById;
 using BuildingMarket.Images.Application.Features.Image.Queries.GetAll;
-using BuildingMarket.Images.Application.Features.Image.Queries.IsPropertyOwnerOfImage;
-using BuildingMarket.Images.Application.Features.Property.Queries.IsPropertyOwner;
-using BuildingMarket.Images.Application.Features.Property.Queries.PropertyExists;
 using BuildingMarket.Images.Application.Models;
+using BuildingMarket.Images.Application.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,35 +32,29 @@ namespace BuildingMarket.Images.Api.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddImage([FromQuery] int propertyId, IFormFile image)
         {
-            var imgSize = image.Length / 1024 / 1024;
+            var imgInMB = image.Length / 1024 / 1024;
 
-            if (imgSize > 32)
+            if (imgInMB > 32)
             {
-                return BadRequest("File size should be up to 32MB!");
-            }
-
-            var userId = User.Claims
-                .First(x => x.Type == ClaimTypes.Sid).Value;
-
-            if (await PropertyExistsAndIsOwner(propertyId, userId))
-            {
-                _logger.LogError("Invalid request for property with Id: {propertyId}!", propertyId);
-
-                return BadRequest($"Invalid request for property with Id: {propertyId}!");
+                return BadRequest();
             }
 
             _logger.LogInformation("Attempting to add new image.");
 
+            var userId = User.Claims
+                .First(x => x.Type == ClaimTypes.Sid).Value;
+
             var imageUrl = await _mediator.Send(new AddImageCommand
             {
                 FormFile = image,
-                PropertyId = propertyId
+                PropertyId = propertyId,
+                UserId = userId
             });
 
             if (string.IsNullOrEmpty(imageUrl))
             {
                 _logger.LogError("Image upload was not successful.");
-                return BadRequest("Image upload was unsuccessful!");
+                return BadRequest();
             }
 
             return Ok(imageUrl);
@@ -98,55 +89,30 @@ namespace BuildingMarket.Images.Api.Controllers
             var userId = User.Claims
                .First(x => x.Type == ClaimTypes.Sid).Value;
 
-            if (await ImageExistsAndIsOwnerOfProperty(id, userId))
-            {
-                _logger.LogError("Invalid request for image with Id: {id}!", id);
+            _logger.LogInformation("User with id: {userId} attempts to delete image with id: {id}", userId, id);
 
-                return BadRequest($"Invalid request for image with Id: {id}!");
+            var result = await _mediator.Send(new DeleteImageCommand
+            {
+                ImageId = id,
+                UserId = userId
+            });
+
+            switch (result)
+            {
+                case DeleteImageResult.Success:
+                    _logger.LogInformation("Image with Id: {id} deleted successfully!", id);
+                    return Ok();
+                case DeleteImageResult.ImageNotFound:
+                    _logger.LogInformation("Image with Id: {id} was not found!", id);
+                    return NotFound();
+                case DeleteImageResult.PropertyNotFound:
+                    _logger.LogInformation("Property of image with Id: {id} was not found!", id);
+                    return NotFound();
+                case DeleteImageResult.UserHasNoAccess:
+                default:
+                    _logger.LogInformation("User with Id: {userId} who has no access tried to delete image with Id: {id}", userId, id);
+                    return BadRequest();
             }
-
-            _logger.LogInformation("Deleting image with id: {id}", id);
-
-            await _mediator.Send(new DeleteImageCommand
-            {
-                Id = id,
-            });
-
-            return NoContent();
-        }
-
-        private async Task<bool> PropertyExistsAndIsOwner(int propertyId, string userId)
-        {
-            bool propertyExists = await _mediator.Send(new PropertyExistsQuery
-            {
-                PropertyId = propertyId
-            });
-
-            bool isPropertyOwner = await _mediator.Send(new IsPropertyOwnerQuery
-            {
-                PropertyId = propertyId,
-                UserId = userId
-            });
-
-            return !propertyExists || !isPropertyOwner;
-        }
-
-        private async Task<bool> ImageExistsAndIsOwnerOfProperty(
-            int imageId,
-            string userId)
-        {
-            bool imageExists = await _mediator.Send(new ImageExistsByIdQuery
-            {
-                ImageId = imageId
-            });
-
-            bool isPropertyOwner = await _mediator.Send(new IsPropertyOwnerOfImageQuery
-            {
-                ImageId = imageId,
-                UserId = userId
-            });
-
-            return !imageExists || !isPropertyOwner;
         }
     }
 }

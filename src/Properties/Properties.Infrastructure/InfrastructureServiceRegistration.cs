@@ -2,6 +2,7 @@
 using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Infrastructure.Persistence;
 using BuildingMarket.Properties.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,8 @@ namespace BuildingMarket.Properties.Infrastructure
                     .UseLazyLoadingProxies();
             },
             ServiceLifetime.Transient);
+            services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<PropertiesDbContext>();
+
             services.AddScoped<IPropertiesRepository, PropertiesRepository>();
 
             return services;

@@ -23,6 +23,8 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<Property, GetAllPropertiesOutputModel>()
                 .ForMember(x => x.Details, opt => opt.MapFrom(src => string.Join(',', src.BuildingType, src.Finish, src.Furnishment, src.Heating)))
                 .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()));
+
+            CreateMap<AdditionalUserData, ContactInfo>();
         }
     }
 }

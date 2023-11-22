@@ -33,6 +33,11 @@ namespace BuildingMarket.Properties.Api.Controllers
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
             _logger.LogInformation($"Attempt to add a new property from the user with ID {userId}");
 
+            if (User.IsInRole(UserRoles.Broker))
+            {
+                model.BrokerId = userId;
+            }
+
             return Ok(await _mediator.Send(new AddPropertyCommand
             {
                 SellerId = userId,

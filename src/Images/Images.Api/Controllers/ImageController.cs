@@ -2,7 +2,9 @@
 using BuildingMarket.Common.Models.Security;
 using BuildingMarket.Images.Application.Features.Image.Commands.Add;
 using BuildingMarket.Images.Application.Features.Image.Commands.Delete;
+using BuildingMarket.Images.Application.Features.Image.Queries.ExistsById;
 using BuildingMarket.Images.Application.Features.Image.Queries.GetAll;
+using BuildingMarket.Images.Application.Features.Image.Queries.IsPropertyOwnerOfImage;
 using BuildingMarket.Images.Application.Features.Property.Queries.IsPropertyOwner;
 using BuildingMarket.Images.Application.Features.Property.Queries.PropertyExists;
 using BuildingMarket.Images.Application.Models;
@@ -43,7 +45,7 @@ namespace BuildingMarket.Images.Api.Controllers
             var userId = User.Claims
                 .First(x => x.Type == ClaimTypes.Sid).Value;
 
-            if (await IsValidRequest(propertyId, userId))
+            if (await PropertyExistsAndIsOwner(propertyId, userId))
             {
                 _logger.LogError("Invalid request for property with Id: {propertyId}!", propertyId);
 
@@ -93,7 +95,15 @@ namespace BuildingMarket.Images.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteImage([FromRoute] int id)
         {
-            // TODO: Is owner of property with image id {id}
+            var userId = User.Claims
+               .First(x => x.Type == ClaimTypes.Sid).Value;
+
+            if (await ImageExistsAndIsOwnerOfProperty(id, userId))
+            {
+                _logger.LogError("Invalid request for image with Id: {id}!", id);
+
+                return BadRequest($"Invalid request for image with Id: {id}!");
+            }
 
             _logger.LogInformation("Deleting image with id: {id}", id);
 
@@ -105,7 +115,7 @@ namespace BuildingMarket.Images.Api.Controllers
             return NoContent();
         }
 
-        private async Task<bool> IsValidRequest(int propertyId, string userId)
+        private async Task<bool> PropertyExistsAndIsOwner(int propertyId, string userId)
         {
             bool propertyExists = await _mediator.Send(new PropertyExistsQuery
             {
@@ -119,6 +129,24 @@ namespace BuildingMarket.Images.Api.Controllers
             });
 
             return !propertyExists || !isPropertyOwner;
+        }
+
+        private async Task<bool> ImageExistsAndIsOwnerOfProperty(
+            int imageId,
+            string userId)
+        {
+            bool imageExists = await _mediator.Send(new ImageExistsByIdQuery
+            {
+                ImageId = imageId
+            });
+
+            bool isPropertyOwner = await _mediator.Send(new IsPropertyOwnerOfImageQuery
+            {
+                ImageId = imageId,
+                UserId = userId
+            });
+
+            return !imageExists || !isPropertyOwner;
         }
     }
 }

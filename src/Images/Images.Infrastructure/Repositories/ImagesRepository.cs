@@ -46,6 +46,22 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
         }
 
+        public async Task<bool> Exists(int imageId)
+        {
+            try
+            {
+                _logger.LogInformation("Checking if Image with Id: {imageId} exists.", imageId);
+
+                return await _context.Images.AnyAsync(i => i.Id == imageId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{Message}. An error occured while trying to check if image with Id: {imageId} exists.", ex.Message, imageId);
+
+                return false;
+            }
+        }
+
         public async Task<IEnumerable<Image>> GetAllForProperty(int propertyId)
         {
             try
@@ -62,6 +78,24 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             {
                 _logger.LogError("{Message}. Failed to retrieve all the images for property with id: {propertyId}", ex.Message, propertyId);
                 return Enumerable.Empty<Image>();
+            }
+        }
+
+        public async Task<int> GetPropertyIdOfImageById(int imageId)
+        {
+            try
+            {
+                _logger.LogInformation("Attempting to retrieve image with Id: {imageId}", imageId);
+
+                var img = await _context.Images
+                    .FirstAsync(img => img.Id == imageId);
+
+                return img.PropertyId;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{Message}. Failed to retrieve image with Id: {imageId}", ex.Message, imageId);
+                return default;
             }
         }
     }

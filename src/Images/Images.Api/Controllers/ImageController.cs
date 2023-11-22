@@ -103,10 +103,8 @@ namespace BuildingMarket.Images.Api.Controllers
                     _logger.LogInformation("Image with Id: {id} deleted successfully!", id);
                     return Ok();
                 case DeleteImageResult.ImageNotFound:
-                    _logger.LogInformation("Image with Id: {id} was not found!", id);
-                    return NotFound();
                 case DeleteImageResult.PropertyNotFound:
-                    _logger.LogInformation("Property of image with Id: {id} was not found!", id);
+                    _logger.LogInformation("Image with Id: {id} or it's property was not found!", id);
                     return NotFound();
                 case DeleteImageResult.UserHasNoAccess:
                 default:

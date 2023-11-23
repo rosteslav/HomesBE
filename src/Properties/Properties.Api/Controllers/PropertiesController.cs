@@ -75,14 +75,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         {
             _logger.LogInformation($"Attempt to get property with ID {id}");
 
-            try
-            {
-                return Ok(await _mediator.Send(new GetByIdQuery { Id = id }));
-            }
-            catch (InvalidOperationException)
-            {
-                return NotFound();
-            }
+            return Ok(await _mediator.Send(new GetByIdQuery { Id = id }));
         }
 
         [HttpGet]

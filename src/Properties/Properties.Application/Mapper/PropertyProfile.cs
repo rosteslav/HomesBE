@@ -1,7 +1,7 @@
-using BuildingMarket.Properties.Application.Models;
-using BuildingMarket.Properties.Domain.Entities;
 using AutoMapper;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
+using BuildingMarket.Properties.Application.Models;
+using BuildingMarket.Properties.Domain.Entities;
 
 namespace BuildingMarket.Properties.Application.Mapper
 {
@@ -23,8 +23,6 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<Property, GetAllPropertiesOutputModel>()
                 .ForMember(x => x.Details, opt => opt.MapFrom(src => string.Join(',', src.BuildingType, src.Finish, src.Furnishment, src.Heating)))
                 .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()));
-
-            CreateMap<AdditionalUserData, ContactInfo>();
         }
     }
 }

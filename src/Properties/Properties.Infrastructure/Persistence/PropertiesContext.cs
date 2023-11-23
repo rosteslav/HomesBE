@@ -1,11 +1,10 @@
 using BuildingMarket.Properties.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuildingMarket.Properties.Infrastructure.Persistence
 {
-    public class PropertiesDbContext(DbContextOptions<PropertiesDbContext> options) : IdentityDbContext(options)
+    public class PropertiesDbContext(DbContextOptions<PropertiesDbContext> options) : DbContext(options)
     {
         public virtual DbSet<Property> Properties { get; set; }
 
@@ -20,6 +19,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
         public virtual DbSet<Heating> Heating { get; set; }
 
         public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
+
+        public virtual DbSet<IdentityUser> Users { get; set; }
 
         public virtual DbSet<AdditionalUserData> AdditionalUserData { get; set; }
 
@@ -184,7 +185,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
             });
 
             modelBuilder.Entity<IdentityUser>().ToTable("Users", "security");
-            
+
             modelBuilder.Entity<AdditionalUserData>(entity =>
             {
                 entity.ToTable("AdditionalData", "security");

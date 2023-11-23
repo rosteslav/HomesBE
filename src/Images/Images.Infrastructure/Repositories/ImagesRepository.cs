@@ -28,24 +28,37 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
         }
 
-        public async Task Delete(string imageUrl)
+        public async Task Delete(int imageId)
         {
             try
             {
-                _logger.LogInformation("Attempting to delete Image with ImageURL: {ImageURL}", imageUrl);
+                _logger.LogInformation("Attempting to delete Image with Id: {imageId}", imageId);
 
-                var img = await _context.Images
-                    .FirstOrDefaultAsync(img => img.ImageURL == imageUrl);
+                await _context.Images
+                        .Where(i => i.Id == imageId)
+                        .ExecuteDeleteAsync();
 
-                if (img is not null)
-                {
-                    _context.Images.Remove(img);
-                    await _context.SaveChangesAsync();
-                }
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message}. An error occured while trying to remove image with ImageURL: {ImageURL} from the database.", ex.Message, imageUrl);
+                _logger.LogError("{Message}. An error occured while trying to remove image with Id: {imageId} from the database.", ex.Message, imageId);
+            }
+        }
+
+        public async Task<bool> Exists(int imageId)
+        {
+            try
+            {
+                _logger.LogInformation("Checking if Image with Id: {imageId} exists.", imageId);
+
+                return await _context.Images.AnyAsync(i => i.Id == imageId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{Message}. An error occured while trying to check if image with Id: {imageId} exists.", ex.Message, imageId);
+
+                return false;
             }
         }
 
@@ -65,6 +78,24 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             {
                 _logger.LogError("{Message}. Failed to retrieve all the images for property with id: {propertyId}", ex.Message, propertyId);
                 return Enumerable.Empty<Image>();
+            }
+        }
+
+        public async Task<int> GetPropertyIdOfImageById(int imageId)
+        {
+            try
+            {
+                _logger.LogInformation("Attempting to retrieve image with Id: {imageId}", imageId);
+
+                var img = await _context.Images
+                    .FirstAsync(img => img.Id == imageId);
+
+                return img.PropertyId;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{Message}. Failed to retrieve image with Id: {imageId}", ex.Message, imageId);
+                return default;
             }
         }
     }

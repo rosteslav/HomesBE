@@ -3,9 +3,9 @@ using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty
 {
-    public class AddPropertyCommand : IRequest
+    public class AddPropertyCommand : IRequest<AddPropertyOutputModel>
     {
-        public PropertyModel Model { get; set; }
+        public AddPropertyInputModel Model { get; set; }
 
         public string SellerId { get; set; }
     }

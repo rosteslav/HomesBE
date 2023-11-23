@@ -1,6 +1,6 @@
 namespace BuildingMarket.Properties.Application.Models
 {
-    public class PropertyModel
+    public class PropertyModel : AddPropertyInputModel
     {
         public required string Type { get; set; }
 
@@ -17,5 +17,7 @@ namespace BuildingMarket.Properties.Application.Models
         public required PropertyOptionsModel PropertyOptions { get; set; }
 
         public string BrokerId { get; set; }
+
+        public DateTime CreatedOnLocalTime { get; set; }
     }
 }

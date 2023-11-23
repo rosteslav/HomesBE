@@ -1,4 +1,4 @@
-namespace BuildingMarket.Properties.Domain.Entities
+namespace BuildingMarket.Images.Domain.Entities
 {
     public class Property
     {
@@ -17,6 +17,5 @@ namespace BuildingMarket.Properties.Domain.Entities
         public required string Neighbourhood { get; set; }
         public required string SellerId { get; set; }
         public string BrokerId { get; set; }
-        public required DateTime CreatedOnUtcTime { get; set; }
     }
 }

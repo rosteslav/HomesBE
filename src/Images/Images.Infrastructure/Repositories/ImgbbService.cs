@@ -1,6 +1,7 @@
 ﻿using BuildingMarket.Images.Application.Contracts;
 using BuildingMarket.Images.Application.Extensions;
 using BuildingMarket.Images.Application.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,36 +15,16 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         private readonly ILogger<ImgbbService> _logger = logger;
         private readonly IConfiguration _configuration = configuration;
 
-        public async Task DeleteImage(string deleteUrl)
+        public async Task<ImageData> UploadImage(
+            IFormFile image,
+            string fileName)
         {
             try
             {
-                _logger.LogInformation("Attempting to remove image from imgbb with deleteUrl: {deleteUrl}", deleteUrl);
-
-                using HttpClient client = new();
-
-                var requestData = new MultipartFormDataContent
-                {
-                    { new StringContent(_configuration.GetSection("Imgbb").Value), "key" }
-                };
-
-                await client
-                    .GetAsync(deleteUrl);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("{Message} Image delete with deleteUrl: {deleteUrl} was not successful!", ex.Message, deleteUrl);
-            }
-        }
-
-        public async Task<ImageData> UploadImage(ImageDTO image)
-        {
-            try
-            {
-                _logger.LogInformation("Attempting to upload image to imgbb with filename: {FileName}", image.FormFile.Name);
+                _logger.LogInformation("Attempting to upload image to imgbb with filename: {FileName}", fileName);
 
                 var memoryStream = await FormFileExtensions
-                    .ToMemoryStream(image.FormFile);
+                    .ToMemoryStream(image);
 
                 string base64Image = Convert
                     .ToBase64String(memoryStream);
@@ -54,7 +35,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
                 {
                     { new StringContent(_configuration.GetSection("Imgbb").Value), "key" },
                     { new StringContent(base64Image), "image" },
-                    { new StringContent(image.FormFile.Name), "name" }
+                    { new StringContent(fileName), "name" }
                 };
 
                 var response = await client
@@ -68,7 +49,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message} Image upload with filename: {FileName} was not successful!", ex.Message, image.FormFile.Name);
+                _logger.LogError("{Message} Image upload with filename: {FileName} was not successful!", ex.Message, image.Name);
             }
 
             return null;

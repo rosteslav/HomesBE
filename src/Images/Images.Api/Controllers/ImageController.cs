@@ -1,11 +1,14 @@
-﻿using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Images.Application.Extensions;
+﻿using AutoMapper;
+using BuildingMarket.Common.Models.Security;
 using BuildingMarket.Images.Application.Features.Image.Commands.Add;
-using BuildingMarket.Images.Application.Features.Image.Queries.GetAll;
 using BuildingMarket.Images.Application.Features.Image.Commands.Delete;
+using BuildingMarket.Images.Application.Features.Image.Queries.GetAll;
+using BuildingMarket.Images.Application.Models;
+using BuildingMarket.Images.Application.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BuildingMarket.Images.Api.Controllers
 {
@@ -14,10 +17,12 @@ namespace BuildingMarket.Images.Api.Controllers
     [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker},{UserRoles.Admin}")]
     public class ImageController(
         IMediator mediator,
-        ILogger<ImageController> logger) : ControllerBase
+        ILogger<ImageController> logger,
+        IMapper mapper) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<ImageController> _logger = logger;
+        private readonly IMapper _mapper = mapper;
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -27,29 +32,29 @@ namespace BuildingMarket.Images.Api.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddImage([FromQuery] int propertyId, IFormFile image)
         {
-            var imgSize = image.Length / 1024 / 1024;
+            var imgInMB = image.Length / 1024 / 1024;
 
-            if (imgSize > 32)
+            if (imgInMB > 32)
             {
-                return BadRequest("File size should be up to 32MB!");
+                return BadRequest();
             }
 
             _logger.LogInformation("Attempting to add new image.");
 
-            var imageUrl = await _mediator.Send(new AddCommand
+            var userId = User.Claims
+                .First(x => x.Type == ClaimTypes.Sid).Value;
+
+            var imageUrl = await _mediator.Send(new AddImageCommand
             {
-                Image = new()
-                {
-                    FormFile = image,
-                    FileExtension = Path.GetExtension(image.FileName)
-                },
-                PropertyId = propertyId
+                FormFile = image,
+                PropertyId = propertyId,
+                UserId = userId
             });
 
             if (string.IsNullOrEmpty(imageUrl))
             {
                 _logger.LogError("Image upload was not successful.");
-                return BadRequest("Image upload was unsuccessful!");
+                return BadRequest();
             }
 
             return Ok(imageUrl);
@@ -59,32 +64,53 @@ namespace BuildingMarket.Images.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAllImages([FromQuery] int propertyId)
+        [Route("{propertyId}")]
+        public async Task<IActionResult> GetAllImages([FromRoute] int propertyId)
         {
             _logger.LogInformation("Getting all images for property with Id {propertyId}", propertyId);
-            var imageUrls = await _mediator.Send(new GetAllCommand
+
+            var images = await _mediator.Send(new GetAllImagesCommand
             {
                 PropertyId = propertyId
             });
 
-            return Ok(imageUrls);
+            var result = _mapper.Map<IEnumerable<ImagesResult>>(images);
+
+            return Ok(result);
         }
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [Route("/{id}")]
-        public async Task<IActionResult> DeleteImage(int id)
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteImage([FromRoute] int id)
         {
-            _logger.LogInformation("Deleting image with id: {id}", id);
+            var userId = User.Claims
+               .First(x => x.Type == ClaimTypes.Sid).Value;
 
-            await _mediator.Send(new DeleteCommand
+            _logger.LogInformation("User with id: {userId} attempts to delete image with id: {id}", userId, id);
+
+            var result = await _mediator.Send(new DeleteImageCommand
             {
-                DeleteURL = id.ToString(),
+                ImageId = id,
+                UserId = userId
             });
 
-            return NoContent();
+            switch (result)
+            {
+                case DeleteImageResult.Success:
+                    _logger.LogInformation("Image with Id: {id} deleted successfully!", id);
+                    return Ok();
+                case DeleteImageResult.ImageNotFound:
+                case DeleteImageResult.PropertyNotFound:
+                    _logger.LogInformation("Image with Id: {id} or it's property was not found!", id);
+                    return NotFound();
+                case DeleteImageResult.UserHasNoAccess:
+                default:
+                    _logger.LogInformation("User with Id: {userId} who has no access tried to delete image with Id: {id}", userId, id);
+                    return BadRequest();
+            }
         }
     }
 }

@@ -11,10 +11,6 @@ namespace BuildingMarket.Images.Domain.Entities
 
         public required int PropertyId { get; set; }
 
-        public required string ImageName { get; set; } = null!;
-
         public required string ImageURL { get; set; } = null!;
-
-        public required string DeleteURL { get; set; } = null!;
     }
 }

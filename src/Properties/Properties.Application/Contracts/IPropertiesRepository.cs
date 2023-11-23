@@ -5,7 +5,7 @@ namespace BuildingMarket.Properties.Application.Contracts
 {
     public interface IPropertiesRepository
     {
-        Task<IEnumerable<Property>> Get();
+        Task<IEnumerable<GetAllPropertiesOutputModel>> Get();
         
         Task<PropertyModel> GetById(int id);
 

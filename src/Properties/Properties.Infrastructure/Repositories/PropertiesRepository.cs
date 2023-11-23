@@ -26,21 +26,38 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return new AddPropertyOutputModel { Id = item.Id };
         }
 
-        public async Task<IEnumerable<Property>> Get()
+        public async Task<IEnumerable<GetAllPropertiesOutputModel>> Get()
         {
             _logger.LogInformation("DB get all properties");
 
             try
             {
-                var items = await _context.Properties.ToListAsync();
-                return items;
+                var items = from property in _context.Properties
+                            join image in _context.Images on property.Id equals image.PropertyId into images
+                            select new GetAllPropertiesOutputModel
+                            {
+                                Id = property.Id,
+                                CreatedOnLocalTime = property.CreatedOnUtcTime.ToLocalTime(),
+                                Details = string.Join(',', property.BuildingType, property.Finish, property.Furnishment, property.Heating),
+                                Neighbourhood = property.Neighbourhood,
+                                Price = property.Price,
+                                NumberOfRooms = property.NumberOfRooms,
+                                Space = property.Space,
+                                Images = images.Select(x => new ImageModel
+                                {
+                                    Id = x.Id,
+                                    ImageURL = x.ImageURL
+                                })
+                            };
+
+                return await items.ToArrayAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while getting all items");
             }
 
-            return Enumerable.Empty<Property>();
+            return Enumerable.Empty<GetAllPropertiesOutputModel>();
         }
 
         public async Task<PropertyModel> GetById(int id)
@@ -67,32 +84,38 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         private async Task<IEnumerable<PropertyModel>> GetByFilterExpression(Expression<Func<Property, bool>> filterExpression)
         {
-            var query = from p in _context.Properties.Where(filterExpression)
-                        join u in _context.Users on p.BrokerId ?? p.SellerId equals u.Id
-                        join ad in _context.AdditionalUserData on u.Id equals ad.UserId
+            var query = from property in _context.Properties.Where(filterExpression)
+                        join user in _context.Users on property.BrokerId ?? property.SellerId equals user.Id
+                        join userData in _context.AdditionalUserData on user.Id equals userData.UserId
+                        join image in _context.Images on property.Id equals image.PropertyId into images
                         select new PropertyModel
                         {
-                            BrokerId = p.BrokerId,
-                            BuildingType = p.BuildingType,
-                            CreatedOnLocalTime = p.CreatedOnUtcTime.ToLocalTime(),
-                            Finish = p.Finish,
-                            Floor = p.Floor,
-                            Furnishment = p.Furnishment,
-                            Garage = p.Garage,
-                            Heating = p.Heating,
-                            NumberOfRooms = p.NumberOfRooms,
-                            Price = p.Price,
-                            Neighbourhood = p.Neighbourhood,
-                            Space = p.Space,
-                            TotalFloorsInBuilding = p.TotalFloorsInBuilding,
-                            Description = p.Description,
+                            BrokerId = property.BrokerId,
+                            BuildingType = property.BuildingType,
+                            CreatedOnLocalTime = property.CreatedOnUtcTime.ToLocalTime(),
+                            Finish = property.Finish,
+                            Floor = property.Floor,
+                            Furnishment = property.Furnishment,
+                            Garage = property.Garage,
+                            Heating = property.Heating,
+                            NumberOfRooms = property.NumberOfRooms,
+                            Price = property.Price,
+                            Neighbourhood = property.Neighbourhood,
+                            Space = property.Space,
+                            TotalFloorsInBuilding = property.TotalFloorsInBuilding,
+                            Description = property.Description,
                             ContactInfo = new ContactInfo
                             {
-                                Email = u.Email,
-                                FirstName = ad.FirstName,
-                                LastName = ad.LastName,
-                                PhoneNumber = ad.PhoneNumber
-                            }
+                                Email = user.Email,
+                                FirstName = userData.FirstName,
+                                LastName = userData.LastName,
+                                PhoneNumber = userData.PhoneNumber
+                            },
+                            Images = images.Select(y => new ImageModel
+                            {
+                                Id = y.Id,
+                                ImageURL = y.ImageURL
+                            })
                         };
 
             return await query.ToArrayAsync();

@@ -1,9 +1,9 @@
-﻿using BuildingMarket.Properties.Domain.Entities;
+﻿using BuildingMarket.Properties.Application.Models;
 using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties
 {
-    public class GetAllPropertiesQuery : IRequest<IEnumerable<Property>>
+    public class GetAllPropertiesQuery : IRequest<IEnumerable<GetAllPropertiesOutputModel>>
     {
     }
 }

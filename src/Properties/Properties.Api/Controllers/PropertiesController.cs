@@ -92,8 +92,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         {
             _logger.LogInformation("Attempt to get all properties");
             var properties = await _mediator.Send(new GetAllPropertiesQuery());
-            var result = _mapper.Map<IEnumerable<GetAllPropertiesOutputModel>>(properties);
-            return Ok(result);
+            return Ok(properties);
         }
     }
 }

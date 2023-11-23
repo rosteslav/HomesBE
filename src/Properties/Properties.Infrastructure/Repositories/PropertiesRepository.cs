@@ -1,10 +1,12 @@
-﻿using BuildingMarket.Properties.Application.Contracts;
+using BuildingMarket.Properties.Infrastructure.Persistence;
+using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
-using BuildingMarket.Properties.Infrastructure.Persistence;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
+using AutoMapper;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {

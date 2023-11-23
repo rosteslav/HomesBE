@@ -21,6 +21,7 @@ namespace BuildingMarket.Properties.Infrastructure
             ServiceLifetime.Transient);
 
             services.AddScoped<IPropertiesRepository, PropertiesRepository>();
+            services.AddScoped<IPropertyOptionsRepository, PropertyOptionsRepository>();
 
             return services;
         }

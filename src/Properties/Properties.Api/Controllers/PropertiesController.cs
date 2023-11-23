@@ -1,15 +1,16 @@
-using AutoMapper;
-using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetById;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetBySeller;
 using BuildingMarket.Properties.Application.Models;
-using MediatR;
+using BuildingMarket.Properties.Domain.Entities;
+using BuildingMarket.Common.Models.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using AutoMapper;
+using MediatR;
 
 namespace BuildingMarket.Properties.Api.Controllers
 {

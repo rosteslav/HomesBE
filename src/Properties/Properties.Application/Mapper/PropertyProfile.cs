@@ -1,7 +1,7 @@
-using BuildingMarket.Properties.Application.Models;
-using BuildingMarket.Properties.Domain.Entities;
 using AutoMapper;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
+using BuildingMarket.Properties.Application.Models;
+using BuildingMarket.Properties.Domain.Entities;
 
 namespace BuildingMarket.Properties.Application.Mapper
 {

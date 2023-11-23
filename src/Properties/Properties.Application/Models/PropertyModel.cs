@@ -9,5 +9,6 @@ namespace BuildingMarket.Properties.Application.Models
         public string BrokerId { get; set; }
 
         public DateTime CreatedOnLocalTime { get; set; }
+        public ContactInfo ContactInfo { get; set; }
     }
 }

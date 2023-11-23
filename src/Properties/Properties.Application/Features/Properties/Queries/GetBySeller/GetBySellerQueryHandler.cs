@@ -1,15 +1,15 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
-using BuildingMarket.Properties.Domain.Entities;
+using BuildingMarket.Properties.Application.Models;
 using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetBySeller
 {
     public class GetBySellerQueryHandler(IPropertiesRepository propertiesRepository)
-        : IRequestHandler<GetBySellerQuery, IEnumerable<Property>>
+        : IRequestHandler<GetBySellerQuery, IEnumerable<PropertyModel>>
     {
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
 
-        public async Task<IEnumerable<Property>> Handle(GetBySellerQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PropertyModel>> Handle(GetBySellerQuery request, CancellationToken cancellationToken)
             => await _propertiesRepository.GetBySeller(request.SellerId);
     }
 }

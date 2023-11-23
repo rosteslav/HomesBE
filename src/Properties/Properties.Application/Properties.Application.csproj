@@ -19,8 +19,4 @@
         <ProjectReference Include="..\Properties.Domain\Properties.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features\PropertyOptions\Commands\" />
-    </ItemGroup>
-
 </Project>

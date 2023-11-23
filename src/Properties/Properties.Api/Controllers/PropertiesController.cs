@@ -68,7 +68,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<PropertyModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
-            var properties = await _mediator.Send(new GetAllPropertiesQuery());
+            var properties = await _mediator.Send(new GetAllPropertyOptionsQuery());
             var result = _mapper.Map<IEnumerable<PropertyModel>>(properties);
             return Ok(properties);
         }

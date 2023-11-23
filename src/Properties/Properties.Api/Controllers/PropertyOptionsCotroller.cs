@@ -10,7 +10,6 @@ namespace BuildingMarket.Properties.Api.Controllers
     [Route("[controller]")]
     public class PropertyOptionsCotroller(IMediator mediator, ILogger<PropertiesController> logger) : ControllerBase
     {
-        private PropertyOptionsModel propertyOptionsModel;
         private readonly ILogger<PropertiesController> _logger = logger;
         private readonly IMediator _mediator = mediator;
 
@@ -21,7 +20,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         {
             _logger.LogInformation("Attempt to get all property options from Db.");
 
-            await _mediator.Send(new GetAllPropertyOptionsQuery());
+            var propertyOptionsModel = await _mediator.Send(new GetAllPropertyOptionsQuery());
 
             return Ok(propertyOptionsModel);
         }

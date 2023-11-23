@@ -16,21 +16,14 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         {
             try
             {
-                var buildingTypes = _context.BuildingTypes.Select(bt => bt.Description).ToListAsync();
-                var finishTypes = _context.Finishes.Select(bt => bt.Description).ToListAsync();
-                var furnishmentTypes = _context.Furnishments.Select(bt => bt.Description).ToListAsync();
-                var garageTypes = _context.Garages.Select(bt => bt.Description).ToListAsync();
-                var heatingTypes = _context.Heating.Select(bt => bt.Description).ToListAsync();
-                var neighbourhoods = _context.Neighborhoods.Select(bt => bt.Description).ToListAsync();
-
                 PropertyOptionsModel propertyOptionsModel = new PropertyOptionsModel()
                 {
-                    BuildingType = await buildingTypes,
-                    Finish = await finishTypes,
-                    Furnishment = await furnishmentTypes,
-                    Garage = await garageTypes,
-                    Heating = await heatingTypes,
-                    Neighbourhood = await neighbourhoods
+                    BuildingType = await _context.BuildingTypes.Select(bt => bt.Description).ToListAsync(),
+                    Finish = await _context.Finishes.Select(bt => bt.Description).ToListAsync(),
+                    Furnishment = await _context.Furnishments.Select(bt => bt.Description).ToListAsync(),
+                    Garage = await _context.Garages.Select(bt => bt.Description).ToListAsync(),
+                    Heating = await _context.Heating.Select(bt => bt.Description).ToListAsync(),
+                    Neighbourhood = await _context.Neighborhoods.Select(bt => bt.Description).ToListAsync()
                 };
 
                 _logger.LogInformation("Property options returned from db");

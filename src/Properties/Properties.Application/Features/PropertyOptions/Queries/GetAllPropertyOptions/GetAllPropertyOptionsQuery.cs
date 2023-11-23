@@ -5,6 +5,5 @@ namespace BuildingMarket.Properties.Application.Features.PropertyOptions.Queries
 {
     public class GetAllPropertyOptionsQuery : IRequest<PropertyOptionsModel>
     {
-        public PropertyOptionsModel PropertyOptions { get; set; }
     }
 }

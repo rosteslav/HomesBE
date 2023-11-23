@@ -1,4 +1,5 @@
 using BuildingMarket.Properties.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuildingMarket.Properties.Infrastructure.Persistence
@@ -18,6 +19,10 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
         public virtual DbSet<Heating> Heating { get; set; }
 
         public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
+
+        public virtual DbSet<IdentityUser> Users { get; set; }
+
+        public virtual DbSet<AdditionalUserData> AdditionalUserData { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -177,6 +182,36 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 .HasColumnName("building_type")
                 .HasColumnType("character varying")
                 .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<IdentityUser>().ToTable("Users", "security");
+
+            modelBuilder.Entity<AdditionalUserData>(entity =>
+            {
+                entity.ToTable("AdditionalData", "security");
+                entity.HasKey(addData => addData.Id);
+
+                entity.Property(addData => addData.Id)
+                    .HasColumnName("id");
+
+                entity.Property(addData => addData.FirstName)
+                    .HasColumnName("first_name")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.Property(addData => addData.LastName)
+                    .HasColumnName("last_name")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.Property(addData => addData.PhoneNumber)
+                    .HasColumnName("phone_number")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(15);
+
+                entity.Property(addData => addData.UserId)
+                    .HasColumnName("user_id")
+                    .IsRequired(true);
             });
 
             modelBuilder.Entity<Neighborhood>()

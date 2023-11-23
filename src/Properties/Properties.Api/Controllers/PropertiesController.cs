@@ -6,7 +6,6 @@ using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBro
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetById;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetBySeller;
 using BuildingMarket.Properties.Application.Models;
-using BuildingMarket.Properties.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +50,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Get()
         {
-            var properties = default(IEnumerable<Property>);
+            var properties = default(IEnumerable<PropertyModel>);
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
             _logger.LogInformation($"Attempt to get all properties for the user with ID {userId}");
             if (User.IsInRole(UserRoles.Seller))
@@ -69,7 +68,6 @@ namespace BuildingMarket.Properties.Api.Controllers
                 });
             }
 
-            var result = _mapper.Map<IEnumerable<PropertyModel>>(properties);
             return Ok(properties);
         }
 
@@ -78,12 +76,12 @@ namespace BuildingMarket.Properties.Api.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(PropertyModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             _logger.LogInformation($"Attempt to get property with ID {id}");
-            var property = await _mediator.Send(new GetByIdQuery { Id = id });
 
-            return property is not null ? Ok(property) : NotFound();
+            return Ok(await _mediator.Send(new GetByIdQuery { Id = id }));
         }
 
         [HttpGet]

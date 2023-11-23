@@ -8,14 +8,14 @@ namespace BuildingMarket.Properties.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PropertyOptionsCotroller(IMediator mediator, ILogger<PropertiesController> logger) : ControllerBase
+    public class PropertyOptionsController(IMediator mediator, ILogger<PropertiesController> logger) : ControllerBase
     {
         private readonly ILogger<PropertiesController> _logger = logger;
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<PropertyModel>), StatusCodes.Status200OK)]
-
+        [ProducesResponseType(typeof(IEnumerable<PropertyOptionsModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPropertyOptions()
         {
             _logger.LogInformation("Attempt to get all property options from Db.");

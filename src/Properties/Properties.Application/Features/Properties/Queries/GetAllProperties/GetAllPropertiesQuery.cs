@@ -3,7 +3,7 @@ using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties
 {
-    public class GetAllPropertyOptionsQuery : IRequest<IEnumerable<Property>>
+    public class GetAllPropertiesQuery : IRequest<IEnumerable<Property>>
     {
     }
 }

@@ -16,21 +16,21 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         {
             try
             {
-                var buildingTypes = await _context.BuildingTypes.Select(bt => bt.Description).ToListAsync();
-                var finishTypes = await _context.Finishes.Select(bt => bt.Description).ToListAsync();
-                var furnishmentTypes = await _context.Furnishments.Select(bt => bt.Description).ToListAsync();
-                var garageTypes = await _context.Garages.Select(bt => bt.Description).ToListAsync();
-                var heatingTypes = await _context.Heatings.Select(bt => bt.Description).ToListAsync();
-                var neighbourhoods = await _context.Neighborhoods.Select(bt => bt.Description).ToListAsync();
+                var buildingTypes = _context.BuildingTypes.Select(bt => bt.Description).ToListAsync();
+                var finishTypes = _context.Finishes.Select(bt => bt.Description).ToListAsync();
+                var furnishmentTypes = _context.Furnishments.Select(bt => bt.Description).ToListAsync();
+                var garageTypes = _context.Garages.Select(bt => bt.Description).ToListAsync();
+                var heatingTypes = _context.Heating.Select(bt => bt.Description).ToListAsync();
+                var neighbourhoods = _context.Neighborhoods.Select(bt => bt.Description).ToListAsync();
 
                 PropertyOptionsModel propertyOptionsModel = new PropertyOptionsModel()
                 {
-                    BuildingType = buildingTypes,
-                    Finish = finishTypes,
-                    Furnishment = furnishmentTypes,
-                    Garage = garageTypes,
-                    Heating = heatingTypes,
-                    Neighbourhood = neighbourhoods
+                    BuildingType = await buildingTypes,
+                    Finish = await finishTypes,
+                    Furnishment = await furnishmentTypes,
+                    Garage = await garageTypes,
+                    Heating = await heatingTypes,
+                    Neighbourhood = await neighbourhoods
                 };
 
                 _logger.LogInformation("Property options returned from db");

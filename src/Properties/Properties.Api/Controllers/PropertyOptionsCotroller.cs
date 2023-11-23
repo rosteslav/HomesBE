@@ -7,7 +7,6 @@ using MediatR;
 namespace BuildingMarket.Properties.Api.Controllers
 {
     [ApiController]
-    [AllowAnonymous]
     [Route("[controller]")]
     public class PropertyOptionsCotroller(IMediator mediator, ILogger<PropertiesController> logger) : ControllerBase
     {
@@ -20,18 +19,9 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         public async Task<ActionResult> GetPropertyOptions()
         {
-            try
-            {
-                await _mediator.Send(new GetAllPropertyOptionsQuery());
+            _logger.LogInformation("Attempt to get all property options from Db.");
 
-                _logger.LogInformation("Retreive property options from Db.");
-            }
-            catch (Exception e)
-            {
-
-                _logger.LogError(e, "Error occured while extracting property options.");
-            }
-            
+            await _mediator.Send(new GetAllPropertyOptionsQuery());
 
             return Ok(propertyOptionsModel);
         }

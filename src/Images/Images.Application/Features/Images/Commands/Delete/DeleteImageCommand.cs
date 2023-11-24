@@ -1,7 +1,7 @@
 ﻿using BuildingMarket.Images.Application.Models.Enums;
 using MediatR;
 
-namespace BuildingMarket.Images.Application.Features.Image.Commands.Delete
+namespace BuildingMarket.Images.Application.Features.Images.Commands.Delete
 {
     public class DeleteImageCommand : IRequest<DeleteImageResult>
     {

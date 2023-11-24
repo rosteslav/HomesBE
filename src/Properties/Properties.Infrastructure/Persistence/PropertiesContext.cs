@@ -24,6 +24,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
         public virtual DbSet<AdditionalUserData> AdditionalUserData { get; set; }
 
+        public virtual DbSet<Image> Images { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -212,6 +214,20 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.Property(addData => addData.UserId)
                     .HasColumnName("user_id")
                     .IsRequired(true);
+            });
+
+            modelBuilder.Entity<Image>(entity =>
+            {
+                entity.ToTable("Images", "properties");
+
+                entity.HasKey(img => img.Id);
+
+                entity.Property(img => img.ImageURL)
+                    .HasColumnName("image_url")
+                    .HasColumnType("text");
+
+                entity.Property(img => img.PropertyId)
+                    .HasColumnName("property_id");
             });
 
             modelBuilder.Entity<Neighborhood>()

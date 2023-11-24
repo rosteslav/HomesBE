@@ -9,5 +9,6 @@
         public required decimal Price { get; set; }
         public required string Details { get; set; }
         public required DateTime CreatedOnLocalTime { get; set; }
+        public required IEnumerable<string> Images { get; set; }
     }
 }

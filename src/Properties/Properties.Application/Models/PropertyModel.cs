@@ -4,5 +4,6 @@ namespace BuildingMarket.Properties.Application.Models
     {
         public DateTime CreatedOnLocalTime { get; set; }
         public ContactInfo ContactInfo { get; set; }
+        public IEnumerable<string> Images { get; set; }
     }
 }

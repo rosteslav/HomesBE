@@ -43,11 +43,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                                 Price = property.Price,
                                 NumberOfRooms = property.NumberOfRooms,
                                 Space = property.Space,
-                                Images = images.Select(x => new ImageModel
-                                {
-                                    Id = x.Id,
-                                    ImageURL = x.ImageURL
-                                })
+                                Images = images.Select(img => img.ImageURL)
                             };
 
                 return await items.ToArrayAsync();
@@ -111,11 +107,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                                 LastName = userData.LastName,
                                 PhoneNumber = userData.PhoneNumber
                             },
-                            Images = images.Select(y => new ImageModel
-                            {
-                                Id = y.Id,
-                                ImageURL = y.ImageURL
-                            })
+                            Images = images.Select(img => img.ImageURL)
                         };
 
             return await query.ToArrayAsync();

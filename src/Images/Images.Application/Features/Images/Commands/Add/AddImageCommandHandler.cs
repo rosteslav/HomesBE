@@ -9,19 +9,19 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.Add
         IImagesRepository repository,
         IPropertiesRepository propertiesRepository,
         IImgbbService imgbbService)
-        : IRequestHandler<AddImageCommand, Tuple<string, int>>
+        : IRequestHandler<AddImageCommand, (string, int)>
     {
         private readonly IImagesRepository _repository = repository;
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
         private readonly IImgbbService _imgbbService = imgbbService;
 
-        public async Task<Tuple<string, int>> Handle(
+        public async Task<(string, int)> Handle(
             AddImageCommand request,
             CancellationToken cancellationToken)
         {
             if (!await _propertiesRepository.PropertyExists(request.PropertyId))
             {
-                return Tuple.Create(string.Empty, default(int));
+                return (string.Empty, default(int));
             }
 
             string ext = Path.GetExtension(request.FormFile.FileName);
@@ -32,7 +32,7 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.Add
 
             if (imageData is null)
             {
-                return Tuple.Create(string.Empty, default(int));
+                return (string.Empty, default(int));
             }
 
             var image = new Image
@@ -43,7 +43,7 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.Add
             
             await _repository.Add(image);
 
-            return Tuple.Create(image.ImageURL, image.Id);
+            return (image.ImageURL, image.Id);
         }
     }
 }

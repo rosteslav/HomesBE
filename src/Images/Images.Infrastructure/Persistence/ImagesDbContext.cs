@@ -15,7 +15,7 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
 
             modelBuilder.Entity<Image>(entity =>
             {
-                entity.ToTable("Images", "properties");
+                entity.ToTable("Images", "properties", i => i.ExcludeFromMigrations());
 
                 entity.HasKey(img => img.Id);
 
@@ -29,7 +29,7 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
 
             modelBuilder.Entity<Property>(entity =>
             {
-                entity.ToTable("Properties", "properties");
+                entity.ToTable("Properties", "properties", p => p.ExcludeFromMigrations());
 
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)

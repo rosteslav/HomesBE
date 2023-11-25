@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -8,58 +9,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class BuldingOptions : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "building_type",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "finish",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "furnishment",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "garage",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "heating",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "neighbourhood",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true);
+            migrationBuilder.EnsureSchema(
+                name: "properties");
 
             migrationBuilder.CreateTable(
                 name: "BuildingType",
@@ -132,6 +88,21 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Images",
+                schema: "properties",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    property_id = table.Column<int>(type: "integer", nullable: false),
+                    image_url = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Neighbourhoods",
                 schema: "properties",
                 columns: table => new
@@ -144,6 +115,34 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Neighbourhoods", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Properties",
+                schema: "properties",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    number_of_rooms = table.Column<int>(type: "integer", nullable: false),
+                    space = table.Column<float>(type: "real", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: true),
+                    price = table.Column<float>(type: "real", nullable: false),
+                    floor = table.Column<int>(type: "integer", nullable: false),
+                    total_floors_in_building = table.Column<int>(type: "integer", nullable: false),
+                    building_type = table.Column<string>(type: "character varying", maxLength: 255, nullable: true),
+                    finish = table.Column<string>(type: "character varying", maxLength: 255, nullable: true),
+                    furnishment = table.Column<string>(type: "character varying", maxLength: 255, nullable: true),
+                    garage = table.Column<string>(type: "character varying", maxLength: 255, nullable: true),
+                    heating = table.Column<string>(type: "character varying", maxLength: 255, nullable: true),
+                    neighbourhood = table.Column<string>(type: "character varying", maxLength: 255, nullable: true),
+                    seller_id = table.Column<string>(type: "text", nullable: true),
+                    broker_id = table.Column<string>(type: "text", nullable: true),
+                    created_on_utc_time = table.Column<DateTime>(type: "timestamptz", nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc))
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Properties", x => x.id);
                 });
 
             migrationBuilder.InsertData(
@@ -295,38 +294,16 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 schema: "properties");
 
             migrationBuilder.DropTable(
+                name: "Images",
+                schema: "properties");
+
+            migrationBuilder.DropTable(
                 name: "Neighbourhoods",
                 schema: "properties");
 
-            migrationBuilder.DropColumn(
-                name: "building_type",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "finish",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "furnishment",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "garage",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "heating",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "neighbourhood",
-                schema: "properties",
-                table: "Properties");
+            migrationBuilder.DropTable(
+                name: "Properties",
+                schema: "properties");
         }
     }
 }

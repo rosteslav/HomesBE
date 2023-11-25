@@ -1,12 +1,10 @@
-using BuildingMarket.Properties.Infrastructure.Persistence;
 using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
-using AutoMapper.QueryableExtensions;
+using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
-using AutoMapper;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
@@ -82,35 +80,44 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         private async Task<IEnumerable<PropertyModel>> GetByFilterExpression(Expression<Func<Property, bool>> filterExpression)
         {
-            var query = from property in _context.Properties.Where(filterExpression)
-                        join user in _context.Users on property.BrokerId ?? property.SellerId equals user.Id
-                        join userData in _context.AdditionalUserData on user.Id equals userData.UserId
-                        join image in _context.Images on property.Id equals image.PropertyId into images
-                        select new PropertyModel
-                        {
-                            BrokerId = property.BrokerId,
-                            BuildingType = property.BuildingType,
-                            CreatedOnLocalTime = property.CreatedOnUtcTime.ToLocalTime(),
-                            Finish = property.Finish,
-                            Floor = property.Floor,
-                            Furnishment = property.Furnishment,
-                            Garage = property.Garage,
-                            Heating = property.Heating,
-                            NumberOfRooms = property.NumberOfRooms,
-                            Price = property.Price,
-                            Neighbourhood = property.Neighbourhood,
-                            Space = property.Space,
-                            TotalFloorsInBuilding = property.TotalFloorsInBuilding,
-                            Description = property.Description,
-                            ContactInfo = new ContactInfo
-                            {
-                                Email = user.Email,
-                                FirstName = userData.FirstName,
-                                LastName = userData.LastName,
-                                PhoneNumber = userData.PhoneNumber
-                            },
-                            Images = images.Select(img => img.ImageURL)
-                        };
+            var query = _context.Properties.Where(filterExpression)
+                .Join(_context.Users,
+                    property => property.BrokerId ?? property.SellerId,
+                    user => user.Id,
+                    (property, user) => new { property, user })
+                .Join(_context.AdditionalUserData,
+                    pu => pu.user.Id,
+                    additionalUserData => additionalUserData.UserId,
+                    (pu, additionalUserData) => new { pu.user, pu.property, additionalUserData })
+                .GroupJoin(_context.Images,
+                    pua => pua.property.Id,
+                    img => img.PropertyId,
+                    (pua, image) => new { pua.user, pua.property, pua.additionalUserData, image })
+                .Select(data => new PropertyModel
+                {
+                    BrokerId = data.property.BrokerId,
+                    BuildingType = data.property.BuildingType,
+                    CreatedOnLocalTime = data.property.CreatedOnUtcTime.ToLocalTime(),
+                    Finish = data.property.Finish,
+                    Floor = data.property.Floor,
+                    Furnishment = data.property.Furnishment,
+                    Garage = data.property.Garage,
+                    Heating = data.property.Heating,
+                    NumberOfRooms = data.property.NumberOfRooms,
+                    Price = data.property.Price,
+                    Neighbourhood = data.property.Neighbourhood,
+                    Space = data.property.Space,
+                    TotalFloorsInBuilding = data.property.TotalFloorsInBuilding,
+                    Description = data.property.Description,
+                    ContactInfo = new ContactInfo
+                    {
+                        Email = data.user.Email,
+                        FirstName = data.additionalUserData.FirstName,
+                        LastName = data.additionalUserData.LastName,
+                        PhoneNumber = data.additionalUserData.PhoneNumber,
+                    },
+                    Images = data.image.Select(x => x.ImageURL)
+                });
 
             return await query.ToArrayAsync();
         }

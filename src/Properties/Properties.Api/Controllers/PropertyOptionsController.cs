@@ -1,8 +1,7 @@
 ﻿using BuildingMarket.Properties.Application.Features.PropertyOptions.Queries.GetAllBuilidngTypes;
 using BuildingMarket.Properties.Application.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BuildingMarket.Properties.Api.Controllers
 {

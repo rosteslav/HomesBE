@@ -8,5 +8,6 @@
         public required IEnumerable<string> Garage { get; set; }
         public required IEnumerable<string> Heating { get; set; }
         public required IEnumerable<string> Neighbourhood { get; set; }
+        public required IEnumerable<string> NumberOfRooms { get; set; }
     }
 }

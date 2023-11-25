@@ -19,5 +19,4 @@ namespace BuildingMarket.Admins.Domain.Entities
         public string BrokerId { get; set; }
         public required DateTime CreatedOnUtcTime { get; set; }
     }
-    }
 }

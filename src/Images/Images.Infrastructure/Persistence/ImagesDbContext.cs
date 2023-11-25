@@ -98,7 +98,6 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
                     .HasColumnType("timestamptz")
                     .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
             });
-            });
         }
     }
 }

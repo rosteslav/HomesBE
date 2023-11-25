@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace BuildingMarket.Images.Application.Features.Image.Commands.Add
+namespace BuildingMarket.Images.Application.Features.Images.Commands.Add
 {
-    public class AddImageCommand : IRequest<string>
+    public class AddImageCommand : IRequest<(string, int)>
     {
         public IFormFile FormFile { get; set; }
         public int PropertyId { get; set; }

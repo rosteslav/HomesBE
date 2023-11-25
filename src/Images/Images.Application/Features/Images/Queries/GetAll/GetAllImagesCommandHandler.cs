@@ -1,7 +1,7 @@
 ﻿using BuildingMarket.Images.Application.Contracts;
 using MediatR;
 
-namespace BuildingMarket.Images.Application.Features.Image.Queries.GetAll
+namespace BuildingMarket.Images.Application.Features.Images.Queries.GetAll
 {
     public class GetAllImagesCommandHandler(IImagesRepository repository) : IRequestHandler<GetAllImagesCommand, IEnumerable<Domain.Entities.Image>>
     {

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Images.Application.Features.Image.Commands.Add;
-using BuildingMarket.Images.Application.Features.Image.Commands.Delete;
-using BuildingMarket.Images.Application.Features.Image.Queries.GetAll;
+using BuildingMarket.Images.Application.Features.Images.Commands.Add;
+using BuildingMarket.Images.Application.Features.Images.Commands.Delete;
+using BuildingMarket.Images.Application.Features.Images.Queries.GetAll;
 using BuildingMarket.Images.Application.Models;
 using BuildingMarket.Images.Application.Models.Enums;
 using MediatR;
@@ -44,20 +44,20 @@ namespace BuildingMarket.Images.Api.Controllers
             var userId = User.Claims
                 .First(x => x.Type == ClaimTypes.Sid).Value;
 
-            var imageUrl = await _mediator.Send(new AddImageCommand
+            (string imageUrl, int id) = await _mediator.Send(new AddImageCommand
             {
                 FormFile = image,
                 PropertyId = propertyId,
                 UserId = userId
             });
 
-            if (string.IsNullOrEmpty(imageUrl))
+            if (string.IsNullOrEmpty(imageUrl) || id == default)
             {
                 _logger.LogError("Image upload was not successful.");
                 return BadRequest();
             }
 
-            return Ok(imageUrl);
+            return Ok(new { imageUrl, id });
         }
 
         [HttpGet]

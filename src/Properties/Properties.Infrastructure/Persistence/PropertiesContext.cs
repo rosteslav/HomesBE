@@ -347,15 +347,15 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<NumberOfRooms>()
                 .HasData(
-                    new { Id = 1, Description = "едностаен" },
-                    new { Id = 2, Description = "двустаен" },
-                    new { Id = 3, Description = "тристаен" },
-                    new { Id = 4, Description = "четиристаен" },
-                    new { Id = 5, Description = "многостаен" },
-                    new { Id = 6, Description = "мезонет" },
-                    new { Id = 7, Description = "гараж" },
-                    new { Id = 8, Description = "склад" },
-                    new { Id = 9, Description = "таванско помещение" });
+                    new { Id = 1, Description = "Едностаен" },
+                    new { Id = 2, Description = "Двустаен" },
+                    new { Id = 3, Description = "Тристаен" },
+                    new { Id = 4, Description = "Четиристаен" },
+                    new { Id = 5, Description = "Многостаен" },
+                    new { Id = 6, Description = "Мезонет" },
+                    new { Id = 7, Description = "Гараж" },
+                    new { Id = 8, Description = "Склад" },
+                    new { Id = 9, Description = "Таванско помещение" });
         }
     }
 }

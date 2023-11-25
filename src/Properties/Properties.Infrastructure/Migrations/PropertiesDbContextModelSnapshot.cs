@@ -673,47 +673,47 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "едностаен"
+                            Description = "Едностаен"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "двустаен"
+                            Description = "Двустаен"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "тристаен"
+                            Description = "Тристаен"
                         },
                         new
                         {
                             Id = 4,
-                            Description = "четиристаен"
+                            Description = "Четиристаен"
                         },
                         new
                         {
                             Id = 5,
-                            Description = "многостаен"
+                            Description = "Многостаен"
                         },
                         new
                         {
                             Id = 6,
-                            Description = "мезонет"
+                            Description = "Мезонет"
                         },
                         new
                         {
                             Id = 7,
-                            Description = "гараж"
+                            Description = "Гараж"
                         },
                         new
                         {
                             Id = 8,
-                            Description = "склад"
+                            Description = "Склад"
                         },
                         new
                         {
                             Id = 9,
-                            Description = "таванско помещение"
+                            Description = "Таванско помещение"
                         });
                 });
 

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
     [DbContext(typeof(PropertiesDbContext))]
-    [Migration("20231125152440_ChangedNumberOfRoomsToString")]
+    [Migration("20231125184206_ChangedNumberOfRoomsToString")]
     partial class ChangedNumberOfRoomsToString
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "7.0.14")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -59,7 +59,10 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdditionalData", "security");
+                    b.ToTable("AdditionalData", "security", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.BuildingType", b =>
@@ -673,47 +676,47 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "едностаен"
+                            Description = "Едностаен"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "двустаен"
+                            Description = "Двустаен"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "тристаен"
+                            Description = "Тристаен"
                         },
                         new
                         {
                             Id = 4,
-                            Description = "четиристаен"
+                            Description = "Четиристаен"
                         },
                         new
                         {
                             Id = 5,
-                            Description = "многостаен"
+                            Description = "Многостаен"
                         },
                         new
                         {
                             Id = 6,
-                            Description = "мезонет"
+                            Description = "Мезонет"
                         },
                         new
                         {
                             Id = 7,
-                            Description = "гараж"
+                            Description = "Гараж"
                         },
                         new
                         {
                             Id = 8,
-                            Description = "склад"
+                            Description = "Склад"
                         },
                         new
                         {
                             Id = 9,
-                            Description = "таванско помещение"
+                            Description = "Таванско помещение"
                         });
                 });
 
@@ -848,7 +851,10 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", "security");
+                    b.ToTable("Users", "security", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 #pragma warning restore 612, 618
         }

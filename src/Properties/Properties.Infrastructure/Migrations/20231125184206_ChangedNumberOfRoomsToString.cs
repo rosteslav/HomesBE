@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -43,15 +42,15 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 columns: new[] { "id", "number_of_rooms_type" },
                 values: new object[,]
                 {
-                    { 1, "едностаен" },
-                    { 2, "двустаен" },
-                    { 3, "тристаен" },
-                    { 4, "четиристаен" },
-                    { 5, "многостаен" },
-                    { 6, "мезонет" },
-                    { 7, "гараж" },
-                    { 8, "склад" },
-                    { 9, "таванско помещение" }
+                    { 1, "Едностаен" },
+                    { 2, "Двустаен" },
+                    { 3, "Тристаен" },
+                    { 4, "Четиристаен" },
+                    { 5, "Многостаен" },
+                    { 6, "Мезонет" },
+                    { 7, "Гараж" },
+                    { 8, "Склад" },
+                    { 9, "Таванско помещение" }
                 });
         }
 

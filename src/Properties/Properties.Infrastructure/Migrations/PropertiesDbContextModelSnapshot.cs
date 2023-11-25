@@ -775,7 +775,8 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                         .HasColumnName("neighbourhood");
 
                     b.Property<string>("NumberOfRooms")
-                        .HasColumnType("text")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
                         .HasColumnName("number_of_rooms");
 
                     b.Property<float>("Price")

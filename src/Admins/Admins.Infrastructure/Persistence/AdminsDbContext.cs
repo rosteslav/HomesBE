@@ -36,7 +36,9 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
                     .HasColumnName("id");
 
                 entity.Property(e => e.NumberOfRooms)
-                    .HasColumnName("number_of_rooms");
+                    .HasColumnName("number_of_rooms")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.Space)
                     .HasColumnName("space")

@@ -17,7 +17,8 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 name: "number_of_rooms",
                 schema: "properties",
                 table: "Properties",
-                type: "text",
+                type: "character varying",
+                maxLength: 255,
                 nullable: true,
                 oldClrType: typeof(int),
                 oldType: "integer");
@@ -69,7 +70,8 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 nullable: false,
                 defaultValue: 0,
                 oldClrType: typeof(string),
-                oldType: "text",
+                oldType: "character varying",
+                oldMaxLength: 255,
                 oldNullable: true);
         }
     }

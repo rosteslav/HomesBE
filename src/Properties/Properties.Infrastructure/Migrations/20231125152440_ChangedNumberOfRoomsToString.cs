@@ -14,9 +14,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "security");
-
             migrationBuilder.AlterColumn<string>(
                 name: "number_of_rooms",
                 schema: "properties",

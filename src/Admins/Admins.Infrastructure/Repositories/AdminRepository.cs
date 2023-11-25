@@ -128,7 +128,8 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
                 TotalFloorsInBuilding = int.Parse(data[TotalFloorsInBuildingPosition]),
                 SellerId = SetValueOrThrow(data[SellerIdPosition]),
                 BrokerId = SetValueOrNull(data[BrokerIdPosition]),
-                Description = SetValueOrNull(data[DescriptionPosition])
+                Description = SetValueOrNull(data[DescriptionPosition]),
+                CreatedOnUtcTime = DateTime.UtcNow
             };
 
         private static string SetValueOrThrow(string value)

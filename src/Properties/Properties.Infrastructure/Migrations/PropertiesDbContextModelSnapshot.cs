@@ -17,7 +17,7 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "7.0.14")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -56,7 +56,10 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdditionalData", "security");
+                    b.ToTable("AdditionalData", "security", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.BuildingType", b =>
@@ -845,7 +848,10 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", "security");
+                    b.ToTable("Users", "security", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 #pragma warning restore 612, 618
         }

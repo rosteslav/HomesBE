@@ -18,10 +18,7 @@
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Dev",
                 "ConnectionStrings__PostgresConnectionString": "Host=isabelle.db.elephantsql.com;Port=5432;Database=vvizkylm;Username=vvizkylm;Password=7mXXhXO5jLwqLNrCFx1Vmzt97nLcpabv;ApplicationName=BuildingMarket;",
-                "JWT__Secret": "JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr",
-                "JWT__ValidAudience": "http://localhost:4200",
-                "JWT__ValidIssuer": "http://localhost:5000",
-                "JWT__ValidHours": "3"
+                "JWT__Secret": "JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr"
             }
         },
         "AuthProject-Test": {
@@ -29,9 +26,11 @@
             "dotnetRunMessages": true,
             "launchBrowser": true,
             "launchUrl": "swagger",
-            "applicationUrl": "https://localhost:7213;http://localhost:5220",
+            "applicationUrl": "http://localhost:5220",
             "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Test"
+                "ASPNETCORE_ENVIRONMENT": "Test",
+                "ConnectionStrings__PostgresConnectionString": "Host=lucky.db.elephantsql.com;Port=5432;Database=dgdycfyz;Username=dgdycfyz;Password=op-LlFN5Men2GJDhXcKZ0BhY4ebsWBbo;ApplicationName=BuildingMarket;",
+                "JWT__Secret": "JWTAuthenticationHIGHsecuredPasswordafesafEFs"
             }
         },
         "AuthProject-Prod": {
@@ -39,7 +38,7 @@
             "dotnetRunMessages": true,
             "launchBrowser": true,
             "launchUrl": "swagger",
-            "applicationUrl": "https://localhost:7213;http://localhost:5220",
+            "applicationUrl": "http://localhost:5220",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Prod"
             }

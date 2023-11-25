@@ -188,11 +188,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasMaxLength(255);
             });
 
-            modelBuilder.Entity<IdentityUser>().ToTable("Users", "security");
+            modelBuilder.Entity<IdentityUser>().ToTable("Users", "security", u => u.ExcludeFromMigrations());
 
             modelBuilder.Entity<AdditionalUserData>(entity =>
             {
-                entity.ToTable("AdditionalData", "security");
+                entity.ToTable("AdditionalData", "security", a => a.ExcludeFromMigrations());
                 entity.HasKey(addData => addData.Id);
 
                 entity.Property(addData => addData.Id)

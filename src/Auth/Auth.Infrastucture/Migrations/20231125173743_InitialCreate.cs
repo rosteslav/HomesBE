@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -6,29 +7,29 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Auth.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "public");
-
-            migrationBuilder.EnsureSchema(
                 name: "security");
 
             migrationBuilder.CreateTable(
-                name: "Items",
-                schema: "public",
+                name: "AdditionalData",
+                schema: "security",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying", maxLength: 255, nullable: true)
+                    first_name = table.Column<string>(type: "character varying", maxLength: 255, nullable: true),
+                    last_name = table.Column<string>(type: "character varying", maxLength: 255, nullable: true),
+                    phone_number = table.Column<string>(type: "character varying", maxLength: 15, nullable: true),
+                    user_id = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Items", x => x.id);
+                    table.PrimaryKey("PK_AdditionalData", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -238,8 +239,8 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Items",
-                schema: "public");
+                name: "AdditionalData",
+                schema: "security");
 
             migrationBuilder.DropTable(
                 name: "RoleClaims",

@@ -23,17 +23,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 newName: "number_of_rooms");
 
             migrationBuilder.AlterColumn<string>(
-                name: "type",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "character varying",
-                oldMaxLength: 255);
-
-            migrationBuilder.AlterColumn<string>(
                 name: "seller_id",
                 schema: "properties",
                 table: "Properties",
@@ -50,17 +39,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 nullable: false,
                 oldClrType: typeof(short),
                 oldType: "smallint");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "district",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "character varying",
-                oldMaxLength: 255);
 
             migrationBuilder.AlterColumn<int>(
                 name: "total_floors_in_building",
@@ -97,19 +75,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 newName: "number of rooms");
 
             migrationBuilder.AlterColumn<string>(
-                name: "type",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "character varying",
-                oldMaxLength: 255,
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
                 name: "seller_id",
                 schema: "properties",
                 table: "Properties",
@@ -128,19 +93,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "district",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "character varying",
-                oldMaxLength: 255,
-                oldNullable: true);
 
             migrationBuilder.AlterColumn<short>(
                 name: "total floors in building",

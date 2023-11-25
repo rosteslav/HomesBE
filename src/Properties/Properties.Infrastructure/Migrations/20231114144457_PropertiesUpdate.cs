@@ -26,15 +26,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 oldType: "text",
                 oldNullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "district",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: false,
-                defaultValue: "");
-
             migrationBuilder.AddColumn<short>(
                 name: "floor",
                 schema: "properties",
@@ -66,25 +57,11 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 type: "smallint",
                 nullable: false,
                 defaultValue: (short)0);
-
-            migrationBuilder.AddColumn<string>(
-                name: "type",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: false,
-                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "district",
-                schema: "properties",
-                table: "Properties");
-
             migrationBuilder.DropColumn(
                 name: "floor",
                 schema: "properties",
@@ -102,11 +79,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
 
             migrationBuilder.DropColumn(
                 name: "total floors in building",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "type",
                 schema: "properties",
                 table: "Properties");
 

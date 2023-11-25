@@ -16,7 +16,6 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
             modelBuilder.Entity<IdentityUser>().ToTable("Users", "security");
             modelBuilder.Entity<IdentityRole>().ToTable("Roles", "security");
             modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", "security");
-
             modelBuilder.Entity<Property>(entity =>
             {
                 entity.ToTable("Properties", "properties");
@@ -82,6 +81,11 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
                 entity.Property(e => e.BrokerId)
                     .HasColumnName("broker_id")
                     .IsRequired(false);
+
+                entity.Property(e => e.CreatedOnUtcTime)
+                    .HasColumnName("created_on_utc_time")
+                    .HasColumnType("timestamptz")
+                    .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
             });
         }
     }

@@ -10,16 +10,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "district",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "type",
-                schema: "properties",
-                table: "Properties");
-
             migrationBuilder.AddColumn<string>(
                 name: "description",
                 schema: "properties",
@@ -48,22 +38,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 name: "price",
                 schema: "properties",
                 table: "Properties");
-
-            migrationBuilder.AddColumn<string>(
-                name: "district",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "type",
-                schema: "properties",
-                table: "Properties",
-                type: "character varying",
-                maxLength: 255,
-                nullable: true);
         }
     }
 }

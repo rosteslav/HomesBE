@@ -13,36 +13,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "building_type_id",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "finish_id",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "furnishment_id",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "garage_id",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "heating_id",
-                schema: "properties",
-                table: "Properties");
-
-            migrationBuilder.DropColumn(
-                name: "neighborhood_id",
-                schema: "properties",
-                table: "Properties");
-
             migrationBuilder.AddColumn<string>(
                 name: "building_type",
                 schema: "properties",
@@ -357,54 +327,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 name: "neighbourhood",
                 schema: "properties",
                 table: "Properties");
-
-            migrationBuilder.AddColumn<int>(
-                name: "building_type_id",
-                schema: "properties",
-                table: "Properties",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "finish_id",
-                schema: "properties",
-                table: "Properties",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "furnishment_id",
-                schema: "properties",
-                table: "Properties",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "garage_id",
-                schema: "properties",
-                table: "Properties",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "heating_id",
-                schema: "properties",
-                table: "Properties",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "neighborhood_id",
-                schema: "properties",
-                table: "Properties",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
         }
     }
 }

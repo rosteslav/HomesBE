@@ -613,11 +613,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                         .HasColumnType("character varying")
                         .HasColumnName("building_type");
 
-                    b.Property<string>("District")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
-                        .HasColumnName("district");
-
                     b.Property<string>("Finish")
                         .HasMaxLength(255)
                         .HasColumnType("character varying")

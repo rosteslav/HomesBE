@@ -1,45 +1,49 @@
 ﻿{
-  "$schema": "http://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:21370",
-      "sslPort": 44305
-    }
-  },
-  "profiles": {
-    "Images-Dev": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5223",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Dev",
-        "ConnectionStrings__PostgresConnectionString": "Host=isabelle.db.elephantsql.com;Port=5432;Database=vvizkylm;Username=vvizkylm;Password=7mXXhXO5jLwqLNrCFx1Vmzt97nLcpabv;ApplicationName=BuildingMarket;",
-        "Imgbb": "b9b190f2e634086260d5005e012f8557"
-      }
+    "$schema": "http://json.schemastore.org/launchsettings.json",
+    "iisSettings": {
+        "windowsAuthentication": false,
+        "anonymousAuthentication": true,
+        "iisExpress": {
+            "applicationUrl": "http://localhost:21370",
+            "sslPort": 44305
+        }
     },
-    "Images-Test": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5223",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Test"
-      }
-    },
-    "Images-Prod": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5223",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Prod"
-      }
+    "profiles": {
+        "Images-Dev": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "http://localhost:5223",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Dev",
+                "ConnectionStrings__PostgresConnectionString": "Host=isabelle.db.elephantsql.com;Port=5432;Database=vvizkylm;Username=vvizkylm;Password=7mXXhXO5jLwqLNrCFx1Vmzt97nLcpabv;ApplicationName=BuildingMarket;",
+                "JWT__Secret": "JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr",
+                "Imgbb": "b9b190f2e634086260d5005e012f8557"
+            }
+        },
+        "Images-Test": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "http://localhost:5223",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Test",
+                "ConnectionStrings__PostgresConnectionString": "Host=lucky.db.elephantsql.com;Port=5432;Database=dgdycfyz;Username=dgdycfyz;Password=op-LlFN5Men2GJDhXcKZ0BhY4ebsWBbo;ApplicationName=BuildingMarket;",
+                "JWT__Secret": "JWTAuthenticationHIGHsecuredPasswordafesafEFs",
+                "Imgbb": "908c9e0177edb962d0af07e1bf513783"
+            }
+        },
+        "Images-Prod": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "http://localhost:5223",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Prod"
+            }
+        }
     }
-  }
 }

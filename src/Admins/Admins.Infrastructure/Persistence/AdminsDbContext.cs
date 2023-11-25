@@ -13,13 +13,23 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<IdentityUser>().ToTable("Users", "security");
-            modelBuilder.Entity<IdentityRole>().ToTable("Roles", "security");
-            modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", "security");
-
+            modelBuilder.Entity<IdentityUser>()
+                .ToTable("Users", "security", u => u.ExcludeFromMigrations());
+            modelBuilder.Entity<IdentityRole>()
+                .ToTable("Roles", "security", u => u.ExcludeFromMigrations());
+            modelBuilder.Entity<IdentityUserClaim<string>>()
+                .ToTable("UserClaims", "security", u => u.ExcludeFromMigrations());
+            modelBuilder.Entity<IdentityUserRole<string>>()
+                .ToTable("UserRoles", "security", u => u.ExcludeFromMigrations());
+            modelBuilder.Entity<IdentityUserLogin<string>>()
+                .ToTable("UserLogins", "security", u => u.ExcludeFromMigrations());
+            modelBuilder.Entity<IdentityRoleClaim<string>>()
+                .ToTable("RoleClaims", "security", u => u.ExcludeFromMigrations());
+            modelBuilder.Entity<IdentityUserToken<string>>()
+                .ToTable("UserTokens", "security", u => u.ExcludeFromMigrations());
             modelBuilder.Entity<Property>(entity =>
             {
-                entity.ToTable("Properties", "properties");
+                entity.ToTable("Properties", "properties", p => p.ExcludeFromMigrations());
 
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
@@ -82,6 +92,11 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
                 entity.Property(e => e.BrokerId)
                     .HasColumnName("broker_id")
                     .IsRequired(false);
+
+                entity.Property(e => e.CreatedOnUtcTime)
+                    .HasColumnName("created_on_utc_time")
+                    .HasColumnType("timestamptz")
+                    .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
             });
         }
     }

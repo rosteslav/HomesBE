@@ -190,6 +190,20 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasMaxLength(255);
             });
 
+            modelBuilder.Entity<NumberOfRooms>(entity =>
+            {
+                entity.ToTable("NumberOfRoomsType", "properties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("number_of_rooms_type")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+            });
+
             modelBuilder.Entity<IdentityUser>().ToTable("Users", "security", u => u.ExcludeFromMigrations());
 
             modelBuilder.Entity<AdditionalUserData>(entity =>
@@ -222,7 +236,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<Image>(entity =>
             {
-                entity.ToTable("Images", "properties");
+                entity.ToTable("Images", "properties", i => i.ExcludeFromMigrations());
 
                 entity.HasKey(img => img.Id);
 
@@ -232,20 +246,6 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
                 entity.Property(img => img.PropertyId)
                     .HasColumnName("property_id");
-            });
-
-            modelBuilder.Entity<NumberOfRooms>(entity =>
-            {
-                entity.ToTable("NumberOfRoomsType", "properties");
-
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id)
-                    .HasColumnName("id");
-
-                entity.Property(e => e.Description)
-                    .HasColumnName("number_of_rooms_type")
-                    .HasColumnType("character varying")
-                    .HasMaxLength(255);
             });
 
             modelBuilder.Entity<Neighborhood>()

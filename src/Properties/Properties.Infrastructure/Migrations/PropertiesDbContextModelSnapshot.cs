@@ -270,7 +270,10 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images", "properties");
+                    b.ToTable("Images", "properties", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.Neighborhood", b =>

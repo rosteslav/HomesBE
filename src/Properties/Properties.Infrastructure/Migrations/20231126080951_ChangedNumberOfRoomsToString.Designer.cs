@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
     [DbContext(typeof(PropertiesDbContext))]
-    [Migration("20231125212501_ChangedNumberOfRoomsToString")]
+    [Migration("20231126080951_ChangedNumberOfRoomsToString")]
     partial class ChangedNumberOfRoomsToString
     {
         /// <inheritdoc />
@@ -273,7 +273,10 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images", "properties");
+                    b.ToTable("Images", "properties", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.Neighborhood", b =>

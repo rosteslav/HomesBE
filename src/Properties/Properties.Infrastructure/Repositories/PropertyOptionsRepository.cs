@@ -4,7 +4,6 @@ using BuildingMarket.Properties.Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
     public class PropertyOptionsRepository(PropertiesDbContext context, ILogger<PropertyOptionsRepository> logger) : IPropertyOptionsRepository
@@ -19,11 +18,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 PropertyOptionsModel propertyOptionsModel = new PropertyOptionsModel()
                 {
                     BuildingType = await _context.BuildingTypes.Select(bt => bt.Description).ToListAsync(),
-                    Finish = await _context.Finishes.Select(bt => bt.Description).ToListAsync(),
-                    Furnishment = await _context.Furnishments.Select(bt => bt.Description).ToListAsync(),
-                    Garage = await _context.Garages.Select(bt => bt.Description).ToListAsync(),
-                    Heating = await _context.Heating.Select(bt => bt.Description).ToListAsync(),
-                    Neighbourhood = await _context.Neighborhoods.Select(bt => bt.Description).ToListAsync()
+                    Finish = await _context.Finishes.Select(f => f.Description).ToListAsync(),
+                    Furnishment = await _context.Furnishments.Select(f => f.Description).ToListAsync(),
+                    Garage = await _context.Garages.Select(g => g.Description).ToListAsync(),
+                    Heating = await _context.Heating.Select(h => h.Description).ToListAsync(),
+                    Neighbourhood = await _context.Neighborhoods.Select(n => n.Description).ToListAsync(),
+                    NumberOfRooms = await _context.NumberOfRooms.Select(nr => nr.Description).ToListAsync()
                 };
 
                 _logger.LogInformation("Property options returned from db");
@@ -37,7 +37,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
 
             return (PropertyOptionsModel)Enumerable.Empty<string>();
-
         }
     }
 }

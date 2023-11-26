@@ -2,7 +2,7 @@
 {
     public class AddPropertyInputModel
     {
-        public required int NumberOfRooms { get; set; }
+        public required string NumberOfRooms { get; set; }
         public required decimal Space { get; set; }
         public string Description { get; set; }
         public required decimal Price { get; set; }

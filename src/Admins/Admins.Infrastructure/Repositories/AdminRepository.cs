@@ -115,7 +115,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
         private static Property MapProperty(string[] data)
             => new Property
             {
-                NumberOfRooms = int.Parse(data[NumberOfRoomsPosition]),
+                NumberOfRooms = SetValueOrThrow(data[NumberOfRoomsPosition]),
                 Space = decimal.Parse(data[SpacePosition]),
                 Price = decimal.Parse(data[PricePosition]),
                 BuildingType = SetValueOrThrow(data[BuildingTypePosition]),

@@ -1,27 +1,24 @@
-using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
+using BuildingMarket.Common.Models.Security;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
+using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetById;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetBySeller;
 using BuildingMarket.Properties.Application.Models;
-using BuildingMarket.Properties.Domain.Entities;
-using BuildingMarket.Common.Models.Security;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using AutoMapper;
-using MediatR;
 
 namespace BuildingMarket.Properties.Api.Controllers
 {
     [ApiController]
     [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker + "," + UserRoles.Admin)]
     [Route("[controller]")]
-    public class PropertiesController(IMediator mediator, ILogger<PropertiesController> logger, IMapper mapper) : ControllerBase
+    public class PropertiesController(IMediator mediator, ILogger<PropertiesController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<PropertiesController> _logger = logger;
-        private readonly IMapper _mapper = mapper;
 
         [HttpPost]
         [ProducesResponseType(typeof(AddPropertyOutputModel), StatusCodes.Status200OK)]

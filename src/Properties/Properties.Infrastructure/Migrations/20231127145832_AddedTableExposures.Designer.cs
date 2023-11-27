@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
     [DbContext(typeof(PropertiesDbContext))]
-    [Migration("20231127145247_AddedExposureTable")]
-    partial class AddedExposureTable
+    [Migration("20231127145832_AddedTableExposures")]
+    partial class AddedTableExposures
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,7 +117,7 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exposure", "properties");
+                    b.ToTable("Exposures", "properties");
                 });
 
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.Finish", b =>

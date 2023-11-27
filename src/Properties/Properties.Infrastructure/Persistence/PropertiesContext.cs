@@ -171,7 +171,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
             modelBuilder.Entity<Exposure>(entity =>
             {
-                entity.ToTable("Exposure", "properties");
+                entity.ToTable("Exposures", "properties");
 
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)

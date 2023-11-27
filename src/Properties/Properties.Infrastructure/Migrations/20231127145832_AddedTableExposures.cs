@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
-    public partial class AddedExposureTable : Migration
+    public partial class AddedTableExposures : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,7 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
-                name: "Exposure",
+                name: "Exposures",
                 schema: "properties",
                 columns: table => new
                 {
@@ -26,14 +26,14 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exposure", x => x.id);
+                    table.PrimaryKey("PK_Exposures", x => x.id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Exposure",
+                name: "Exposures",
                 schema: "properties");
 
             migrationBuilder.DropColumn(

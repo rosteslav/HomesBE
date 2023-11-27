@@ -22,8 +22,9 @@ services.AddIdentity<IdentityUser, IdentityRole>(options =>
 
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
+services.AddSwaggerGenBearer();
 services.AddCommonServices(configuration);
-services.AddApplicationServices(configuration);
+services.AddApplicationServices();
 services.AddInfrastructureServices(configuration);
 
 var app = builder.Build();

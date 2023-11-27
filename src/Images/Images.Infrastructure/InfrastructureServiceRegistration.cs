@@ -26,6 +26,7 @@ namespace BuildingMarket.Images.Infrastructure
             services.AddScoped<IImgbbService, ImgbbService>();
             services.AddScoped<IImagesRepository, ImagesRepository>();
             services.AddScoped<IPropertiesRepository, PropertiesRepository>();
+            services.AddScoped<IAdditionalUserDataRepository, AdditionalUserDataRepository>();
 
             return services;
         }

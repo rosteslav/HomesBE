@@ -3,38 +3,41 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
-    public partial class ExposureTableAdded : Migration
+    public partial class AddedExposureTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Exposure",
+                name: "exposure",
                 schema: "properties",
                 table: "Properties",
-                type: "text",
+                type: "character varying",
+                maxLength: 255,
                 nullable: true);
 
             migrationBuilder.CreateTable(
-                name: "Exposures",
+                name: "Exposure",
+                schema: "properties",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Description = table.Column<string>(type: "text", nullable: true)
+                    exposure_type = table.Column<string>(type: "character varying", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exposures", x => x.Id);
+                    table.PrimaryKey("PK_Exposure", x => x.id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Exposures");
+                name: "Exposure",
+                schema: "properties");
 
             migrationBuilder.DropColumn(
-                name: "Exposure",
+                name: "exposure",
                 schema: "properties",
                 table: "Properties");
         }

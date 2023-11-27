@@ -102,16 +102,19 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("exposure_type");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exposures");
+                    b.ToTable("Exposure", "properties");
                 });
 
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.Finish", b =>
@@ -765,7 +768,9 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                         .HasColumnName("description");
 
                     b.Property<string>("Exposure")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("exposure");
 
                     b.Property<string>("Finish")
                         .HasMaxLength(255)

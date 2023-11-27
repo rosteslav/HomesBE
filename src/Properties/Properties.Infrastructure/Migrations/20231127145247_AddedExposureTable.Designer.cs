@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
     [DbContext(typeof(PropertiesDbContext))]
-    [Migration("20231127144156_Exposure-Table-Added")]
-    partial class ExposureTableAdded
+    [Migration("20231127145247_AddedExposureTable")]
+    partial class AddedExposureTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,16 +105,19 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("exposure_type");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exposures");
+                    b.ToTable("Exposure", "properties");
                 });
 
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.Finish", b =>
@@ -768,7 +771,9 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                         .HasColumnName("description");
 
                     b.Property<string>("Exposure")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("exposure");
 
                     b.Property<string>("Finish")
                         .HasMaxLength(255)

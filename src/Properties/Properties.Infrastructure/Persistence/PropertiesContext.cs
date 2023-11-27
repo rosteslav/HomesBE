@@ -70,6 +70,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
 
+                entity.Property(e => e.Exposure)
+                    .HasColumnName("exposure")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
                 entity.Property(e => e.Finish)
                     .HasColumnName("finish")
                     .HasColumnType("character varying")
@@ -160,6 +165,20 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
                 entity.Property(e => e.Description)
                     .HasColumnName("furnishment_type")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<Exposure>(entity =>
+            {
+                entity.ToTable("Exposure", "properties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("exposure_type")
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
             });

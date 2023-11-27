@@ -9,7 +9,7 @@ namespace BuildingMarket.Auth.Application.Features.AuthOptions.Queries.GetAllBro
     {
         private readonly IAuthOptionsRepository _authOptionsRepository = authOptionsRepository;
 
-        public Task<IEnumerable<BrokerModel>> Handle(GetAllBrokersQuery request, CancellationToken cancellationToken)
-            => _authOptionsRepository.GetAllBrokers();
+        public async Task<IEnumerable<BrokerModel>> Handle(GetAllBrokersQuery request, CancellationToken cancellationToken)
+            => await _authOptionsRepository.GetAllBrokers();
     }
 }

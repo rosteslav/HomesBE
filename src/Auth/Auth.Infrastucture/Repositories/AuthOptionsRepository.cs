@@ -24,9 +24,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             {
                 var query = from user in _context.Users
                             join userRole in _context.UserRoles on user.Id equals userRole.UserId
-                            join role in _context.Roles on userRole.RoleId equals role.Id
+                            join role in _context.Roles.Where(r => r.Name == UserRoles.Broker) on userRole.RoleId equals role.Id
                             join userData in _context.AdditionalUserData on user.Id equals userData.UserId
-                            where role.Name == UserRoles.Broker
                             select new BrokerModel
                             {
                                 Id = user.Id,

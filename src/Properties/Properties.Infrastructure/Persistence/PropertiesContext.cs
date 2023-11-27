@@ -181,6 +181,12 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnName("exposure_type")
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
+
+                entity.HasData(
+                    new { Id = 1, Description = "Юг" },
+                    new { Id = 2, Description = "Изток" },
+                    new { Id = 3, Description = "Запад" },
+                    new { Id = 4, Description = "Север" });
             });
 
             modelBuilder.Entity<Finish>(entity =>

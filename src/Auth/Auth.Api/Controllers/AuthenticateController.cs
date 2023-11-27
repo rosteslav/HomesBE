@@ -1,5 +1,4 @@
 ﻿using BuildingMarket.Auth.Application.Features.Security.Commands.Register;
-using BuildingMarket.Auth.Application.Features.Security.Queries.GetUserRoles;
 using BuildingMarket.Auth.Application.Features.Security.Queries.Login;
 using BuildingMarket.Auth.Application.Models.Security;
 using BuildingMarket.Auth.Application.Models.Security.Enums;
@@ -17,15 +16,6 @@ namespace BuildingMarket.Auth.Api.Controllers
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<AuthenticateController> _logger = logger;
-
-        [HttpGet]
-        [Route("roles")]
-        [ProducesResponseType(typeof(UserRolesModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetUserRoles()
-        {
-            _logger.LogInformation($"Attempt to retrieve user roles");
-            return Ok(await _mediator.Send(new GetUserRolesQuery()));
-        }
 
         [HttpPost]
         [Route("login")]

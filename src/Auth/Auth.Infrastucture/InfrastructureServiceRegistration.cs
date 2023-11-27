@@ -22,6 +22,7 @@ namespace BuildingMarket.Auth.Infrastructure
 
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddScoped<IAdditionalUserDataRepository, AdditionalUserDataRepository>();
+            services.AddScoped<IAuthOptionsRepository, AuthOptionsRepository>();
 
             return services;
         }

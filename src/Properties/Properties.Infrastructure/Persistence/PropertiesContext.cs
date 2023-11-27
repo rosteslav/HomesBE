@@ -10,6 +10,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
         public virtual DbSet<BuildingType> BuildingTypes { get; set; }
 
+        public virtual DbSet<Exposure> Exposures { get; set; }
+
         public virtual DbSet<Finish> Finishes { get; set; }
 
         public virtual DbSet<Furnishment> Furnishments { get; set; }

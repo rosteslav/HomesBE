@@ -1,4 +1,5 @@
-﻿using BuildingMarket.Images.Domain.Entities;
+﻿using BuildingMarket.Auth.Domain.Entities;
+using BuildingMarket.Images.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuildingMarket.Images.Infrastructure.Persistence
@@ -8,6 +9,7 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
     {
         public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<Property> Properties { get; set; }
+        public virtual DbSet<AdditionalUserData> AdditionalUserData { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,7 +26,7 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
                     .HasColumnType("text");
 
                 entity.Property(img => img.PropertyId)
-                    .HasColumnName("property_id");
+                    .HasColumnName("property_id");                
             });
 
             modelBuilder.Entity<Property>(entity =>
@@ -99,6 +101,40 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
                     .HasColumnName("created_on_utc_time")
                     .HasColumnType("timestamptz")
                     .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
+            });
+
+            modelBuilder.Entity<AdditionalUserData>(entity =>
+            {
+                entity.ToTable("AdditionalData", "security");
+                entity.HasKey(addData => addData.Id);
+
+                entity.Property(addData => addData.Id)
+                    .HasColumnName("id");
+
+                entity.Property(addData => addData.FirstName)
+                    .HasColumnName("first_name")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.Property(addData => addData.LastName)
+                    .HasColumnName("last_name")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.Property(addData => addData.PhoneNumber)
+                    .HasColumnName("phone_number")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(15);
+
+                entity.Property(addData => addData.UserId)
+                    .HasColumnName("user_id")
+                    .IsRequired(true);
+
+                entity.Property(addData => addData.ImageUrl)
+                   .HasColumnName("image_url")
+                   .HasColumnType("character varying")
+                   .HasMaxLength(255)
+                   .IsRequired(true);
             });
         }
     }

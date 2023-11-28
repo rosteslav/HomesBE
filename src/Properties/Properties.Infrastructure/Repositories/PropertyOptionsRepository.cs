@@ -19,6 +19,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 {
                     BuildingType = await _context.BuildingTypes.Select(bt => bt.Description).ToListAsync(),
                     Finish = await _context.Finishes.Select(f => f.Description).ToListAsync(),
+                    Exposure = await _context.Exposures.Select(f => f.Description).ToListAsync(),
                     Furnishment = await _context.Furnishments.Select(f => f.Description).ToListAsync(),
                     Garage = await _context.Garages.Select(g => g.Description).ToListAsync(),
                     Heating = await _context.Heating.Select(h => h.Description).ToListAsync(),

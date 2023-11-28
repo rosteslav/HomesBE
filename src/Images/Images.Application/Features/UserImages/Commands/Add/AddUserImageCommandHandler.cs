@@ -25,15 +25,9 @@ namespace BuildingMarket.Images.Application.Features.UserImages.Commands.Add
                 return (string.Empty);
             }
 
-            var userData = new AdditionalUserData
-            {
-                UserId = request.UserId,
-                ImageUrl = imageData.DisplayUrl
-            };
+            await _userDataRepository.AddUserImage(request.UserId, imageData.DisplayUrl);
 
-            await _userDataRepository.AddUserImage(userData);
-
-            return userData.UserId;
+            return request.UserId;
         }
     }
 }

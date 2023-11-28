@@ -4,7 +4,7 @@
 
     public interface IAdditionalUserDataRepository
     {
-        Task AddUserImage(AdditionalUserData userData);
+        Task AddUserImage(string userId, string imageUrl);
 
         Task DeleteUserImage(string userId);
     }

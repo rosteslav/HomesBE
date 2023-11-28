@@ -12,27 +12,24 @@ namespace BuildingMarket.Images.Api.Controllers
     public class UserImagesController(
         IMediator mediator,
         ILogger<UserImagesController> logger) : ControllerBase
-    //IMapper mapper
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<UserImagesController> _logger = logger;
-        //private readonly IMapper _mapper = mapper;
 
         [HttpPost]
-        [Route("/{userId}")]
+        [Route("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Add([FromRoute] string userId, [FromBody] IFormFile image)
         {
+            _logger.LogInformation("Attempting to add new user image.");
+            
             var imgInMB = image.Length / 1024 / 1024;
 
             if (imgInMB > 5)
             {
                 return BadRequest();
             }
-
-            _logger.LogInformation("Attempting to add new user image.");
-
 
             string imageUrl = await _mediator.Send(new AddAdditionalUserDataCommand
             {
@@ -46,11 +43,11 @@ namespace BuildingMarket.Images.Api.Controllers
                 return BadRequest();
             }
 
-            return Ok(new { imageUrl, userId });
+            return Ok(new string(imageUrl));
         }
 
         [HttpDelete]
-        [Route("/{userId}")]
+        [Route("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] string userId)
@@ -68,7 +65,7 @@ namespace BuildingMarket.Images.Api.Controllers
                 return BadRequest();
             }
 
-            return Ok(userId);
+            return Ok(new string(userId));
         }
     }
 }

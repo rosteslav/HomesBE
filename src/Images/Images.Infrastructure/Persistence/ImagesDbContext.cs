@@ -1,6 +1,7 @@
 ﻿using BuildingMarket.Auth.Domain.Entities;
 using BuildingMarket.Images.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BuildingMarket.Images.Infrastructure.Persistence
 {
@@ -105,7 +106,8 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
 
             modelBuilder.Entity<AdditionalUserData>(entity =>
             {
-                entity.ToTable("AdditionalData", "security");
+                entity.ToTable("AdditionalData", 
+                    table => table.ExcludeFromMigrations());
                 entity.HasKey(addData => addData.Id);
 
                 entity.Property(addData => addData.Id)

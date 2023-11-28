@@ -1,6 +1,7 @@
 ﻿using BuildingMarket.Auth.Domain.Entities;
 using BuildingMarket.Images.Application.Contracts;
 using BuildingMarket.Images.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingMarket.Images.Infrastructure.Repositories
@@ -12,30 +13,19 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         private readonly ImagesDbContext _context = context;
         private readonly ILogger<AdditionalUserDataRepository> _logger = logger;
 
-        public async Task AddUserImage(AdditionalUserData userData)
+        public async Task AddUserImage(string userId, string imageUrl)
         {
             try 
             {
                 _logger.LogInformation("Attempting to add user data.");
 
-                var data = _context.AdditionalUserData.Where(x => x.UserId == userData.UserId).SingleOrDefault();
+                var data = await _context.AdditionalUserData
+                    .Where(x => x.UserId == userId)
+                    .FirstAsync();
 
-                if (data == null) 
-                {
-                    await _context.AdditionalUserData.AddAsync(new AdditionalUserData
-                    {
-                        FirstName = userData.FirstName,
-                        LastName = userData.LastName,
-                        PhoneNumber = userData.PhoneNumber,
-                        UserId = userData.UserId,
-                        ImageUrl = userData.ImageUrl,
-                    });
-                } 
-                else
-                {
-                    _context.AdditionalUserData.Update(userData);
-                }
+                data.ImageUrl = imageUrl;
 
+                _context.AdditionalUserData.Update(data);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -50,7 +40,9 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             {
                 _logger.LogInformation("Attempting to delete user image.");
 
-                var user = _context.AdditionalUserData.Where(x => x.UserId == userId).SingleOrDefault();
+                var user = await _context.AdditionalUserData
+                    .Where(x => x.UserId == userId)
+                    .FirstAsync();
 
                 user.ImageUrl = null;
 

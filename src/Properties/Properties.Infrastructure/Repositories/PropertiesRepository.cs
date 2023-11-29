@@ -38,7 +38,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                             {
                                 Id = property.Id,
                                 CreatedOnLocalTime = property.CreatedOnUtcTime.ToLocalTime(),
-                                Details = string.Join(',', property.BuildingType, property.Finish, property.Furnishment, property.Heating, property.Exposure),
+                                Details = string.Join(',', property.BuildingType, property.Finish, property.Furnishment, property.Heating, property.Exposure, property.PublishedOn),
                                 Neighbourhood = property.Neighbourhood,
                                 Price = property.Price,
                                 NumberOfRooms = property.NumberOfRooms,
@@ -96,6 +96,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 .Select(data => new PropertyModel
                 {
                     BrokerId = data.property.BrokerId,
+                    PublishedOn = data.property.PublishedOn,
                     BuildingType = data.property.BuildingType,
                     CreatedOnLocalTime = data.property.CreatedOnUtcTime.ToLocalTime(),
                     Finish = data.property.Finish,

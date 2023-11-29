@@ -31,6 +31,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
         private const int DescriptionPosition = 13;
         private const int TotalNumberOfPositions = 14;
         private const int ExposurePosition = 15;
+        private const int PublishedOnPosition = 16;
 
         private readonly AdminsDbContext _context = context;
         private readonly UserManager<IdentityUser> _userManager = userManager;
@@ -117,6 +118,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             => new Property
             {
                 NumberOfRooms = SetValueOrThrow(data[NumberOfRoomsPosition]),
+                PublishedOn = SetValueOrThrow(data[PublishedOnPosition]),
                 Space = decimal.Parse(data[SpacePosition]),
                 Price = decimal.Parse(data[PricePosition]),
                 BuildingType = SetValueOrThrow(data[BuildingTypePosition]),

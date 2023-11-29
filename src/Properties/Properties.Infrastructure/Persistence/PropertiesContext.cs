@@ -10,6 +10,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
         public virtual DbSet<BuildingType> BuildingTypes { get; set; }
 
+        public virtual DbSet<PublishedOn> PublishedOn { get; set; }
+
         public virtual DbSet<Exposure> Exposures { get; set; }
 
         public virtual DbSet<Finish> Finishes { get; set; }
@@ -41,6 +43,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                     .HasColumnName("id");
+
+                entity.Property(e => e.PublishedOn)
+                    .HasColumnName("published_on")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.NumberOfRooms)
                     .HasColumnName("number_of_rooms")
@@ -111,6 +118,27 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnName("created_on_utc_time")
                     .HasColumnType("timestamptz")
                     .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
+            });
+
+            modelBuilder.Entity<PublishedOn>(entity =>
+            {
+                entity.ToTable("PublishedOn", "properties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.HasData(
+                    new { Id = 1, Description = "Днес" },
+                    new { Id = 2, Description = "Преди 3 дни" },
+                    new { Id = 3, Description = "Преди седмица" },
+                    new { Id = 4, Description = "Преди месец" },
+                    new { Id = 5, Description = "Всички" });
             });
 
             modelBuilder.Entity<Neighborhood>(entity =>

@@ -3,6 +3,7 @@ namespace BuildingMarket.Admins.Domain.Entities
     public class Property
     {
         public int Id { get; set; }
+        public required string PublishedOn { get; set; }
         public required string NumberOfRooms { get; set; }
         public required decimal Space { get; set; }
         public string Description { get; set; }

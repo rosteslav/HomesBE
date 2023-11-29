@@ -21,7 +21,7 @@ namespace BuildingMarket.Images.Api.Controllers
         [HttpPost]
         [Route("{userId}")]
         [Consumes("multipart/form-data")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -52,7 +52,7 @@ namespace BuildingMarket.Images.Api.Controllers
         }
 
         [HttpDelete]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteImage()
@@ -65,7 +65,7 @@ namespace BuildingMarket.Images.Api.Controllers
                 UserId = userId
             });
 
-            return Ok();
+            return NoContent();
         }
     }
 }

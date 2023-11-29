@@ -25,44 +25,6 @@ namespace BuildingMarket.Images.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BuildingMarket.Images.Domain.Entities.AdditionalUserData", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
-                        .HasColumnName("first_name");
-
-                    b.Property<string>("ImageURL")
-                        .HasColumnType("text")
-                        .HasColumnName("image_url");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
-                        .HasColumnName("last_name");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying")
-                        .HasColumnName("phone_number");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AdditionalData", "security");
-                });
-
             modelBuilder.Entity("BuildingMarket.Images.Domain.Entities.Image", b =>
                 {
                     b.Property<int>("Id")
@@ -115,11 +77,6 @@ namespace BuildingMarket.Images.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<string>("Exposure")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
-                        .HasColumnName("exposure");
-
                     b.Property<string>("Finish")
                         .HasMaxLength(255)
                         .HasColumnType("character varying")
@@ -149,9 +106,8 @@ namespace BuildingMarket.Images.Infrastructure.Migrations
                         .HasColumnType("character varying")
                         .HasColumnName("neighbourhood");
 
-                    b.Property<string>("NumberOfRooms")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
+                    b.Property<int>("NumberOfRooms")
+                        .HasColumnType("integer")
                         .HasColumnName("number_of_rooms");
 
                     b.Property<float>("Price")
@@ -172,7 +128,10 @@ namespace BuildingMarket.Images.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Properties", "properties");
+                    b.ToTable("Properties", "properties", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 #pragma warning restore 612, 618
         }

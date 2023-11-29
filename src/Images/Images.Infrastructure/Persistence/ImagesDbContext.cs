@@ -108,6 +108,7 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
             {
                 entity.ToTable("AdditionalData", 
                     table => table.ExcludeFromMigrations());
+
                 entity.HasKey(addData => addData.Id);
 
                 entity.Property(addData => addData.Id)

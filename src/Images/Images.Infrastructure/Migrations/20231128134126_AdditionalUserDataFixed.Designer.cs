@@ -3,6 +3,7 @@ using System;
 using BuildingMarket.Images.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Images.Infrastructure.Migrations
 {
     [DbContext(typeof(ImagesDbContext))]
-    partial class ImagesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231128134126_AdditionalUserDataFixed")]
+    partial class AdditionalUserDataFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

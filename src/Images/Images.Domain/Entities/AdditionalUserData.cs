@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BuildingMarket.Auth.Domain.Entities
+namespace BuildingMarket.Images.Domain.Entities
 {
     public class AdditionalUserData
     {

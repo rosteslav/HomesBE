@@ -13,7 +13,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         private readonly ImagesDbContext _context = context;
         private readonly ILogger<ImagesRepository> _logger = logger;
 
-        public async Task Add(Image image)
+        public async Task AddPropertyImage(Image image)
         {
             try
             {
@@ -28,7 +28,26 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
         }
 
-        public async Task Delete(int imageId)
+        public async Task AddUserImage(string imageUrl, string userId)
+        {
+            try
+            {
+                _logger.LogInformation("Attempting to add user image with userId: {userId} imageUrl: {imageUrl}", userId, imageUrl);
+
+                await _context.AdditionalUserData
+                        .Where(addData => addData.UserId == userId)
+                        .ExecuteUpdateAsync(p => p
+                            .SetProperty(data => data.ImageURL, data => imageUrl));
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{Message}. An error occured while trying to add new image to user with Id: {userId}.", ex.Message, userId);
+            }
+        }
+
+        public async Task DeletePropertyImage(int imageId)
         {
             try
             {
@@ -43,6 +62,25 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             catch (Exception ex)
             {
                 _logger.LogError("{Message}. An error occured while trying to remove image with Id: {imageId} from the database.", ex.Message, imageId);
+            }
+        }
+
+        public async Task DeleteUserImage(string userId)
+        {
+            try
+            {
+                _logger.LogInformation("Attempting to delete User image for user with id: {userId}", userId);
+
+                await _context.AdditionalUserData
+                        .Where(addData => addData.UserId == userId)
+                        .ExecuteUpdateAsync(p => p
+                            .SetProperty(data => data.ImageURL, data => null));
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{Message}. An error occured while trying to remove image for user with Id: {userId}", ex.Message, userId);
             }
         }
 

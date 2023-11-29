@@ -1,11 +1,12 @@
-﻿using BuildingMarket.Properties.Application.Models;
+﻿using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
+using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
 
 namespace BuildingMarket.Properties.Application.Contracts
 {
     public interface IPropertiesRepository
     {
-        Task<IEnumerable<GetAllPropertiesOutputModel>> Get();
+        Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query);
         
         Task<PropertyModel> GetById(int id);
 

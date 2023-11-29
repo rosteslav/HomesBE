@@ -10,6 +10,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
         public virtual DbSet<BuildingType> BuildingTypes { get; set; }
 
+        public virtual DbSet<Exposure> Exposures { get; set; }
+
         public virtual DbSet<Finish> Finishes { get; set; }
 
         public virtual DbSet<Furnishment> Furnishments { get; set; }
@@ -65,6 +67,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
                 entity.Property(e => e.BuildingType)
                     .HasColumnName("building_type")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Exposure)
+                    .HasColumnName("exposure")
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
 
@@ -160,6 +167,26 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnName("furnishment_type")
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<Exposure>(entity =>
+            {
+                entity.ToTable("Exposures", "properties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("exposure_type")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.HasData(
+                    new { Id = 1, Description = "Юг" },
+                    new { Id = 2, Description = "Изток" },
+                    new { Id = 3, Description = "Запад" },
+                    new { Id = 4, Description = "Север" });
             });
 
             modelBuilder.Entity<Finish>(entity =>

@@ -10,6 +10,7 @@ namespace BuildingMarket.Admins.Domain.Entities
         public required int Floor { get; set; }
         public required int TotalFloorsInBuilding { get; set; }
         public required string BuildingType { get; set; }
+        public required string Exposure { get; set; }
         public required string Finish { get; set; }
         public required string Furnishment { get; set; }
         public required string Garage { get; set; }

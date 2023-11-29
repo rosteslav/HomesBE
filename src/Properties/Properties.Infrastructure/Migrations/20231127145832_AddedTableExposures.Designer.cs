@@ -3,6 +3,7 @@ using System;
 using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
     [DbContext(typeof(PropertiesDbContext))]
-    partial class PropertiesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231127145832_AddedTableExposures")]
+    partial class AddedTableExposures
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,28 +118,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Exposures", "properties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Юг"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Изток"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Запад"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Север"
-                        });
                 });
 
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.Finish", b =>

@@ -38,7 +38,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                             {
                                 Id = property.Id,
                                 CreatedOnLocalTime = property.CreatedOnUtcTime.ToLocalTime(),
-                                Details = string.Join(',', property.BuildingType, property.Finish, property.Furnishment, property.Heating),
+                                Details = string.Join(',', property.BuildingType, property.Finish, property.Furnishment, property.Heating, property.Exposure),
                                 Neighbourhood = property.Neighbourhood,
                                 Price = property.Price,
                                 NumberOfRooms = property.NumberOfRooms,
@@ -99,6 +99,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     BuildingType = data.property.BuildingType,
                     CreatedOnLocalTime = data.property.CreatedOnUtcTime.ToLocalTime(),
                     Finish = data.property.Finish,
+                    Exposure = data.property.Exposure,
                     Floor = data.property.Floor,
                     Furnishment = data.property.Furnishment,
                     Garage = data.property.Garage,

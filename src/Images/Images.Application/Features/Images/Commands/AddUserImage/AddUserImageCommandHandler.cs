@@ -11,7 +11,9 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.AddUserImag
         private readonly IImagesRepository _imagesRepository = imagesRepository;
         private readonly IImgbbService _imgbbService = imgbbService;
 
-        public async Task<string> Handle(AddUserImageCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(
+            AddUserImageCommand request,
+            CancellationToken cancellationToken)
         {
             string ext = Path.GetExtension(request.FormFile.FileName);
             var imageName = $"{request.UserId}-{Guid.NewGuid()}{ext}";

@@ -26,6 +26,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
         public virtual DbSet<NumberOfRooms> NumberOfRooms { get; set; }
 
+        public virtual DbSet<OrderBy> OrderBy { get; set; }
+
         public virtual DbSet<IdentityUser> Users { get; set; }
 
         public virtual DbSet<AdditionalUserData> AdditionalUserData { get; set; }
@@ -254,6 +256,21 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasMaxLength(255);
             });
 
+            modelBuilder.Entity<OrderBy>(entity =>
+            {
+                entity.ToTable("OrderBy", "properties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("order_by")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+            });
+
             modelBuilder.Entity<IdentityUser>().ToTable("Users", "security", u => u.ExcludeFromMigrations());
 
             modelBuilder.Entity<AdditionalUserData>(entity =>
@@ -397,6 +414,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     new { Id = 2, Description = "ЕПК" },
                     new { Id = 3, Description = "Панел" });
 
+            // Number of Rooms
             modelBuilder.Entity<NumberOfRooms>()
                 .HasData(
                     new { Id = 1, Description = "Едностаен" },
@@ -408,6 +426,12 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     new { Id = 7, Description = "Гараж" },
                     new { Id = 8, Description = "Склад" },
                     new { Id = 9, Description = "Таванско помещение" });
+
+            // Order By
+            modelBuilder.Entity<OrderBy>()
+                .HasData(
+                    new { Id = 1, Description = "Цена" },
+                    new { Id = 2, Description = "Най-нови" });
         }
     }
 }

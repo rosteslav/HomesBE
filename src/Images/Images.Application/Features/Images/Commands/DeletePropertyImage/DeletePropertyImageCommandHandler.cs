@@ -5,11 +5,11 @@ using MediatR;
 namespace BuildingMarket.Images.Application.Features.Images.Commands.DeletePropertyImage
 {
     public class DeletePropertyImageCommandHandler(
-        IImagesRepository imagesRepository,
+        IPropertyImagesRepository imagesRepository,
         IPropertiesRepository propertiesRepository)
         : IRequestHandler<DeletePropertyImageCommand, DeleteImageResult>
     {
-        private readonly IImagesRepository _imagesRepository = imagesRepository;
+        private readonly IPropertyImagesRepository _imagesRepository = imagesRepository;
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
 
         public async Task<DeleteImageResult> Handle(DeletePropertyImageCommand request,
@@ -33,7 +33,7 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.DeletePrope
                 return DeleteImageResult.UserHasNoAccess;
             }
 
-            await _imagesRepository.DeletePropertyImage(request.ImageId);
+            await _imagesRepository.Delete(request.ImageId);
             return DeleteImageResult.Success;
         }
     }

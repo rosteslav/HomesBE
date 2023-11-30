@@ -2,13 +2,11 @@
 
 namespace BuildingMarket.Images.Application.Contracts
 {
-    public interface IImagesRepository
+    public interface IPropertyImagesRepository
     {
         Task<IEnumerable<Image>> GetAllForProperty(int propertyId);
-        Task AddPropertyImage(Image image);
-        Task DeletePropertyImage(int imageId);
-        Task AddUserImage(string imageUrl, string userId);
-        Task DeleteUserImage(string userId);
+        Task Add(Image image);
+        Task Delete(int imageId);
         Task<int> GetPropertyIdOfImageById(int imageId);
         Task<bool> Exists(int imageId);
     }

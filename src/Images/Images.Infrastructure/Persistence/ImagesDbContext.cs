@@ -109,7 +109,11 @@ namespace BuildingMarket.Images.Infrastructure.Persistence
 
             modelBuilder.Entity<AdditionalUserData>(entity =>
             {
-                entity.ToTable("AdditionalData", "security");
+                entity.ToTable(
+                    "AdditionalData",
+                    "security",
+                    e => e.ExcludeFromMigrations());
+
                 entity.HasKey(addData => addData.Id);
 
                 entity.Property(addData => addData.Id)

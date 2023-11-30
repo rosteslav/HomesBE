@@ -5,10 +5,10 @@ using MediatR;
 namespace BuildingMarket.Images.Application.Features.Images.Commands.AddUserImage
 {
     public class AddUserImageCommandHandler(
-        IImagesRepository imagesRepository,
+        IUserImagesRepository repository,
         IImgbbService imgbbService) : IRequestHandler<AddUserImageCommand, string>
     {
-        private readonly IImagesRepository _imagesRepository = imagesRepository;
+        private readonly IUserImagesRepository _repository = repository;
         private readonly IImgbbService _imgbbService = imgbbService;
 
         public async Task<string> Handle(
@@ -26,7 +26,7 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.AddUserImag
                 return string.Empty;
             }
 
-            await _imagesRepository.AddUserImage(imageData.DisplayUrl, request.UserId);
+            await _repository.Add(imageData.DisplayUrl, request.UserId);
 
             return imageData.DisplayUrl;
         }

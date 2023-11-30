@@ -1,4 +1,4 @@
-﻿namespace BuildingMarket.Properties.Domain.Entities
+﻿namespace BuildingMarket.Images.Domain.Entities
 {
     public class AdditionalUserData
     {

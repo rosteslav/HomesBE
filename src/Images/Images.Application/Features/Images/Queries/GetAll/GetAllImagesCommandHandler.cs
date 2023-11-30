@@ -3,9 +3,9 @@ using MediatR;
 
 namespace BuildingMarket.Images.Application.Features.Images.Queries.GetAll
 {
-    public class GetAllImagesCommandHandler(IImagesRepository repository) : IRequestHandler<GetAllImagesCommand, IEnumerable<Domain.Entities.Image>>
+    public class GetAllImagesCommandHandler(IPropertyImagesRepository repository) : IRequestHandler<GetAllImagesCommand, IEnumerable<Domain.Entities.Image>>
     {
-        private readonly IImagesRepository _repository = repository;
+        private readonly IPropertyImagesRepository _repository = repository;
 
         public async Task<IEnumerable<Domain.Entities.Image>> Handle(
             GetAllImagesCommand request,

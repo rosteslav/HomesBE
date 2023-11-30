@@ -299,6 +299,10 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.Property(addData => addData.UserId)
                     .HasColumnName("user_id")
                     .IsRequired(true);
+
+                entity.Property(addData => addData.ImageURL)
+                    .HasColumnName("image_url")
+                    .HasColumnType("text");
             });
 
             modelBuilder.Entity<Image>(entity =>

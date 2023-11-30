@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Images.Application.Features.Images.Commands.Add;
-using BuildingMarket.Images.Application.Features.Images.Commands.Delete;
+using BuildingMarket.Images.Application.Features.Images.Commands.AddPropertyImage;
+using BuildingMarket.Images.Application.Features.Images.Commands.DeletePropertyImage;
 using BuildingMarket.Images.Application.Features.Images.Queries.GetAll;
 using BuildingMarket.Images.Application.Models;
 using BuildingMarket.Images.Application.Models.Enums;
@@ -25,7 +25,7 @@ namespace BuildingMarket.Images.Api.Controllers
         private readonly IMapper _mapper = mapper;
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ImagesResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -44,7 +44,7 @@ namespace BuildingMarket.Images.Api.Controllers
             var userId = User.Claims
                 .First(x => x.Type == ClaimTypes.Sid).Value;
 
-            (string imageUrl, int id) = await _mediator.Send(new AddImageCommand
+            (string imageUrl, int id) = await _mediator.Send(new AddPropertyImageCommand
             {
                 FormFile = image,
                 PropertyId = propertyId,
@@ -57,11 +57,11 @@ namespace BuildingMarket.Images.Api.Controllers
                 return BadRequest();
             }
 
-            return Ok(new { imageUrl, id });
+            return Ok(new ImagesResult { Id = id, ImageURL = imageUrl });
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ImagesResult>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Route("{propertyId}")]
@@ -83,6 +83,7 @@ namespace BuildingMarket.Images.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("{id}")]
         public async Task<IActionResult> DeleteImage([FromRoute] int id)
         {
@@ -91,7 +92,7 @@ namespace BuildingMarket.Images.Api.Controllers
 
             _logger.LogInformation("User with id: {userId} attempts to delete image with id: {id}", userId, id);
 
-            var result = await _mediator.Send(new DeleteImageCommand
+            var result = await _mediator.Send(new DeletePropertyImageCommand
             {
                 ImageId = id,
                 UserId = userId
@@ -101,7 +102,7 @@ namespace BuildingMarket.Images.Api.Controllers
             {
                 case DeleteImageResult.Success:
                     _logger.LogInformation("Image with Id: {id} deleted successfully!", id);
-                    return Ok();
+                    return NoContent();
                 case DeleteImageResult.ImageNotFound:
                 case DeleteImageResult.PropertyNotFound:
                     _logger.LogInformation("Image with Id: {id} or it's property was not found!", id);
@@ -109,7 +110,7 @@ namespace BuildingMarket.Images.Api.Controllers
                 case DeleteImageResult.UserHasNoAccess:
                 default:
                     _logger.LogInformation("User with Id: {userId} who has no access tried to delete image with Id: {id}", userId, id);
-                    return BadRequest();
+                    return Unauthorized();
             }
         }
     }

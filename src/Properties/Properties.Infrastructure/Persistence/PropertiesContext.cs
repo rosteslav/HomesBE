@@ -128,12 +128,15 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
 
+                entity.Property(e => e.NumberOfDays)
+                    .HasColumnName("number_of_days");
+
                 entity.HasData(
-                    new { Id = 1, Description = "Днес" },
-                    new { Id = 2, Description = "Преди 3 дни" },
-                    new { Id = 3, Description = "Преди седмица" },
-                    new { Id = 4, Description = "Преди месец" },
-                    new { Id = 5, Description = "Всички" });
+                    new { Id = 1, Description = "Днес", NumberOfDays = 1 },
+                    new { Id = 2, Description = "Преди 3 дни", NumberOfDays = 3 },
+                    new { Id = 3, Description = "Преди седмица", NumberOfDays = 7 },
+                    new { Id = 4, Description = "Преди месец", NumberOfDays = 30 },
+                    new { Id = 5, Description = "Всички", NumberOfDays = 0 });
             });
 
             modelBuilder.Entity<Neighborhood>(entity =>

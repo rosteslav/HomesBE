@@ -36,7 +36,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             try
             {
-                var items = from property in _context.Properties where 
+                var items = from property in _context.Properties
+                            where
                                 (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
                                 (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
                                 (query.SpaceFrom == 0 || query.SpaceFrom <= property.Space) &&
@@ -46,7 +47,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                                 (query.Finish == null || query.Finish.Contains(property.Finish)) &&
                                 (query.Furnishment == null || query.Furnishment.Contains(property.Furnishment)) &&
                                 (query.Heating == null || query.Heating.Contains(property.Heating)) &&
-                                (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType))
+                                (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
+                                (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date)
                             join image in _context.Images on property.Id equals image.PropertyId into images
                             select new GetAllPropertiesOutputModel
                             {

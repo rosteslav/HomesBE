@@ -25,6 +25,8 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetA
 
         public string[] BuildingType { get; set; }
 
+        public int PublishedOn { get; set; }
+
         public int Page { get; set; } = 1;
     }
 }

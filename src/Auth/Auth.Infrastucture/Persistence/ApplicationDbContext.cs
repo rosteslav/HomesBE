@@ -54,6 +54,16 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                     .HasColumnName("user_id")
                     .IsRequired(true);
             });
+
+            modelBuilder.Entity<PreferencesOptions>(entity =>
+            {
+                entity.ToTable("PreferencesOptions", "security");
+                entity.HasKey(prefOpt => prefOpt.Id);
+
+                entity.Property(prefOpt => prefOpt.Preference)
+                    .HasColumnName("preference")
+                    .IsRequired();
+            });
         }
     }
 }

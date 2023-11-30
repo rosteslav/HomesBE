@@ -54,6 +54,37 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                     .HasColumnName("user_id")
                     .IsRequired(true);
             });
+
+            modelBuilder.Entity<Preferences>(entity =>
+            {
+                entity.ToTable("Preferences", "security");
+                entity.HasKey(pref => pref.Id);
+
+                entity.Property(pref => pref.UserId)
+                .HasColumnName("user_id")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.Purpose)
+                .HasColumnName("purpose")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.Region)
+                .HasColumnName("region")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.BuildingType)
+                .HasColumnName("building_type")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.PriceHigherEnd)
+                .HasColumnName("price_higher_end")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+            });
         }
     }
 }

@@ -37,36 +37,43 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             try
             {
-                var items = from property in _context.Properties
-                            where
-                                (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
-                                (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
-                                (query.SpaceFrom == 0 || query.SpaceFrom <= property.Space) &&
-                                (query.SpaceTo == 0 || query.SpaceTo >= property.Space) &&
-                                (query.PriceFrom == 0 || query.PriceFrom <= property.Price) &&
-                                (query.PriceTo == 0 || query.PriceTo >= property.Price) &&
-                                (query.Finish == null || query.Finish.Contains(property.Finish)) &&
-                                (query.Furnishment == null || query.Furnishment.Contains(property.Furnishment)) &&
-                                (query.Heating == null || query.Heating.Contains(property.Heating)) &&
-                                (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
-                                (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date)
-                            join image in _context.Images on property.Id equals image.PropertyId into images
-                            select new GetAllPropertiesOutputModel
-                            {
-                                Id = property.Id,
-                                CreatedOnLocalTime = property.CreatedOnUtcTime.ToLocalTime(),
-                                Details = string.Join(',', property.BuildingType, property.Finish, property.Furnishment, property.Heating, property.Exposure),
-                                Neighbourhood = property.Neighbourhood,
-                                Price = property.Price,
-                                NumberOfRooms = property.NumberOfRooms,
-                                Space = property.Space,
-                                Images = images.Select(img => img.ImageURL)
-                            };
-
-                return await items
+                var properties = await _context.Properties
+                    .Where(property =>
+                        (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
+                        (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
+                        (query.SpaceFrom == 0 || query.SpaceFrom <= property.Space) &&
+                        (query.SpaceTo == 0 || query.SpaceTo >= property.Space) &&
+                        (query.PriceFrom == 0 || query.PriceFrom <= property.Price) &&
+                        (query.PriceTo == 0 || query.PriceTo >= property.Price) &&
+                        (query.Finish == null || query.Finish.Contains(property.Finish)) &&
+                        (query.Furnishment == null || query.Furnishment.Contains(property.Furnishment)) &&
+                        (query.Heating == null || query.Heating.Contains(property.Heating)) &&
+                        (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
+                        (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date))
+                    .GroupJoin(_context.Images,
+                        property => property.Id,
+                        image => image.PropertyId,
+                        (property, image) => new { Property = property, Images = image })
+                    .Select(pi => new GetAllPropertiesOutputModel
+                    {
+                        Id = pi.Property.Id,
+                        CreatedOnLocalTime = pi.Property.CreatedOnUtcTime.ToLocalTime(),
+                        Details = string.Join(',', pi.Property.BuildingType, pi.Property.Finish, pi.Property.Furnishment, pi.Property.Heating, pi.Property.Exposure),
+                        Neighbourhood = pi.Property.Neighbourhood,
+                        Price = pi.Property.Price,
+                        NumberOfRooms = pi.Property.NumberOfRooms,
+                        Space = pi.Property.Space,
+                        Images = pi.Images.Select(img => img.ImageURL)
+                    })
                     .Skip(PageSize * (query.Page - 1))
                     .Take(PageSize)
                     .ToArrayAsync();
+
+                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(query.OrderBy);
+
+                return query.IsAscending
+                    ? properties.OrderBy(orderByPropInfo.GetValue)
+                    : properties.OrderByDescending(orderByPropInfo.GetValue);
             }
             catch (Exception ex)
             {

@@ -60,9 +60,18 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                 entity.ToTable("PreferencesOptions", "security");
                 entity.HasKey(prefOpt => prefOpt.Id);
 
+                entity.Property(prefOpt => prefOpt.Id)
+                .HasColumnName("id");
+
                 entity.Property(prefOpt => prefOpt.Preference)
-                    .HasColumnName("preference")
-                    .IsRequired();
+                .HasColumnName("preference")
+                .IsRequired();
+
+                entity.HasData(
+                    new PreferencesOptions { Id = 1, Preference = "За живеене" },
+                    new PreferencesOptions { Id = 2, Preference = "За инвестиция" },
+                    new PreferencesOptions { Id = 3, Preference = "Бюджетен" },
+                    new PreferencesOptions { Id = 4, Preference = "Луксозен" });
             });
         }
     }

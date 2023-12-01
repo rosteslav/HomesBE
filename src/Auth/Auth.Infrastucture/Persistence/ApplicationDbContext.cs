@@ -77,6 +77,39 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                     new PreferencesOptions { Id = 3, Preference = "Бюджетен" },
                     new PreferencesOptions { Id = 4, Preference = "Луксозен" });
             });
+
+            modelBuilder.Entity<Preferences>(entity =>
+            {
+                entity.ToTable("Preferences", "security");
+                entity.HasKey(pref => pref.Id);
+
+                entity.Property(pref => pref.Id)
+                .HasColumnName("id");
+
+                entity.Property(pref => pref.UserId)
+                .HasColumnName("user_id")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.Purpose)
+                .HasColumnName("purpose")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.Region)
+                .HasColumnName("region")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.BuildingType)
+                .HasColumnName("building_type")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.PriceHigherEnd)
+                .HasColumnName("price_higher_end")
+                .HasColumnType("real");
+            });
         }
     }
 }

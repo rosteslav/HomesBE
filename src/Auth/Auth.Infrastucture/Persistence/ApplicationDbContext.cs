@@ -60,6 +60,9 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                 entity.ToTable("Preferences", "security");
                 entity.HasKey(pref => pref.Id);
 
+                entity.Property(pref => pref.Id)
+                .HasColumnName("id");
+
                 entity.Property(pref => pref.UserId)
                 .HasColumnName("user_id")
                 .HasColumnType("character varying")
@@ -82,8 +85,7 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
 
                 entity.Property(pref => pref.PriceHigherEnd)
                 .HasColumnName("price_higher_end")
-                .HasColumnType("character varying")
-                .HasMaxLength(255);
+                .HasColumnType("real");
             });
         }
     }

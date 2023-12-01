@@ -3,6 +3,7 @@ using System;
 using BuildingMarket.Auth.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,13 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Auth.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231129185747_AddImageUrlToAdditionalUserData")]
+    partial class AddImageUrlToAdditionalUserData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "7.0.14")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -61,47 +64,6 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AdditionalData", "security");
-                });
-
-            modelBuilder.Entity("BuildingMarket.Auth.Domain.Entities.PreferencesOptions", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Preference")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("preference");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PreferencesOptions", "security");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Preference = "За живеене"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Preference = "За инвестиция"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Preference = "Бюджетен"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Preference = "Луксозен"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

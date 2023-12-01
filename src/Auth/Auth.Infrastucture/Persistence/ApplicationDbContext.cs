@@ -53,6 +53,10 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                 entity.Property(addData => addData.UserId)
                     .HasColumnName("user_id")
                     .IsRequired(true);
+
+                entity.Property(img => img.ImageURL)
+                    .HasColumnName("image_url")
+                    .HasColumnType("text");
             });
 
             modelBuilder.Entity<PreferencesOptions>(entity =>

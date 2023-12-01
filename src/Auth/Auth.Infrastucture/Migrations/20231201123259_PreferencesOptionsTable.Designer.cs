@@ -3,6 +3,7 @@ using System;
 using BuildingMarket.Auth.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Auth.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231201123259_PreferencesOptionsTable")]
+    partial class PreferencesOptionsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,10 +42,6 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
                         .HasColumnType("character varying")
                         .HasColumnName("first_name");
 
-                    b.Property<string>("ImageURL")
-                        .HasColumnType("text")
-                        .HasColumnName("image_url");
-
                     b.Property<string>("LastName")
                         .HasMaxLength(255)
                         .HasColumnType("character varying")
@@ -61,44 +60,6 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AdditionalData", "security");
-                });
-
-            modelBuilder.Entity("BuildingMarket.Auth.Domain.Entities.Preferences", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BuildingType")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
-                        .HasColumnName("building_type");
-
-                    b.Property<float>("PriceHigherEnd")
-                        .HasColumnType("real")
-                        .HasColumnName("price_higher_end");
-
-                    b.Property<string>("Purpose")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
-                        .HasColumnName("purpose");
-
-                    b.Property<string>("Region")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
-                        .HasColumnName("region");
-
-                    b.Property<string>("UserId")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Preferences", "security");
                 });
 
             modelBuilder.Entity("BuildingMarket.Auth.Domain.Entities.PreferencesOptions", b =>

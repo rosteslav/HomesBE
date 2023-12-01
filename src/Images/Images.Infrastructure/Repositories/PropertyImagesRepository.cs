@@ -6,12 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace BuildingMarket.Images.Infrastructure.Repositories
 {
-    public class ImagesRepository(
+    public class PropertyImagesRepository(
         ImagesDbContext context,
-        ILogger<ImagesRepository> logger) : IImagesRepository
+        ILogger<PropertyImagesRepository> logger) : IPropertyImagesRepository
     {
         private readonly ImagesDbContext _context = context;
-        private readonly ILogger<ImagesRepository> _logger = logger;
+        private readonly ILogger<PropertyImagesRepository> _logger = logger;
 
         public async Task Add(Image image)
         {

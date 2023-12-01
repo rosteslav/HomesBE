@@ -24,7 +24,7 @@ namespace BuildingMarket.Images.Infrastructure
             ServiceLifetime.Transient);
 
             services.AddScoped<IImgbbService, ImgbbService>();
-            services.AddScoped<IImagesRepository, ImagesRepository>();
+            services.AddScoped<IPropertyImagesRepository, PropertyImagesRepository>();
             services.AddScoped<IPropertiesRepository, PropertiesRepository>();
 
             return services;

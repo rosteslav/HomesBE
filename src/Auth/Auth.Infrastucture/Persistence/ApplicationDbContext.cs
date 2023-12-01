@@ -58,6 +58,58 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                     .HasColumnName("image_url")
                     .HasColumnType("text");
             });
+
+            modelBuilder.Entity<PreferencesOptions>(entity =>
+            {
+                entity.ToTable("PreferencesOptions", "security");
+                entity.HasKey(prefOpt => prefOpt.Id);
+
+                entity.Property(prefOpt => prefOpt.Id)
+                .HasColumnName("id");
+
+                entity.Property(prefOpt => prefOpt.Preference)
+                .HasColumnName("preference")
+                .IsRequired();
+
+                entity.HasData(
+                    new PreferencesOptions { Id = 1, Preference = "За живеене" },
+                    new PreferencesOptions { Id = 2, Preference = "За инвестиция" },
+                    new PreferencesOptions { Id = 3, Preference = "Бюджетен" },
+                    new PreferencesOptions { Id = 4, Preference = "Луксозен" });
+            });
+
+            modelBuilder.Entity<Preferences>(entity =>
+            {
+                entity.ToTable("Preferences", "security");
+                entity.HasKey(pref => pref.Id);
+
+                entity.Property(pref => pref.Id)
+                .HasColumnName("id");
+
+                entity.Property(pref => pref.UserId)
+                .HasColumnName("user_id")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.Purpose)
+                .HasColumnName("purpose")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.Region)
+                .HasColumnName("region")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.BuildingType)
+                .HasColumnName("building_type")
+                .HasColumnType("character varying")
+                .HasMaxLength(255);
+
+                entity.Property(pref => pref.PriceHigherEnd)
+                .HasColumnName("price_higher_end")
+                .HasColumnType("real");
+            });
         }
     }
 }

@@ -4,16 +4,19 @@ using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
 using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
     public class PropertiesRepository(
+        IConfiguration configuration,
         PropertiesDbContext context,
         ILogger<PropertiesRepository> logger)
         : IPropertiesRepository
     {
+        private readonly int PageSize = configuration.GetValue<int>("PropertiesPageSize");
         private readonly PropertiesDbContext _context = context;
         private readonly ILogger<PropertiesRepository> _logger = logger;
 
@@ -45,7 +48,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                                 (query.Finish == null || query.Finish.Contains(property.Finish)) &&
                                 (query.Furnishment == null || query.Furnishment.Contains(property.Furnishment)) &&
                                 (query.Heating == null || query.Heating.Contains(property.Heating)) &&
-                                (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType))
+                                (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
+                                (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date)
                             join image in _context.Images on property.Id equals image.PropertyId into images
                             select new GetAllPropertiesOutputModel
                             {
@@ -59,7 +63,10 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                                 Images = images.Select(img => img.ImageURL)
                             };
 
-                return await items.ToArrayAsync();
+                return await items
+                    .Skip(PageSize * (query.Page - 1))
+                    .Take(PageSize)
+                    .ToArrayAsync();
             }
             catch (Exception ex)
             {

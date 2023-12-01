@@ -2,5 +2,6 @@
 {
     public class PublishedOn : PropertyInfo
     {
+        public int NumberOfDays { get; set; }
     }
 }

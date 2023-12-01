@@ -10,6 +10,6 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetA
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> Handle(GetAllPropertiesQuery request, CancellationToken cancellationToken)
-            => await _propertiesRepository.Get();
+            => await _propertiesRepository.Get(request);
     }
 }

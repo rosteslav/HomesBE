@@ -2,7 +2,7 @@
 
 namespace BuildingMarket.Images.Application.Contracts
 {
-    public interface IImagesRepository
+    public interface IPropertyImagesRepository
     {
         Task<IEnumerable<Image>> GetAllForProperty(int propertyId);
         Task Add(Image image);

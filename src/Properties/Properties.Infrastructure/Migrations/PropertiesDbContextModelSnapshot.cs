@@ -98,6 +98,47 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.Exposure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("exposure_type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Exposures", "properties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Юг"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Изток"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Запад"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Север"
+                        });
+                });
+
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.Finish", b =>
                 {
                     b.Property<int>("Id")
@@ -720,6 +761,38 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.OrderBy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("order_by");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderBy", "properties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Цена"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Най-нови"
+                        });
+                });
+
             modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.Property", b =>
                 {
                     b.Property<int>("Id")
@@ -747,6 +820,11 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<string>("Exposure")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("exposure");
 
                     b.Property<string>("Finish")
                         .HasMaxLength(255)
@@ -801,6 +879,52 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Properties", "properties");
+                });
+
+            modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.PublishedOn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("description");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PublishedOn", "properties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Днес"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Преди 3 дни"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Преди седмица"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Преди месец"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Всички"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>

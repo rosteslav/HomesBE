@@ -2,17 +2,17 @@
 using BuildingMarket.Images.Application.Models.Enums;
 using MediatR;
 
-namespace BuildingMarket.Images.Application.Features.Images.Commands.Delete
+namespace BuildingMarket.Images.Application.Features.Images.Commands.DeletePropertyImage
 {
-    public class DeleteImageCommandHandler(
-        IImagesRepository imagesRepository,
+    public class DeletePropertyImageCommandHandler(
+        IPropertyImagesRepository imagesRepository,
         IPropertiesRepository propertiesRepository)
-        : IRequestHandler<DeleteImageCommand, DeleteImageResult>
+        : IRequestHandler<DeletePropertyImageCommand, DeleteImageResult>
     {
-        private readonly IImagesRepository _imagesRepository = imagesRepository;
+        private readonly IPropertyImagesRepository _imagesRepository = imagesRepository;
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
 
-        public async Task<DeleteImageResult> Handle(DeleteImageCommand request,
+        public async Task<DeleteImageResult> Handle(DeletePropertyImageCommand request,
             CancellationToken cancellationToken)
         {
             if (!await _imagesRepository.Exists(request.ImageId))

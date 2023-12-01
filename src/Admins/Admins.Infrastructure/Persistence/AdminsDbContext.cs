@@ -27,9 +27,10 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
                 .ToTable("RoleClaims", "security", u => u.ExcludeFromMigrations());
             modelBuilder.Entity<IdentityUserToken<string>>()
                 .ToTable("UserTokens", "security", u => u.ExcludeFromMigrations());
+
             modelBuilder.Entity<Property>(entity =>
             {
-                entity.ToTable("Properties", "properties", p => p.ExcludeFromMigrations());
+                entity.ToTable("Properties", "properties");
 
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
@@ -60,6 +61,11 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
 
                 entity.Property(e => e.BuildingType)
                     .HasColumnName("building_type")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Exposure)
+                    .HasColumnName("exposure")
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
 

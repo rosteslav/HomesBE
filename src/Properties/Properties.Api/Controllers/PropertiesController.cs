@@ -43,6 +43,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
         [ProducesResponseType(typeof(IEnumerable<PropertyModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -86,10 +87,10 @@ namespace BuildingMarket.Properties.Api.Controllers
         [Route("all")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(IEnumerable<GetAllPropertiesOutputModel>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetAllPropertiesQuery query)
         {
             _logger.LogInformation("Attempt to get all properties");
-            var properties = await _mediator.Send(new GetAllPropertiesQuery());
+            var properties = await _mediator.Send(query);
             return Ok(properties);
         }
     }

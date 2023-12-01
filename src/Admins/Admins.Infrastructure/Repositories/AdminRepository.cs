@@ -30,6 +30,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
         private const int BrokerIdPosition = 12;
         private const int DescriptionPosition = 13;
         private const int TotalNumberOfPositions = 14;
+        private const int ExposurePosition = 15;
 
         private readonly AdminsDbContext _context = context;
         private readonly UserManager<IdentityUser> _userManager = userManager;
@@ -119,6 +120,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
                 Space = decimal.Parse(data[SpacePosition]),
                 Price = decimal.Parse(data[PricePosition]),
                 BuildingType = SetValueOrThrow(data[BuildingTypePosition]),
+                Exposure = SetValueOrThrow(data[ExposurePosition]),
                 Finish = SetValueOrThrow(data[FinishPosition]),
                 Furnishment = SetValueOrThrow(data[FurnishmentPosition]),
                 Garage = SetValueOrThrow(data[GaragePosition]),

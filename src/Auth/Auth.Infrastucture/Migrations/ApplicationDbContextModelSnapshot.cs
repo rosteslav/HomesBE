@@ -39,6 +39,10 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
                         .HasColumnType("character varying")
                         .HasColumnName("first_name");
 
+                    b.Property<string>("ImageURL")
+                        .HasColumnType("text")
+                        .HasColumnName("image_url");
+
                     b.Property<string>("LastName")
                         .HasMaxLength(255)
                         .HasColumnType("character varying")

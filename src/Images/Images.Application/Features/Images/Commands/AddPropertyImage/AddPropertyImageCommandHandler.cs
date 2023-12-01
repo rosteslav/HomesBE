@@ -3,20 +3,20 @@ using BuildingMarket.Images.Application.Models;
 using BuildingMarket.Images.Domain.Entities;
 using MediatR;
 
-namespace BuildingMarket.Images.Application.Features.Images.Commands.Add
+namespace BuildingMarket.Images.Application.Features.Images.Commands.AddPropertyImage
 {
-    public class AddImageCommandHandler(
-        IImagesRepository repository,
+    public class AddPropertyImageCommandHandler(
+        IPropertyImagesRepository repository,
         IPropertiesRepository propertiesRepository,
         IImgbbService imgbbService)
-        : IRequestHandler<AddImageCommand, (string, int)>
+        : IRequestHandler<AddPropertyImageCommand, (string, int)>
     {
-        private readonly IImagesRepository _repository = repository;
+        private readonly IPropertyImagesRepository _repository = repository;
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
         private readonly IImgbbService _imgbbService = imgbbService;
 
         public async Task<(string, int)> Handle(
-            AddImageCommand request,
+            AddPropertyImageCommand request,
             CancellationToken cancellationToken)
         {
             if (!await _propertiesRepository.PropertyExists(request.PropertyId))
@@ -40,7 +40,7 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.Add
                 PropertyId = request.PropertyId,
                 ImageURL = imageData.DisplayUrl
             };
-            
+
             await _repository.Add(image);
 
             return (image.ImageURL, image.Id);

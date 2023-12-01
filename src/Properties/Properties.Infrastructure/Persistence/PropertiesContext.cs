@@ -10,6 +10,10 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
         public virtual DbSet<BuildingType> BuildingTypes { get; set; }
 
+        public virtual DbSet<Exposure> Exposures { get; set; }
+
+        public virtual DbSet<PublishedOn> PublishedOn { get; set; }
+
         public virtual DbSet<Finish> Finishes { get; set; }
 
         public virtual DbSet<Furnishment> Furnishments { get; set; }
@@ -21,6 +25,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
         public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
 
         public virtual DbSet<NumberOfRooms> NumberOfRooms { get; set; }
+
+        public virtual DbSet<OrderBy> OrderBy { get; set; }
 
         public virtual DbSet<IdentityUser> Users { get; set; }
 
@@ -68,6 +74,11 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
 
+                entity.Property(e => e.Exposure)
+                    .HasColumnName("exposure")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
                 entity.Property(e => e.Finish)
                     .HasColumnName("finish")
                     .HasColumnType("character varying")
@@ -104,6 +115,27 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnName("created_on_utc_time")
                     .HasColumnType("timestamptz")
                     .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
+            });
+
+            modelBuilder.Entity<PublishedOn>(entity =>
+            {
+                entity.ToTable("PublishedOn", "properties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.HasData(
+                    new { Id = 1, Description = "Днес" },
+                    new { Id = 2, Description = "Преди 3 дни" },
+                    new { Id = 3, Description = "Преди седмица" },
+                    new { Id = 4, Description = "Преди месец" },
+                    new { Id = 5, Description = "Всички" });
             });
 
             modelBuilder.Entity<Neighborhood>(entity =>
@@ -162,6 +194,26 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasMaxLength(255);
             });
 
+            modelBuilder.Entity<Exposure>(entity =>
+            {
+                entity.ToTable("Exposures", "properties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("exposure_type")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+
+                entity.HasData(
+                    new { Id = 1, Description = "Юг" },
+                    new { Id = 2, Description = "Изток" },
+                    new { Id = 3, Description = "Запад" },
+                    new { Id = 4, Description = "Север" });
+            });
+
             modelBuilder.Entity<Finish>(entity =>
             {
                 entity.ToTable("Finish", "properties");
@@ -204,6 +256,21 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasMaxLength(255);
             });
 
+            modelBuilder.Entity<OrderBy>(entity =>
+            {
+                entity.ToTable("OrderBy", "properties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("order_by")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+            });
+
             modelBuilder.Entity<IdentityUser>().ToTable("Users", "security", u => u.ExcludeFromMigrations());
 
             modelBuilder.Entity<AdditionalUserData>(entity =>
@@ -232,6 +299,10 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                 entity.Property(addData => addData.UserId)
                     .HasColumnName("user_id")
                     .IsRequired(true);
+
+                entity.Property(addData => addData.ImageURL)
+                    .HasColumnName("image_url")
+                    .HasColumnType("text");
             });
 
             modelBuilder.Entity<Image>(entity =>
@@ -347,6 +418,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     new { Id = 2, Description = "ЕПК" },
                     new { Id = 3, Description = "Панел" });
 
+            // Number of Rooms
             modelBuilder.Entity<NumberOfRooms>()
                 .HasData(
                     new { Id = 1, Description = "Едностаен" },
@@ -358,6 +430,12 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     new { Id = 7, Description = "Гараж" },
                     new { Id = 8, Description = "Склад" },
                     new { Id = 9, Description = "Таванско помещение" });
+
+            // Order By
+            modelBuilder.Entity<OrderBy>()
+                .HasData(
+                    new { Id = 1, Description = "Цена" },
+                    new { Id = 2, Description = "Най-нови" });
         }
     }
 }

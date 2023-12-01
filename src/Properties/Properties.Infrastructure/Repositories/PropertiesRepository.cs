@@ -1,4 +1,5 @@
 using BuildingMarket.Properties.Application.Contracts;
+using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
 using BuildingMarket.Properties.Infrastructure.Persistence;
@@ -26,13 +27,25 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return new AddPropertyOutputModel { Id = item.Id };
         }
 
-        public async Task<IEnumerable<GetAllPropertiesOutputModel>> Get()
+        public async Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query)
         {
             _logger.LogInformation("DB get all properties");
+            query ??= new();
 
             try
             {
                 var items = from property in _context.Properties
+                            where
+                                (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
+                                (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
+                                (query.SpaceFrom == 0 || query.SpaceFrom <= property.Space) &&
+                                (query.SpaceTo == 0 || query.SpaceTo >= property.Space) &&
+                                (query.PriceFrom == 0 || query.PriceFrom <= property.Price) &&
+                                (query.PriceTo == 0 || query.PriceTo >= property.Price) &&
+                                (query.Finish == null || query.Finish.Contains(property.Finish)) &&
+                                (query.Furnishment == null || query.Furnishment.Contains(property.Furnishment)) &&
+                                (query.Heating == null || query.Heating.Contains(property.Heating)) &&
+                                (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType))
                             join image in _context.Images on property.Id equals image.PropertyId into images
                             select new GetAllPropertiesOutputModel
                             {

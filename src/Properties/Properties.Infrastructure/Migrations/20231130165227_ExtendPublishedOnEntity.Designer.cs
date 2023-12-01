@@ -3,6 +3,7 @@ using System;
 using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Properties.Infrastructure.Migrations
 {
     [DbContext(typeof(PropertiesDbContext))]
-    partial class PropertiesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231130165227_ExtendPublishedOnEntity")]
+    partial class ExtendPublishedOnEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -758,38 +761,6 @@ namespace BuildingMarket.Properties.Infrastructure.Migrations
                         {
                             Id = 9,
                             Description = "Таванско помещение"
-                        });
-                });
-
-            modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.OrderBy", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying")
-                        .HasColumnName("order_by");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderBy", "properties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Цена"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Най-нови"
                         });
                 });
 

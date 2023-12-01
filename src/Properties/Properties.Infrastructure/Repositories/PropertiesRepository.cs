@@ -30,10 +30,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query)
         {
             _logger.LogInformation("DB get all properties");
+            query ??= new();
 
             try
             {
-                var items = from property in _context.Properties where 
+                var items = from property in _context.Properties
+                            where
                                 (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
                                 (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
                                 (query.SpaceFrom == 0 || query.SpaceFrom <= property.Space) &&

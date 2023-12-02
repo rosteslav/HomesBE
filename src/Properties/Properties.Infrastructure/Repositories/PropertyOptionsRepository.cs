@@ -73,7 +73,9 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 .ProjectTo<PublishedOnModel>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            model.OrderBy = await _context.OrderBy.Select(o => o.Description).ToListAsync();
+            model.OrderBy = await _context.OrderBy
+                .ProjectTo<OrderByModel>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
     }
 }

@@ -21,6 +21,7 @@ namespace BuildingMarket.Properties.Application.Mapper
                 .ReverseMap();
 
             CreateMap<PublishedOn, PublishedOnModel>();
+            CreateMap<OrderBy, OrderByModel>();
         }
     }
 }

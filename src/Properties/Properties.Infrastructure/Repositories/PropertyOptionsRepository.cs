@@ -22,8 +22,18 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         {
             try
             {
-                var optionsModel = new PropertyOptionsModel();
-                await SetPropertyOptions(optionsModel);
+                var optionsModel = new PropertyOptionsModel
+                {
+                    BuildingType = await _context.BuildingTypes.Select(bt => bt.Description).ToArrayAsync(),
+                    Finish = await _context.Finishes.Select(f => f.Description).ToArrayAsync(),
+                    Exposure = await _context.Exposures.Select(e => e.Description).ToArrayAsync(),
+                    Furnishment = await _context.Furnishments.Select(f => f.Description).ToArrayAsync(),
+                    Garage = await _context.Garages.Select(g => g.Description).ToArrayAsync(),
+                    Heating = await _context.Heating.Select(h => h.Description).ToArrayAsync(),
+                    Neighbourhood = await _context.Neighborhoods.Select(n => n.Description).ToArrayAsync(),
+                    NumberOfRooms = await _context.NumberOfRooms.Select(nr => nr.Description).ToArrayAsync()
+                };
+
                 _logger.LogInformation("Property options returned from db");
 
                 return optionsModel;
@@ -40,9 +50,20 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         {
             try
             {
-                var optionsWithFilterModel = new PropertyOptionsWithFilterModel();
-                await SetPropertyOptions(optionsWithFilterModel);
-                await SetPropertyFilterOptions(optionsWithFilterModel);
+                var optionsWithFilterModel = new PropertyOptionsWithFilterModel
+                {
+                    BuildingType = await _context.BuildingTypes.Select(bt => bt.Description).ToArrayAsync(),
+                    Finish = await _context.Finishes.Select(f => f.Description).ToArrayAsync(),
+                    Exposure = await _context.Exposures.Select(e => e.Description).ToArrayAsync(),
+                    Furnishment = await _context.Furnishments.Select(f => f.Description).ToArrayAsync(),
+                    Garage = await _context.Garages.Select(g => g.Description).ToArrayAsync(),
+                    Heating = await _context.Heating.Select(h => h.Description).ToArrayAsync(),
+                    Neighbourhood = await _context.Neighborhoods.Select(n => n.Description).ToArrayAsync(),
+                    NumberOfRooms = await _context.NumberOfRooms.Select(nr => nr.Description).ToArrayAsync(),
+                    PublishedOn = await _context.PublishedOn.ProjectTo<PublishedOnModel>(_mapper.ConfigurationProvider).ToArrayAsync(),
+                    OrderBy = await _context.OrderBy.ProjectTo<OrderByModel>(_mapper.ConfigurationProvider).ToArrayAsync()
+                };
+
                 _logger.LogInformation("Property options returned from db");
 
                 return optionsWithFilterModel;
@@ -53,29 +74,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
 
             return (PropertyOptionsWithFilterModel)Enumerable.Empty<string>();
-        }
-
-        private async Task SetPropertyOptions(PropertyOptionsModel model)
-        {
-            model.BuildingType = await _context.BuildingTypes.Select(bt => bt.Description).ToListAsync();
-            model.Finish = await _context.Finishes.Select(f => f.Description).ToListAsync();
-            model.Exposure = await _context.Exposures.Select(e => e.Description).ToListAsync();
-            model.Furnishment = await _context.Furnishments.Select(f => f.Description).ToListAsync();
-            model.Garage = await _context.Garages.Select(g => g.Description).ToListAsync();
-            model.Heating = await _context.Heating.Select(h => h.Description).ToListAsync();
-            model.Neighbourhood = await _context.Neighborhoods.Select(n => n.Description).ToListAsync();
-            model.NumberOfRooms = await _context.NumberOfRooms.Select(nr => nr.Description).ToListAsync();
-        }
-
-        private async Task SetPropertyFilterOptions(PropertyOptionsWithFilterModel model)
-        {
-            model.PublishedOn = await _context.PublishedOn
-                .ProjectTo<PublishedOnModel>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-
-            model.OrderBy = await _context.OrderBy
-                .ProjectTo<OrderByModel>(_mapper.ConfigurationProvider)
-                .ToListAsync();
         }
     }
 }

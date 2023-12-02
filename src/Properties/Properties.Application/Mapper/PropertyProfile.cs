@@ -19,6 +19,8 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<Property, AddPropertyCommand>()
                 .ForMember(x => x.Model, opt => opt.MapFrom(src => src))
                 .ReverseMap();
+
+            CreateMap<PublishedOn, PublishedOnModel>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BuildingMarket.Properties.Application.Features.PropertyOptions.Queries.GetAllBuilidngTypes;
+using BuildingMarket.Properties.Application.Features.PropertyOptions.Queries.GetPropertyOptionsWithFilter;
 using BuildingMarket.Properties.Application.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,23 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<PropertyOptionsModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetPropertyOptions()
         {
             _logger.LogInformation("Attempt to get all property options from Db.");
 
             var propertyOptionsModel = await _mediator.Send(new GetAllPropertyOptionsQuery());
+
+            return Ok(propertyOptionsModel);
+        }
+
+        [HttpGet]
+        [Route("filter")]
+        [ProducesResponseType(typeof(IEnumerable<PropertyOptionsWithFilterModel>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPropertyOptionsWithFilter()
+        {
+            _logger.LogInformation("Attempt to get all property options with filter from Db.");
+
+            var propertyOptionsModel = await _mediator.Send(new GetPropertyOptionsWithFilterQuery());
 
             return Ok(propertyOptionsModel);
         }

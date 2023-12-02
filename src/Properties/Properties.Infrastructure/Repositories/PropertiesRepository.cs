@@ -149,5 +149,21 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             return await query.ToArrayAsync();
         }
+
+        public async Task DeleteById(int id)
+        {
+            await _context.Properties
+                .Where(p => p.Id == id)
+                .ExecuteDeleteAsync();
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> Exists(int id)
+            => await _context.Properties.AnyAsync(p => p.Id == id);
+
+        public async Task<bool> IsOwner(string userId, int propertyId)
+            => await _context.Properties
+                .AnyAsync(p => p.Id == propertyId && p.SellerId == userId);
     }
 }

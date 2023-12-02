@@ -272,6 +272,12 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnType("character varying")
                     .HasMaxLength(255)
                     .IsRequired(true);
+
+                entity.Property(e => e.RelatedPropName)
+                    .HasColumnName("related_prop_name")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
             });
 
             modelBuilder.Entity<IdentityUser>().ToTable("Users", "security", u => u.ExcludeFromMigrations());
@@ -437,8 +443,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
             // Order By
             modelBuilder.Entity<OrderBy>()
                 .HasData(
-                    new { Id = 1, Description = "Цена" },
-                    new { Id = 2, Description = "Най-нови" });
+                    new { Id = 1, Description = "Цена", RelatedPropName = "Price" },
+                    new { Id = 2, Description = "Най-нови", RelatedPropName = "CreatedOnLocalTime" });
         }
     }
 }

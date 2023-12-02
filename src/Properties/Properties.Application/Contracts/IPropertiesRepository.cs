@@ -15,5 +15,11 @@ namespace BuildingMarket.Properties.Application.Contracts
         Task<IEnumerable<PropertyModel>> GetByBroker(string brokerId);
 
         Task<AddPropertyOutputModel> Add(Property item);
+
+        Task DeleteById(int id);
+
+        Task<bool> Exists(int id);
+
+        Task<bool> IsOwner(string userId, int propertyId);
     }
 }

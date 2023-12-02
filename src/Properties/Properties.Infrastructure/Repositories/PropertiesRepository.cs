@@ -1,3 +1,5 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Models;
@@ -13,11 +15,13 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
     public class PropertiesRepository(
         IConfiguration configuration,
         PropertiesDbContext context,
+        IMapper mapper,
         ILogger<PropertiesRepository> logger)
         : IPropertiesRepository
     {
         private readonly int PageSize = configuration.GetValue<int>("PropertiesPageSize");
         private readonly PropertiesDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
         private readonly ILogger<PropertiesRepository> _logger = logger;
 
         public async Task<AddPropertyOutputModel> Add(Property item)
@@ -86,26 +90,26 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         public async Task<PropertyModel> GetById(int id)
         {
             _logger.LogInformation($"DB get property with ID {id}");
-            var result = await GetByFilterExpression(x => x.Id == id);
+            var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id);
 
             return result.First();
         }
 
-        public async Task<IEnumerable<PropertyModel>> GetByBroker(string brokerId)
+        public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId)
         {
             _logger.LogInformation("DB get all properties for broker with id " + brokerId);
 
-            return await GetByFilterExpression(x => x.BrokerId == brokerId);
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId);
         }
 
-        public async Task<IEnumerable<PropertyModel>> GetBySeller(string sellerId)
+        public async Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId)
         {
             _logger.LogInformation("DB get all properties for seller with id " + sellerId);
 
-            return await GetByFilterExpression(x => x.SellerId == sellerId);
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId);
         }
 
-        private async Task<IEnumerable<PropertyModel>> GetByFilterExpression(Expression<Func<Property, bool>> filterExpression)
+        private async Task<IEnumerable<T>> GetByFilterExpression<T>(Expression<Func<Property, bool>> filterExpression)
         {
             var query = _context.Properties.Where(filterExpression)
                 .Join(_context.Users,
@@ -119,33 +123,14 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 .GroupJoin(_context.Images,
                     pua => pua.property.Id,
                     img => img.PropertyId,
-                    (pua, image) => new { pua.user, pua.property, pua.additionalUserData, image })
-                .Select(data => new PropertyModel
-                {
-                    BrokerId = data.property.BrokerId,
-                    BuildingType = data.property.BuildingType,
-                    CreatedOnLocalTime = data.property.CreatedOnUtcTime.ToLocalTime(),
-                    Finish = data.property.Finish,
-                    Exposure = data.property.Exposure,
-                    Floor = data.property.Floor,
-                    Furnishment = data.property.Furnishment,
-                    Garage = data.property.Garage,
-                    Heating = data.property.Heating,
-                    NumberOfRooms = data.property.NumberOfRooms,
-                    Price = data.property.Price,
-                    Neighbourhood = data.property.Neighbourhood,
-                    Space = data.property.Space,
-                    TotalFloorsInBuilding = data.property.TotalFloorsInBuilding,
-                    Description = data.property.Description,
-                    ContactInfo = new ContactInfo
-                    {
-                        Email = data.user.Email,
-                        FirstName = data.additionalUserData.FirstName,
-                        LastName = data.additionalUserData.LastName,
-                        PhoneNumber = data.additionalUserData.PhoneNumber,
-                    },
-                    Images = data.image.Select(x => x.ImageURL)
-                });
+                    (pua, image) => new PropertyProjectToModel 
+                    { 
+                        Property = pua.property, 
+                        User = pua.user, 
+                        UserData = pua.additionalUserData, 
+                        Images = image 
+                    })
+                .ProjectTo<T>(_mapper.ConfigurationProvider);
 
             return await query.ToArrayAsync();
         }

@@ -44,7 +44,7 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
-        [ProducesResponseType(typeof(IEnumerable<PropertyModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<PropertyModelWithId>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Get()

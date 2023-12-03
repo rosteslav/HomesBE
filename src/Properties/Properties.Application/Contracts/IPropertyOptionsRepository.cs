@@ -5,5 +5,6 @@ namespace BuildingMarket.Properties.Application.Contracts
     public interface IPropertyOptionsRepository
     {
         Task<PropertyOptionsModel> GetAllPropertyOptions();
+        Task<PropertyOptionsWithFilterModel> GetPropertyOptionsWithFilter();
     }
 }

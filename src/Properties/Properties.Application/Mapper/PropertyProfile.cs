@@ -13,22 +13,14 @@ namespace BuildingMarket.Properties.Application.Mapper
 
             CreateMap<Image, string>().ConvertUsing(img => img.ImageURL);
 
+            CreateMap<Property, PropertyModel>()
+                .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()))
+                .IncludeAllDerived();
+            
+            CreateMap<Property, PropertyModelWithId>();
+
             CreateMap<PropertyProjectToModel, PropertyModel>()
-                .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.Property.CreatedOnUtcTime.ToLocalTime()))
-                .ForMember(x => x.Exposure, opt => opt.MapFrom(src => src.Property.Exposure))
-                .ForMember(x => x.Furnishment, opt => opt.MapFrom(src => src.Property.Furnishment))
-                .ForMember(x => x.Neighbourhood, opt => opt.MapFrom(src => src.Property.Neighbourhood))
-                .ForMember(x => x.BrokerId, opt => opt.MapFrom(src => src.Property.BrokerId))
-                .ForMember(x => x.BuildingType, opt => opt.MapFrom(src => src.Property.BuildingType))
-                .ForMember(x => x.Description, opt => opt.MapFrom(src => src.Property.Description))
-                .ForMember(x => x.Finish, opt => opt.MapFrom(src => src.Property.Finish))
-                .ForMember(x => x.Floor, opt => opt.MapFrom(src => src.Property.Floor))
-                .ForMember(x => x.Garage, opt => opt.MapFrom(src => src.Property.Garage))
-                .ForMember(x => x.Heating, opt => opt.MapFrom(src => src.Property.Heating))
-                .ForMember(x => x.NumberOfRooms, opt => opt.MapFrom(src => src.Property.NumberOfRooms))
-                .ForMember(x => x.Price, opt => opt.MapFrom(src => src.Property.Price))
-                .ForMember(x => x.Space, opt => opt.MapFrom(src => src.Property.Space))
-                .ForMember(x => x.TotalFloorsInBuilding, opt => opt.MapFrom(src => src.Property.TotalFloorsInBuilding))
+                .IncludeMembers(src => src.Property)
                 .ForMember(x => x.ContactInfo, opt => opt.MapFrom(src => new ContactInfo
                 {
                     Email = src.User.Email,
@@ -38,8 +30,7 @@ namespace BuildingMarket.Properties.Application.Mapper
                 }))
                 .IncludeAllDerived();
 
-            CreateMap<PropertyProjectToModel, PropertyModelWithId>()
-                .ForMember(x => x.Id, opt => opt.MapFrom(src => src.Property.Id));
+            CreateMap<PropertyProjectToModel, PropertyModelWithId>().IncludeMembers(src => src.Property);
 
             CreateMap<Property, AddPropertyCommand>()
                 .ForMember(x => x.Model, opt => opt.MapFrom(src => src))

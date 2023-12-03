@@ -45,12 +45,12 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
-        [ProducesResponseType(typeof(IEnumerable<PropertyModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<PropertyModelWithId>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Get()
         {
-            var properties = default(IEnumerable<PropertyModel>);
+            var properties = default(IEnumerable<PropertyModelWithId>);
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
             _logger.LogInformation($"Attempt to get all properties for the user with ID {userId}");
             if (User.IsInRole(UserRoles.Seller))

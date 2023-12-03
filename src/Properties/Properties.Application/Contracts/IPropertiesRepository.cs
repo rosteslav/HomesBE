@@ -10,9 +10,9 @@ namespace BuildingMarket.Properties.Application.Contracts
         
         Task<PropertyModel> GetById(int id);
 
-        Task<IEnumerable<PropertyModel>> GetBySeller(string sellerId);
+        Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId);
 
-        Task<IEnumerable<PropertyModel>> GetByBroker(string brokerId);
+        Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId);
 
         Task<AddPropertyOutputModel> Add(Property item);
 

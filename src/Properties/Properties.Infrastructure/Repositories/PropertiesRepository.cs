@@ -73,7 +73,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     .Take(PageSize)
                     .ToArrayAsync();
 
-                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(query.OrderBy);
+                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(query.OrderBy ?? nameof(GetAllPropertiesOutputModel.CreatedOnLocalTime));
 
                 return query.IsAscending
                     ? properties.OrderBy(orderByPropInfo.GetValue)

@@ -34,8 +34,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             {
                 new Claim(ClaimTypes.Sid, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.GivenName, additionalUserData.FirstName),
+                new Claim(ClaimTypes.GivenName, user.UserName),
+                new Claim(ClaimTypes.Name, additionalUserData.FirstName),
                 new Claim(ClaimTypes.Surname, additionalUserData.LastName),
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),

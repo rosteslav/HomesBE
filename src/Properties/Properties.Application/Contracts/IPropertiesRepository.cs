@@ -18,6 +18,8 @@ namespace BuildingMarket.Properties.Application.Contracts
 
         Task DeleteById(int id);
 
+        Task EditById(int id, AddPropertyInputModel editedProperty);
+
         Task<bool> Exists(int id);
 
         Task<bool> IsOwner(string userId, int propertyId);

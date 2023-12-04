@@ -123,12 +123,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 .GroupJoin(_context.Images,
                     pua => pua.property.Id,
                     img => img.PropertyId,
-                    (pua, image) => new PropertyProjectToModel 
-                    { 
-                        Property = pua.property, 
-                        User = pua.user, 
-                        UserData = pua.additionalUserData, 
-                        Images = image 
+                    (pua, image) => new PropertyProjectToModel
+                    {
+                        Property = pua.property,
+                        User = pua.user,
+                        UserData = pua.additionalUserData,
+                        Images = image
                     })
                 .ProjectTo<T>(_mapper.ConfigurationProvider);
 
@@ -140,6 +140,29 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             await _context.Properties
                 .Where(p => p.Id == id)
                 .ExecuteDeleteAsync();
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task EditById(int id, AddPropertyInputModel editedProperty)
+        {
+            var entityToUpdate = await _context.Properties
+                .FirstAsync(e => e.Id == id);
+
+            entityToUpdate.NumberOfRooms = editedProperty.NumberOfRooms;
+            entityToUpdate.Space = editedProperty.Space;
+            entityToUpdate.Description = editedProperty.Description;
+            entityToUpdate.Price = editedProperty.Price;
+            entityToUpdate.Floor = editedProperty.Floor;
+            entityToUpdate.TotalFloorsInBuilding = editedProperty.TotalFloorsInBuilding;
+            entityToUpdate.BuildingType = editedProperty.BuildingType;
+            entityToUpdate.Exposure = editedProperty.Exposure;
+            entityToUpdate.Finish = editedProperty.Finish;
+            entityToUpdate.Furnishment = editedProperty.Furnishment;
+            entityToUpdate.Garage = editedProperty.Garage;
+            entityToUpdate.Heating = editedProperty.Heating;
+            entityToUpdate.Neighbourhood = editedProperty.Neighbourhood;
+            entityToUpdate.BrokerId = editedProperty.BrokerId;
 
             await _context.SaveChangesAsync();
         }

@@ -1,6 +1,7 @@
 using BuildingMarket.Common.Models.Security;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.DeleteProperty;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.EditProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetById;
@@ -131,6 +132,50 @@ namespace BuildingMarket.Properties.Api.Controllers
                     return Unauthorized();
                 default:
                     _logger.LogInformation("Deleting property with id {id} failed.", id);
+
+                    return BadRequest();
+            }
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Edit(
+            int id,
+            [FromBody] AddPropertyInputModel model)
+        {
+            _logger.LogInformation("Attempting to edit property with id: {id}", id);
+
+            var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+
+            var result = await _mediator.Send(new EditPropertyCommand
+            {
+                PropertyId = id,
+                EditedProperty = model,
+                UserId = userId
+            });
+
+            switch (result)
+            {
+                case DeletePropertyResult.Success:
+                    _logger.LogInformation("Property with id: {id} was edited successfully!", id);
+
+                    return NoContent();
+                case DeletePropertyResult.NotFound:
+                    _logger.LogInformation("Property with id: {id} was not found!", id);
+
+                    return NotFound();
+                case DeletePropertyResult.Unauthorized:
+                    _logger.LogInformation("User with id {userId} tried to edit property {id} with no access to it!", userId, id);
+
+                    return Unauthorized();
+                default:
+                    _logger.LogInformation("Editing property with id {id} failed.", id);
 
                     return BadRequest();
             }

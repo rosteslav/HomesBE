@@ -38,7 +38,9 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
             var additionalUserData = await _repository.GetById(user.Id);
 
-            if (userRoles.Any(r => r == "Продавач" || r == "Брокер") &&
+            if (userRoles.Any(r => r == "Продавач" ||
+                            r == "Брокер" ||
+                            r == "Администратор") &&
                 additionalUserData != null)
             {
                 if (additionalUserData.FirstName != null)

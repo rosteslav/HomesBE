@@ -146,10 +146,10 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task EditById(int id, AddPropertyInputModel editedProperty)
         {   
-            var entityToUpdate = await _context.Properties
+            var propertyToUpdate = await _context.Properties
                 .FirstAsync(e => e.Id == id);
 
-            _mapper.Map(editedProperty, entityToUpdate);
+            propertyToUpdate = _mapper.Map<Property>(editedProperty);
 
             await _context.SaveChangesAsync();
         }

@@ -103,7 +103,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             string claimType,
             List<Claim> authClaims)
         {
-            if (value is null) return;
+            if (string.IsNullOrEmpty(value)) return;
 
             authClaims.Add(new Claim(claimType, value));
         }

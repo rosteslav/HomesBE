@@ -36,25 +36,16 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-            var additionalUserData = await _repository.GetById(user.Id);
+            var additData = await _repository.GetById(user.Id);
 
-            if (userRoles.Any(r => r == "Продавач" ||
-                            r == "Брокер" ||
-                            r == "Администратор") &&
-                additionalUserData != null)
+            var authorizedRoles = new[] { "Продавач", "Брокер", "Администратор" };
+
+            if (userRoles.Any(r => authorizedRoles.Contains(r)) &&
+                additData is not null)
             {
-                if (additionalUserData.FirstName != null)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Name, additionalUserData.FirstName));
-                }
-                if (additionalUserData.LastName != null)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Surname, additionalUserData.LastName));
-                }
-                if (additionalUserData.PhoneNumber != null)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.MobilePhone, additionalUserData.PhoneNumber));
-                }
+                TryAddClaim(additData.FirstName, ClaimTypes.Name, authClaims);
+                TryAddClaim(additData.LastName, ClaimTypes.Surname, authClaims);
+                TryAddClaim(additData.PhoneNumber, ClaimTypes.MobilePhone, authClaims);
             }
 
             foreach (var userRole in userRoles)
@@ -104,6 +95,16 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             }
 
             return RegistrationResult.Success;
+        }
+
+        private void TryAddClaim(
+            string value,
+            string claimType,
+            List<Claim> authClaims)
+        {
+            if (value is null) return;
+
+            authClaims.Add(new Claim(claimType, value));
         }
     }
 }

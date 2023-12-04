@@ -139,14 +139,14 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
+        [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit(
-            int id,
+            [FromRoute] int id,
             [FromBody] AddPropertyInputModel model)
         {
             _logger.LogInformation("Attempting to edit property with id: {id}", id);

@@ -26,7 +26,8 @@ namespace BuildingMarket.Properties.Application.Mapper
                     Email = src.User.Email,
                     FirstName = src.UserData.FirstName,
                     LastName = src.UserData.LastName,
-                    PhoneNumber = src.UserData.PhoneNumber
+                    PhoneNumber = src.UserData.PhoneNumber,
+                    ImageURL = src.UserData.ImageURL
                 }))
                 .IncludeAllDerived();
 

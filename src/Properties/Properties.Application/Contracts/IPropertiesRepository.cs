@@ -7,7 +7,7 @@ namespace BuildingMarket.Properties.Application.Contracts
     public interface IPropertiesRepository
     {
         Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query);
-        
+
         Task<PropertyModel> GetById(int id);
 
         Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId);
@@ -17,6 +17,8 @@ namespace BuildingMarket.Properties.Application.Contracts
         Task<AddPropertyOutputModel> Add(Property item);
 
         Task DeleteById(int id);
+
+        Task EditById(int id, AddPropertyInputModel editedProperty);
 
         Task<bool> Exists(int id);
 

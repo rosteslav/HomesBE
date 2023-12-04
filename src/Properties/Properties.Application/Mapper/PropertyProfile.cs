@@ -16,7 +16,7 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<Property, PropertyModel>()
                 .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()))
                 .IncludeAllDerived();
-            
+
             CreateMap<Property, PropertyModelWithId>();
 
             CreateMap<PropertyProjectToModel, PropertyModel>()

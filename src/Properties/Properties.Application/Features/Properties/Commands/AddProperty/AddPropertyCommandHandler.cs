@@ -8,7 +8,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Commands.Add
 {
     public class AddPropertyCommandHandler(
         IPropertiesRepository propertiesRepository,
-        IMapper mapper) 
+        IMapper mapper)
         : IRequestHandler<AddPropertyCommand, AddPropertyOutputModel>
     {
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;

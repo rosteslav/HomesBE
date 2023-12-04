@@ -1,7 +1,6 @@
 ﻿using BuildingMarket.Auth.Application.Contracts;
 using BuildingMarket.Auth.Application.Models.Security;
 using BuildingMarket.Auth.Application.Models.Security.Enums;
-using BuildingMarket.Common.Models.Security;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -39,15 +38,12 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
             var additData = await _repository.GetById(user.Id);
 
-            var authorizedRoles = new[] { UserRoles.Seller, UserRoles.Broker, UserRoles.Admin };
-
-            if (userRoles.Any(r => authorizedRoles.Contains(r)) &&
-                additData is not null)
-            {
-                TryAddClaim(additData.FirstName, ClaimTypes.Name, authClaims);
-                TryAddClaim(additData.LastName, ClaimTypes.Surname, authClaims);
-                TryAddClaim(additData.PhoneNumber, ClaimTypes.MobilePhone, authClaims);
-            }
+            if(!string.IsNullOrEmpty(additData?.FirstName)) 
+                authClaims.Add(new Claim(ClaimTypes.Name, additData.FirstName));
+            if (!string.IsNullOrEmpty(additData?.LastName)) 
+                authClaims.Add(new Claim(ClaimTypes.Surname, additData.LastName));
+            if (!string.IsNullOrEmpty(additData?.PhoneNumber)) 
+                authClaims.Add(new Claim(ClaimTypes.MobilePhone, additData.PhoneNumber));
 
             foreach (var userRole in userRoles)
             {
@@ -96,16 +92,6 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             }
 
             return RegistrationResult.Success;
-        }
-
-        private void TryAddClaim(
-            string value,
-            string claimType,
-            List<Claim> authClaims)
-        {
-            if (string.IsNullOrEmpty(value)) return;
-
-            authClaims.Add(new Claim(claimType, value));
         }
     }
 }

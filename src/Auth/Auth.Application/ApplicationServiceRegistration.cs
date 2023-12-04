@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace BuildingMarket.Auth.Application
 {
@@ -7,6 +8,7 @@ namespace BuildingMarket.Auth.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             return services;
         }

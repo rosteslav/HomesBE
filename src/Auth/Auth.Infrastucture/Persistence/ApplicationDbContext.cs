@@ -9,6 +9,8 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
     {
         public virtual DbSet<AdditionalUserData> AdditionalUserData { get; set; }
 
+        public virtual DbSet<Preferences> Preferences { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -27,6 +29,7 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                 .ToTable("RoleClaims", "security");
             modelBuilder.Entity<IdentityUserToken<string>>()
                 .ToTable("UserTokens", "security");
+
             modelBuilder.Entity<AdditionalUserData>(entity =>
             {
                 entity.ToTable("AdditionalData", "security");

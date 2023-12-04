@@ -8,5 +8,6 @@ namespace BuildingMarket.Auth.Application.Features.Security.Commands.Register
     {
         public RegisterModel Model { get; set; }
         public IEnumerable<string> Roles { get; set; }
+        public PreferencesModel Preferences { get; set; }
     }
 }

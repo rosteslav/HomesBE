@@ -10,12 +10,14 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
     public class SecurityService(
         UserManager<IdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        IAdditionalUserDataRepository repository)
+        IAdditionalUserDataRepository additionalUserDataRepository,
+        IPreferencesRepository preferencesRepository)
         : ISecurityService
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-        private readonly IAdditionalUserDataRepository _repository = repository;
+        private readonly IAdditionalUserDataRepository _additionalUserDataRepository = additionalUserDataRepository;
+        private readonly IPreferencesRepository _preferencesRepository = preferencesRepository;
 
         public async Task<IEnumerable<Claim>> GetLoginClaims(string username, string password)
         {
@@ -43,7 +45,10 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             return authClaims;
         }
 
-        public async Task<RegistrationResult> Registration(RegisterModel model, IEnumerable<string> roles)
+        public async Task<RegistrationResult> Registration(
+            RegisterModel model,
+            IEnumerable<string> roles,
+            PreferencesModel preferences)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
@@ -64,7 +69,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 model.LastName != null ||
                 model.PhoneNumber != null)
             {
-                await _repository.AddAsync(new()
+                await _additionalUserDataRepository.AddAsync(new()
                 {
                     FirstName = model.FirstName,
                     LastName = model.LastName,
@@ -80,6 +85,9 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
                 await _userManager.AddToRoleAsync(user, role);
             }
+
+            if (preferences != null)
+                await _preferencesRepository.Add(user.Id, preferences);
 
             return RegistrationResult.Success;
         }

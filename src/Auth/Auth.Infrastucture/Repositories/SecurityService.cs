@@ -1,6 +1,7 @@
 ﻿using BuildingMarket.Auth.Application.Contracts;
 using BuildingMarket.Auth.Application.Models.Security;
 using BuildingMarket.Auth.Application.Models.Security.Enums;
+using BuildingMarket.Common.Models.Security;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -38,7 +39,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
             var additData = await _repository.GetById(user.Id);
 
-            var authorizedRoles = new[] { "Продавач", "Брокер", "Администратор" };
+            var authorizedRoles = new[] { UserRoles.Seller, UserRoles.Broker, UserRoles.Admin };
 
             if (userRoles.Any(r => authorizedRoles.Contains(r)) &&
                 additData is not null)

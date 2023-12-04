@@ -149,7 +149,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             var propertyToUpdate = await _context.Properties
                 .FirstAsync(e => e.Id == id);
 
-            propertyToUpdate = _mapper.Map<Property>(editedProperty);
+            _mapper.Map(editedProperty, propertyToUpdate);
 
             await _context.SaveChangesAsync();
         }

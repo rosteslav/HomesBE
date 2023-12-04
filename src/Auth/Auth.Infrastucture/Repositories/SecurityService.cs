@@ -26,8 +26,6 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 return null;
             }
 
-            var additionalUserData = await _repository.GetById(user.Id);
-
             var userRoles = await _userManager.GetRolesAsync(user);
 
             var authClaims = new List<Claim>
@@ -35,11 +33,27 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 new Claim(ClaimTypes.Sid, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.UserName),
-                new Claim(ClaimTypes.Name, additionalUserData.FirstName),
-                new Claim(ClaimTypes.Surname, additionalUserData.LastName),
-                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
+
+            var additionalUserData = await _repository.GetById(user.Id);
+
+            if (userRoles.Any(r => r == "Продавач" || r == "Брокер") &&
+                additionalUserData != null)
+            {
+                if (additionalUserData.FirstName != null)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Name, additionalUserData.FirstName));
+                }
+                if (additionalUserData.LastName != null)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Surname, additionalUserData.LastName));
+                }
+                if (additionalUserData.PhoneNumber != null)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.MobilePhone, additionalUserData.PhoneNumber));
+                }
+            }
 
             foreach (var userRole in userRoles)
             {

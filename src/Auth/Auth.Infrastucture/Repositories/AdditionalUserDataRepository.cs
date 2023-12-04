@@ -28,6 +28,6 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
         public async Task<AdditionalUserData> GetById(string userId)
             => await _context.AdditionalUserData
-                .FirstAsync(u => u.UserId == userId);
+                .FirstOrDefaultAsync(u => u.UserId == userId);
     }
 }

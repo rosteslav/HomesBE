@@ -79,7 +79,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     PhoneNumber = model.PhoneNumber,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    ImageURL = model.ImageUrl
                 });
             }
 

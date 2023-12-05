@@ -2,13 +2,13 @@
 {
     public class PropertyOptionsModel
     {
-        public required IEnumerable<string> BuildingType { get; set; }
-        public required IEnumerable<string> Exposure { get; set; }
-        public required IEnumerable<string> Finish { get; set; }
-        public required IEnumerable<string> Furnishment { get; set; }
-        public required IEnumerable<string> Garage { get; set; }
-        public required IEnumerable<string> Heating { get; set; }
-        public required IEnumerable<string> Neighbourhood { get; set; }
-        public required IEnumerable<string> NumberOfRooms { get; set; }
+        public IEnumerable<string> BuildingType { get; set; }
+        public IEnumerable<string> Exposure { get; set; }
+        public IEnumerable<string> Finish { get; set; }
+        public IEnumerable<string> Furnishment { get; set; }
+        public IEnumerable<string> Garage { get; set; }
+        public IEnumerable<string> Heating { get; set; }
+        public IEnumerable<string> Neighbourhood { get; set; }
+        public IEnumerable<string> NumberOfRooms { get; set; }
     }
 }

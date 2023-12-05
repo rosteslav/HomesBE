@@ -1,5 +1,4 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
-using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Models;
 using MediatR;
 

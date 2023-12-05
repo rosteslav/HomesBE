@@ -1,3 +1,5 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Models;
@@ -13,11 +15,13 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
     public class PropertiesRepository(
         IConfiguration configuration,
         PropertiesDbContext context,
+        IMapper mapper,
         ILogger<PropertiesRepository> logger)
         : IPropertiesRepository
     {
         private readonly int PageSize = configuration.GetValue<int>("PropertiesPageSize");
         private readonly PropertiesDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
         private readonly ILogger<PropertiesRepository> _logger = logger;
 
         public async Task<AddPropertyOutputModel> Add(Property item)
@@ -37,36 +41,43 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             try
             {
-                var items = from property in _context.Properties
-                            where
-                                (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
-                                (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
-                                (query.SpaceFrom == 0 || query.SpaceFrom <= property.Space) &&
-                                (query.SpaceTo == 0 || query.SpaceTo >= property.Space) &&
-                                (query.PriceFrom == 0 || query.PriceFrom <= property.Price) &&
-                                (query.PriceTo == 0 || query.PriceTo >= property.Price) &&
-                                (query.Finish == null || query.Finish.Contains(property.Finish)) &&
-                                (query.Furnishment == null || query.Furnishment.Contains(property.Furnishment)) &&
-                                (query.Heating == null || query.Heating.Contains(property.Heating)) &&
-                                (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
-                                (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date)
-                            join image in _context.Images on property.Id equals image.PropertyId into images
-                            select new GetAllPropertiesOutputModel
-                            {
-                                Id = property.Id,
-                                CreatedOnLocalTime = property.CreatedOnUtcTime.ToLocalTime(),
-                                Details = string.Join(',', property.BuildingType, property.Finish, property.Furnishment, property.Heating, property.Exposure),
-                                Neighbourhood = property.Neighbourhood,
-                                Price = property.Price,
-                                NumberOfRooms = property.NumberOfRooms,
-                                Space = property.Space,
-                                Images = images.Select(img => img.ImageURL)
-                            };
-
-                return await items
+                var properties = await _context.Properties
+                    .Where(property =>
+                        (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
+                        (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
+                        (query.SpaceFrom == 0 || query.SpaceFrom <= property.Space) &&
+                        (query.SpaceTo == 0 || query.SpaceTo >= property.Space) &&
+                        (query.PriceFrom == 0 || query.PriceFrom <= property.Price) &&
+                        (query.PriceTo == 0 || query.PriceTo >= property.Price) &&
+                        (query.Finish == null || query.Finish.Contains(property.Finish)) &&
+                        (query.Furnishment == null || query.Furnishment.Contains(property.Furnishment)) &&
+                        (query.Heating == null || query.Heating.Contains(property.Heating)) &&
+                        (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
+                        (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date))
+                    .GroupJoin(_context.Images,
+                        property => property.Id,
+                        image => image.PropertyId,
+                        (property, image) => new { Property = property, Images = image })
+                    .Select(pi => new GetAllPropertiesOutputModel
+                    {
+                        Id = pi.Property.Id,
+                        CreatedOnLocalTime = pi.Property.CreatedOnUtcTime.ToLocalTime(),
+                        Details = string.Join(',', pi.Property.BuildingType, pi.Property.Finish, pi.Property.Furnishment, pi.Property.Heating, pi.Property.Exposure),
+                        Neighbourhood = pi.Property.Neighbourhood,
+                        Price = pi.Property.Price,
+                        NumberOfRooms = pi.Property.NumberOfRooms,
+                        Space = pi.Property.Space,
+                        Images = pi.Images.Select(img => img.ImageURL)
+                    })
                     .Skip(PageSize * (query.Page - 1))
                     .Take(PageSize)
                     .ToArrayAsync();
+
+                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(query.OrderBy ?? nameof(GetAllPropertiesOutputModel.CreatedOnLocalTime));
+
+                return query.IsAscending
+                    ? properties.OrderBy(orderByPropInfo.GetValue)
+                    : properties.OrderByDescending(orderByPropInfo.GetValue);
             }
             catch (Exception ex)
             {
@@ -79,26 +90,26 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         public async Task<PropertyModel> GetById(int id)
         {
             _logger.LogInformation($"DB get property with ID {id}");
-            var result = await GetByFilterExpression(x => x.Id == id);
+            var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id);
 
             return result.First();
         }
 
-        public async Task<IEnumerable<PropertyModel>> GetByBroker(string brokerId)
+        public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId)
         {
             _logger.LogInformation("DB get all properties for broker with id " + brokerId);
 
-            return await GetByFilterExpression(x => x.BrokerId == brokerId);
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId);
         }
 
-        public async Task<IEnumerable<PropertyModel>> GetBySeller(string sellerId)
+        public async Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId)
         {
             _logger.LogInformation("DB get all properties for seller with id " + sellerId);
 
-            return await GetByFilterExpression(x => x.SellerId == sellerId);
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId);
         }
 
-        private async Task<IEnumerable<PropertyModel>> GetByFilterExpression(Expression<Func<Property, bool>> filterExpression)
+        private async Task<IEnumerable<T>> GetByFilterExpression<T>(Expression<Func<Property, bool>> filterExpression)
         {
             var query = _context.Properties.Where(filterExpression)
                 .Join(_context.Users,
@@ -112,35 +123,42 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 .GroupJoin(_context.Images,
                     pua => pua.property.Id,
                     img => img.PropertyId,
-                    (pua, image) => new { pua.user, pua.property, pua.additionalUserData, image })
-                .Select(data => new PropertyModel
-                {
-                    BrokerId = data.property.BrokerId,
-                    BuildingType = data.property.BuildingType,
-                    CreatedOnLocalTime = data.property.CreatedOnUtcTime.ToLocalTime(),
-                    Finish = data.property.Finish,
-                    Exposure = data.property.Exposure,
-                    Floor = data.property.Floor,
-                    Furnishment = data.property.Furnishment,
-                    Garage = data.property.Garage,
-                    Heating = data.property.Heating,
-                    NumberOfRooms = data.property.NumberOfRooms,
-                    Price = data.property.Price,
-                    Neighbourhood = data.property.Neighbourhood,
-                    Space = data.property.Space,
-                    TotalFloorsInBuilding = data.property.TotalFloorsInBuilding,
-                    Description = data.property.Description,
-                    ContactInfo = new ContactInfo
+                    (pua, image) => new PropertyProjectToModel
                     {
-                        Email = data.user.Email,
-                        FirstName = data.additionalUserData.FirstName,
-                        LastName = data.additionalUserData.LastName,
-                        PhoneNumber = data.additionalUserData.PhoneNumber,
-                    },
-                    Images = data.image.Select(x => x.ImageURL)
-                });
+                        Property = pua.property,
+                        User = pua.user,
+                        UserData = pua.additionalUserData,
+                        Images = image
+                    })
+                .ProjectTo<T>(_mapper.ConfigurationProvider);
 
             return await query.ToArrayAsync();
         }
+
+        public async Task DeleteById(int id)
+        {
+            await _context.Properties
+                .Where(p => p.Id == id)
+                .ExecuteDeleteAsync();
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task EditById(int id, AddPropertyInputModel editedProperty)
+        {   
+            var propertyToUpdate = await _context.Properties
+                .FirstAsync(e => e.Id == id);
+
+            _mapper.Map(editedProperty, propertyToUpdate);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> Exists(int id)
+            => await _context.Properties.AnyAsync(p => p.Id == id);
+
+        public async Task<bool> IsOwner(string userId, int propertyId)
+            => await _context.Properties
+                .AnyAsync(p => p.Id == propertyId && p.SellerId == userId);
     }
 }

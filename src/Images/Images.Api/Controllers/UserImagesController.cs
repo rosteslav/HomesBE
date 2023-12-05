@@ -21,21 +21,16 @@ namespace BuildingMarket.Images.Api.Controllers
         private readonly ILogger<ImageController> _logger = logger;
 
         [HttpPost]
-        [Route("{userId}")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> AddImage([FromRoute] string userId, [ValidImage] IFormFile image)
+        public async Task<IActionResult> AddImage([ValidImage] IFormFile image)
         {
-            _logger.LogInformation("Attempting to add image to user with id: {userId}.", userId);
+            _logger.LogInformation("Attempting to add image");
 
-            var imageUrl = await _mediator.Send(new AddUserImageCommand
-            {
-                UserId = userId,
-                FormFile = image
-            });
+            var imageUrl = await _mediator.Send(new AddUserImageCommand { FormFile = image });
 
             if (string.IsNullOrEmpty(imageUrl))
             {

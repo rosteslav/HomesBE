@@ -5,7 +5,6 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.AddUserImag
 {
     public class AddUserImageCommand : IRequest<string>
     {
-        public string UserId { get; set; }
         public IFormFile FormFile { get; set; }
     }
 }

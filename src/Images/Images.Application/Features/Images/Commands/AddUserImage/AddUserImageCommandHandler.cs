@@ -11,7 +11,7 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.AddUserImag
         public async Task<string> Handle(AddUserImageCommand request, CancellationToken cancellationToken)
         {
             string ext = Path.GetExtension(request.FormFile.FileName);
-            var imageName = $"{request.UserId}-{Guid.NewGuid()}{ext}";
+            var imageName = $"UserImg-{Guid.NewGuid()}{ext}";
 
             ImageData imageData = await _imgbbService.UploadImage(request.FormFile, imageName);
 

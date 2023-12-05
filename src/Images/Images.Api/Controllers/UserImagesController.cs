@@ -1,6 +1,6 @@
 ﻿using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Images.Application.Features.Images.Commands.AddUserImage;
 using BuildingMarket.Images.Application.Features.Images.Commands.DeleteUserImage;
+using BuildingMarket.Images.Application.Features.Images.Commands.EditUserImage;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +18,14 @@ namespace BuildingMarket.Images.Api.Controllers
         private readonly IMediator _mediator = mediator;
         private readonly ILogger<ImageController> _logger = logger;
 
-        [HttpPost]
+        [HttpPut]
         [Route("{userId}")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> AddImage(string userId, IFormFile image)
+        public async Task<IActionResult> EditImage([FromRoute] string userId, IFormFile image)
         {
             var imgInMB = image.Length / 1024 / 1024;
 
@@ -36,19 +36,19 @@ namespace BuildingMarket.Images.Api.Controllers
 
             _logger.LogInformation("Attempting to add image to user with id: {userId}.", userId);
 
-            var imageId = await _mediator.Send(new AddUserImageCommand
+            var imageUrl = await _mediator.Send(new EditUserImageCommand
             {
                 FormFile = image,
                 UserId = userId
             });
 
-            if (string.IsNullOrEmpty(imageId))
+            if (string.IsNullOrEmpty(imageUrl))
             {
                 _logger.LogError("User image upload was not successful.");
                 return BadRequest();
             }
 
-            return Ok(imageId);
+            return Ok(imageUrl);
         }
 
         [HttpDelete]

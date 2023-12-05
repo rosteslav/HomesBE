@@ -2,17 +2,17 @@
 using BuildingMarket.Images.Application.Models;
 using MediatR;
 
-namespace BuildingMarket.Images.Application.Features.Images.Commands.AddUserImage
+namespace BuildingMarket.Images.Application.Features.Images.Commands.EditUserImage
 {
-    public class AddUserImageCommandHandler(
+    public class EditUserImageCommandHandler(
         IUserImagesRepository repository,
-        IImgbbService imgbbService) : IRequestHandler<AddUserImageCommand, string>
+        IImgbbService imgbbService) : IRequestHandler<EditUserImageCommand, string>
     {
         private readonly IUserImagesRepository _repository = repository;
         private readonly IImgbbService _imgbbService = imgbbService;
 
         public async Task<string> Handle(
-            AddUserImageCommand request,
+            EditUserImageCommand request,
             CancellationToken cancellationToken)
         {
             string ext = Path.GetExtension(request.FormFile.FileName);

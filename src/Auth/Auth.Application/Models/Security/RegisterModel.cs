@@ -20,6 +20,8 @@ namespace BuildingMarket.Auth.Application.Models.Security
 
         public string PhoneNumber { get; set; }
 
+        public string ImageUrl { get; set; }
+
         public string Purpose { get; set; }
 
         public string Region { get; set; }

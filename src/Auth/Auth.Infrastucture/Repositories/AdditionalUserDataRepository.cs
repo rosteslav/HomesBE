@@ -25,5 +25,9 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 _logger.LogError(ex, $"Couldn't add Additional User Data! {item.FirstName} {item.LastName} {item.PhoneNumber}.");
             }
         }
+
+        public async Task<AdditionalUserData> GetById(string userId)
+            => await _context.AdditionalUserData
+                .FirstOrDefaultAsync(u => u.UserId == userId);
     }
 }

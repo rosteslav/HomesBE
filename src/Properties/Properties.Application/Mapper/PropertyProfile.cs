@@ -16,7 +16,7 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<Property, PropertyModel>()
                 .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()))
                 .IncludeAllDerived();
-            
+
             CreateMap<Property, PropertyModelWithId>();
 
             CreateMap<PropertyProjectToModel, PropertyModel>()
@@ -26,7 +26,8 @@ namespace BuildingMarket.Properties.Application.Mapper
                     Email = src.User.Email,
                     FirstName = src.UserData.FirstName,
                     LastName = src.UserData.LastName,
-                    PhoneNumber = src.UserData.PhoneNumber
+                    PhoneNumber = src.UserData.PhoneNumber,
+                    ImageURL = src.UserData.ImageURL
                 }))
                 .IncludeAllDerived();
 

@@ -32,10 +32,20 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Sid, user.Id),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GivenName, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
+
+            var additData = await _repository.GetById(user.Id);
+
+            if(!string.IsNullOrEmpty(additData?.FirstName)) 
+                authClaims.Add(new Claim(ClaimTypes.Name, additData.FirstName));
+            if (!string.IsNullOrEmpty(additData?.LastName)) 
+                authClaims.Add(new Claim(ClaimTypes.Surname, additData.LastName));
+            if (!string.IsNullOrEmpty(additData?.PhoneNumber)) 
+                authClaims.Add(new Claim(ClaimTypes.MobilePhone, additData.PhoneNumber));
 
             foreach (var userRole in userRoles)
             {
@@ -71,7 +81,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     PhoneNumber = model.PhoneNumber,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    ImageURL = model.ImageUrl
                 });
             }
 

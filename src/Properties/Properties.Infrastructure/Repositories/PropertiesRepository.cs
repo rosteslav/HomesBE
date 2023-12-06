@@ -123,12 +123,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 .GroupJoin(_context.Images,
                     pua => pua.property.Id,
                     img => img.PropertyId,
-                    (pua, image) => new PropertyProjectToModel 
-                    { 
-                        Property = pua.property, 
-                        User = pua.user, 
-                        UserData = pua.additionalUserData, 
-                        Images = image 
+                    (pua, image) => new PropertyProjectToModel
+                    {
+                        Property = pua.property,
+                        User = pua.user,
+                        UserData = pua.additionalUserData,
+                        Images = image
                     })
                 .ProjectTo<T>(_mapper.ConfigurationProvider);
 
@@ -140,6 +140,16 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             await _context.Properties
                 .Where(p => p.Id == id)
                 .ExecuteDeleteAsync();
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task EditById(int id, AddPropertyInputModel editedProperty)
+        {   
+            var propertyToUpdate = await _context.Properties
+                .FirstAsync(e => e.Id == id);
+
+            _mapper.Map(editedProperty, propertyToUpdate);
 
             await _context.SaveChangesAsync();
         }

@@ -89,29 +89,29 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task<PropertyModel> GetById(int id)
         {
-            _logger.LogInformation($"DB get property with ID {id}");
-            var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id);
+            _logger.LogInformation("DB get property with ID {id}", id);
 
-            return result.First();
+            var result = GetByFilterExpression<PropertyModel>(x => x.Id == id);
+
+            return await result.SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId)
+        public IEnumerable<PropertyModelWithId> GetByBroker(string brokerId)
         {
             _logger.LogInformation("DB get all properties for broker with id " + brokerId);
 
-            return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId);
+            return GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId);
         }
 
-        public async Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId)
+        public IEnumerable<PropertyModelWithId> GetBySeller(string sellerId)
         {
             _logger.LogInformation("DB get all properties for seller with id " + sellerId);
 
-            return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId);
+            return GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId);
         }
 
-        private async Task<IEnumerable<T>> GetByFilterExpression<T>(Expression<Func<Property, bool>> filterExpression)
-        {
-            var query = _context.Properties.Where(filterExpression)
+        private IQueryable<T> GetByFilterExpression<T>(Expression<Func<Property, bool>> filterExpression)
+            => _context.Properties.Where(filterExpression)
                 .Join(_context.Users,
                     property => property.BrokerId ?? property.SellerId,
                     user => user.Id,
@@ -131,9 +131,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         Images = image
                     })
                 .ProjectTo<T>(_mapper.ConfigurationProvider);
-
-            return await query.ToArrayAsync();
-        }
 
         public async Task DeleteById(int id)
         {

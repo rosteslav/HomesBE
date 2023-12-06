@@ -9,7 +9,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetB
     {
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
 
-        public async Task<IEnumerable<PropertyModelWithId>> Handle(GetBySellerQuery request, CancellationToken cancellationToken)
-            => await _propertiesRepository.GetBySeller(request.SellerId);
+        public Task<IEnumerable<PropertyModelWithId>> Handle(GetBySellerQuery request, CancellationToken cancellationToken)
+            => Task.FromResult(_propertiesRepository.GetBySeller(request.SellerId));
     }
 }

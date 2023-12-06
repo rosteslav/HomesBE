@@ -77,12 +77,13 @@ namespace BuildingMarket.Properties.Api.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(PropertyModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            _logger.LogInformation($"Attempt to get property with ID {id}");
+            _logger.LogInformation("Attempt to get property with ID {id}", id);
 
-            return Ok(await _mediator.Send(new GetByIdQuery { Id = id }));
+            var result = await _mediator.Send(new GetByIdQuery { Id = id });
+
+            return result is null ? NotFound() : Ok(result);
         }
 
         [HttpGet]

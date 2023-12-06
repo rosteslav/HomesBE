@@ -89,29 +89,29 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task<PropertyModel> GetById(int id)
         {
-            _logger.LogInformation($"DB get property with ID {id}");
-            var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id);
+            _logger.LogInformation("DB get property with ID {id}", id);
 
-            return result.First();
+            var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id).SingleOrDefaultAsync();
+
+            return result;
         }
 
         public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId)
         {
             _logger.LogInformation("DB get all properties for broker with id " + brokerId);
 
-            return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId);
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId).ToListAsync();
         }
 
         public async Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId)
         {
             _logger.LogInformation("DB get all properties for seller with id " + sellerId);
 
-            return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId);
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId).ToListAsync();
         }
 
-        private async Task<IEnumerable<T>> GetByFilterExpression<T>(Expression<Func<Property, bool>> filterExpression)
-        {
-            var query = _context.Properties.Where(filterExpression)
+        private IQueryable<T> GetByFilterExpression<T>(Expression<Func<Property, bool>> filterExpression)
+            => _context.Properties.Where(filterExpression)
                 .Join(_context.Users,
                     property => property.BrokerId ?? property.SellerId,
                     user => user.Id,
@@ -132,9 +132,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     })
                 .ProjectTo<T>(_mapper.ConfigurationProvider);
 
-            return await query.ToArrayAsync();
-        }
-
         public async Task DeleteById(int id)
         {
             await _context.Properties
@@ -145,7 +142,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         }
 
         public async Task EditById(int id, AddPropertyInputModel editedProperty)
-        {   
+        {
             var propertyToUpdate = await _context.Properties
                 .FirstAsync(e => e.Id == id);
 

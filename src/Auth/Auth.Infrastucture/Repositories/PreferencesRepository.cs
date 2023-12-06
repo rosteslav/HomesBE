@@ -17,21 +17,10 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<PreferencesRepository> _logger = logger;
 
-        public async Task Add(string userId, PreferencesModel model)
+        public async Task Add(PreferencesModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.Purpose)
-                && string.IsNullOrWhiteSpace(model.Region)
-                && string.IsNullOrWhiteSpace(model.BuildingType)
-                && model.PriceHigherEnd == 0)
-            {
-                _logger.LogInformation("DB user doesn't choose any preferences");
-                return;
-            }
-
-            var preferences = _mapper.Map<Preferences>(model);
-            preferences.UserId = userId;
-
             _logger.LogInformation("DB adding user preferences...");
+            var preferences = _mapper.Map<Preferences>(model);
 
             try
             {

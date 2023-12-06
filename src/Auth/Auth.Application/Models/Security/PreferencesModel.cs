@@ -4,6 +4,8 @@ namespace BuildingMarket.Auth.Application.Models.Security
 {
     public class PreferencesModel
     {
+        public string UserId { get; set; }
+
         public string Purpose { get; set; }
         
         public string Region { get; set; }

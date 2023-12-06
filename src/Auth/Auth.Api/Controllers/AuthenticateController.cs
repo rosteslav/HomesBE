@@ -71,40 +71,6 @@ namespace BuildingMarket.Auth.Api.Controllers
         }
 
         [HttpPost]
-        [Route("register/buyer")]
-        [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Response), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Response), StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> RegisterBuyer([FromBody] RegisterBuyerModel model)
-        {
-            _logger.LogInformation($"Register attempt with Username: {model.Username}");
-            var token = await _mediator.Send(new RegisterCommand
-            {
-                Model = model,
-                Roles = new string[]
-                {
-                    UserRoles.User,
-                    UserRoles.Buyer
-                },
-                Preferences = model.Preferences
-            });
-
-            switch (token)
-            {
-                case RegistrationResult.Success:
-                    _logger.LogInformation($"User created successfully with Username: {model.Username}");
-                    return Ok(new Response { Status = "Success", Message = "User created successfully!" });
-                case RegistrationResult.AlreadyExists:
-                    _logger.LogInformation($"User already exists with Username: {model.Username}");
-                    return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User already exists!" });
-                case RegistrationResult.Failure:
-                default:
-                    _logger.LogInformation($"User creation failed with Username: {model.Username}");
-                    return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-            }
-        }
-
-        [HttpPost]
         [Route("admin/register")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {

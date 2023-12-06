@@ -45,10 +45,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             return authClaims;
         }
 
-        public async Task<RegistrationResult> Registration(
-            RegisterModel model,
-            IEnumerable<string> roles,
-            PreferencesModel preferences)
+        public async Task<RegistrationResult> Registration(RegisterModel model, IEnumerable<string> roles)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
@@ -78,6 +75,21 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 });
             }
 
+            if (model.Purpose != null ||
+                model.Region != null ||
+                model.BuildingType != null ||
+                model.PriceHigherEnd != 0)
+            {
+                await _preferencesRepository.Add(new PreferencesModel
+                {
+                    UserId = user.Id,
+                    Purpose = model.Purpose,
+                    Region = model.Region,
+                    BuildingType = model.BuildingType,
+                    PriceHigherEnd = model.PriceHigherEnd
+                });
+            }
+
             foreach (var role in roles)
             {
                 if (!await _roleManager.RoleExistsAsync(role))
@@ -85,9 +97,6 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
                 await _userManager.AddToRoleAsync(user, role);
             }
-
-            if (preferences != null)
-                await _preferencesRepository.Add(user.Id, preferences);
 
             return RegistrationResult.Success;
         }

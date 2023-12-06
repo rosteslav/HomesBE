@@ -4,6 +4,6 @@ namespace BuildingMarket.Auth.Application.Contracts
 {
     public interface IPreferencesRepository
     {
-        Task Add(string userId, PreferencesModel model);
+        Task Add(PreferencesModel model);
     }
 }

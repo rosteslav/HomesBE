@@ -83,7 +83,7 @@ namespace BuildingMarket.Properties.Api.Controllers
 
             var result = await _mediator.Send(new GetByIdQuery { Id = id });
 
-            return result is null ? NotFound() : Ok();
+            return result is null ? NotFound() : Ok(result);
         }
 
         [HttpGet]

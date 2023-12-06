@@ -1,4 +1,5 @@
 ﻿using BuildingMarket.Auth.Application.Features.AuthOptions.Queries.GetAllBrokers;
+using BuildingMarket.Auth.Application.Features.AuthOptions.Queries.GetPreferences;
 using BuildingMarket.Auth.Application.Features.AuthOptions.Queries.GetUserRoles;
 using BuildingMarket.Auth.Application.Models.AuthOptions;
 using BuildingMarket.Auth.Application.Models.Security;
@@ -39,6 +40,16 @@ namespace BuildingMarket.Auth.Api.Controllers
             var sellerId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
             _logger.LogInformation($"Attempt to retrieve all brokers from the seller with ID {sellerId}");
             var result = await _mediator.Send(new GetAllBrokersQuery());
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("preferences")]
+        [ProducesResponseType(typeof(PreferencesOutputModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPreferences()
+        {
+            _logger.LogInformation($"Attempt to retrieve all the possible preferences");
+            var result = await _mediator.Send(new GetPreferencesQuery());
             return Ok(result);
         }
     }

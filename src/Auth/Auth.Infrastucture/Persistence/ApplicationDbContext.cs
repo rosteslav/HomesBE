@@ -9,6 +9,14 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
     {
         public virtual DbSet<AdditionalUserData> AdditionalUserData { get; set; }
 
+        public virtual DbSet<PreferencesOptions> PreferencesOptions { get; set; }
+
+        public virtual DbSet<Preferences> Preferences { get; set; }
+
+        public virtual DbSet<BuildingType> BuildingTypes { get; set; }
+
+        public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -27,6 +35,7 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                 .ToTable("RoleClaims", "security");
             modelBuilder.Entity<IdentityUserToken<string>>()
                 .ToTable("UserTokens", "security");
+
             modelBuilder.Entity<AdditionalUserData>(entity =>
             {
                 entity.ToTable("AdditionalData", "security");
@@ -109,6 +118,34 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                 entity.Property(pref => pref.PriceHigherEnd)
                 .HasColumnName("price_higher_end")
                 .HasColumnType("real");
+            });
+
+            modelBuilder.Entity<BuildingType>(entity =>
+            {
+                entity.ToTable("BuildingType", "properties", e => e.ExcludeFromMigrations());
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("building_type")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<Neighborhood>(entity =>
+            {
+                entity.ToTable("Neighbourhoods", "properties", e => e.ExcludeFromMigrations());
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("region")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
             });
         }
     }

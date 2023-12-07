@@ -25,6 +25,8 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetA
 
         public string[] BuildingType { get; set; }
 
+        public string[] Exposure { get; set; }
+
         public string OrderBy { get; set; }
 
         public bool IsAscending { get; set; }

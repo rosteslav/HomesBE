@@ -39,6 +39,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             _logger.LogInformation("DB get all properties");
             query ??= new();
 
+            if (query.Exposure != null)
+            {
+                for (int i = 0; i < query.Exposure.Length; i++)
+                    query.Exposure[i] = "%" + query.Exposure[i] + "%";
+            }
+
             try
             {
                 var properties = await _context.Properties
@@ -53,6 +59,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         (query.Furnishment == null || query.Furnishment.Contains(property.Furnishment)) &&
                         (query.Heating == null || query.Heating.Contains(property.Heating)) &&
                         (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
+                        (query.Exposure == null || query.Exposure.Any(e => EF.Functions.Like(property.Exposure, e))) &&
                         (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date))
                     .GroupJoin(_context.Images,
                         property => property.Id,
@@ -145,7 +152,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         }
 
         public async Task EditById(int id, AddPropertyInputModel editedProperty)
-        {   
+        {
             var propertyToUpdate = await _context.Properties
                 .FirstAsync(e => e.Id == id);
 

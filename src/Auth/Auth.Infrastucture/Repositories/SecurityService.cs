@@ -38,7 +38,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-            var additData = await _repository.GetById(user.Id);
+            var additData = await _additionalUserDataRepository.GetById(user.Id);
 
             if(!string.IsNullOrEmpty(additData?.FirstName)) 
                 authClaims.Add(new Claim(ClaimTypes.Name, additData.FirstName));

@@ -10,12 +10,14 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
     public class SecurityService(
         UserManager<IdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        IAdditionalUserDataRepository repository)
+        IAdditionalUserDataRepository additionalUserDataRepository,
+        IAuthOptionsRepository authOptionsRepository)
         : ISecurityService
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-        private readonly IAdditionalUserDataRepository _repository = repository;
+        private readonly IAdditionalUserDataRepository _additionalUserDataRepository = additionalUserDataRepository;
+        private readonly IAuthOptionsRepository _authOptionsRepository = authOptionsRepository;
 
         public async Task<IEnumerable<Claim>> GetLoginClaims(string username, string password)
         {
@@ -36,7 +38,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-            var additData = await _repository.GetById(user.Id);
+            var additData = await _additionalUserDataRepository.GetById(user.Id);
 
             if(!string.IsNullOrEmpty(additData?.FirstName)) 
                 authClaims.Add(new Claim(ClaimTypes.Name, additData.FirstName));
@@ -74,12 +76,28 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 model.LastName != null ||
                 model.PhoneNumber != null)
             {
-                await _repository.AddAsync(new()
+                await _additionalUserDataRepository.AddAsync(new()
                 {
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     PhoneNumber = model.PhoneNumber,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    ImageURL = model.ImageUrl
+                });
+            }
+
+            if (model.Purpose != null ||
+                model.Region != null ||
+                model.BuildingType != null ||
+                model.PriceHigherEnd != 0)
+            {
+                await _authOptionsRepository.AddPreferences(new PreferencesModel
+                {
+                    UserId = user.Id,
+                    Purpose = model.Purpose,
+                    Region = model.Region,
+                    BuildingType = model.BuildingType,
+                    PriceHigherEnd = model.PriceHigherEnd
                 });
             }
 

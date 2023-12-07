@@ -5,6 +5,10 @@ namespace BuildingMarket.Auth.Application.Contracts
 {
     public interface IAuthOptionsRepository
     {
+        Task AddPreferences(PreferencesModel model);
+
+        Task<PreferencesOutputModel> GetPreferences();
+
         Task<IEnumerable<BrokerModel>> GetAllBrokers();
 
         Task<UserRolesModel> GetUserRoles();

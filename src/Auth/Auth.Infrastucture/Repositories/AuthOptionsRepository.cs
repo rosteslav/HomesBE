@@ -1,6 +1,8 @@
-﻿using BuildingMarket.Auth.Application.Contracts;
+﻿using AutoMapper;
+using BuildingMarket.Auth.Application.Contracts;
 using BuildingMarket.Auth.Application.Models.AuthOptions;
 using BuildingMarket.Auth.Application.Models.Security;
+using BuildingMarket.Auth.Domain.Entities;
 using BuildingMarket.Auth.Infrastructure.Persistence;
 using BuildingMarket.Common.Models.Security;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +12,50 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 {
     public class AuthOptionsRepository(
         ApplicationDbContext context,
+        IMapper mapper,
         ILogger<AuthOptionsRepository> logger)
         : IAuthOptionsRepository
     {
         private readonly ApplicationDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
         private readonly ILogger<AuthOptionsRepository> _logger = logger;
+
+        public async Task AddPreferences(PreferencesModel model)
+        {
+            _logger.LogInformation("DB adding user preferences...");
+            var preferences = _mapper.Map<Preferences>(model);
+
+            try
+            {
+                await _context.Preferences.AddAsync(preferences);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding user preferences");
+            }
+        }
+
+        public async Task<PreferencesOutputModel> GetPreferences()
+        {
+            _logger.LogInformation("DB retrieving preferences...");
+
+            try
+            {
+                return new PreferencesOutputModel
+                {
+                    BuildingTypes = await _context.BuildingTypes.Select(bt => bt.Description).ToArrayAsync(),
+                    Purposes = await _context.PreferencesOptions.Select(p => p.Preference).ToArrayAsync(),
+                    Regions = await _context.Neighborhoods.Select(n => n.Region).Distinct().ToArrayAsync()
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while retrieving preferences");
+            }
+
+            return new PreferencesOutputModel();
+        }
 
         public async Task<IEnumerable<BrokerModel>> GetAllBrokers()
         {

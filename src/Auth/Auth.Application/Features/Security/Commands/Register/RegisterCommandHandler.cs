@@ -9,8 +9,6 @@ namespace BuildingMarket.Auth.Application.Features.Security.Commands.Register
         private readonly ISecurityService _securityService = securityService;
 
         public async Task<RegistrationResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
-            => await _securityService.Registration(
-                request.Model,
-                request.Roles);
+            => await _securityService.Registration(request.Model, request.Roles);
     }
 }

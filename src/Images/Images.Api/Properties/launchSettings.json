@@ -17,7 +17,7 @@
             "applicationUrl": "http://localhost:5223",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Dev",
-                "ConnectionStrings__PostgresConnectionString": "Host=isabelle.db.elephantsql.com;Port=5432;Database=vvizkylm;Username=vvizkylm;Password=7mXXhXO5jLwqLNrCFx1Vmzt97nLcpabv;ApplicationName=BuildingMarket;",
+                "ConnectionStrings__PostgresConnectionString": "Host=pg-1aa4dc17-rosteslav-7241.a.aivencloud.com;Port=20269;Database=defaultdb;Username=avnadmin;Password=AVNS_Mszjk2UQX7SDgd-Z-t0;ApplicationName=BuildingMarket;",
                 "JWT__Secret": "JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr",
                 "Imgbb": "b9b190f2e634086260d5005e012f8557"
             }

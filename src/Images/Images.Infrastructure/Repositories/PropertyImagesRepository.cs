@@ -70,6 +70,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
 
                 var imgs = await _context.Images
                     .Where(img => img.PropertyId == propertyId)
+                    .OrderBy(img => img.Id)
                     .ToListAsync();
 
                 return imgs;

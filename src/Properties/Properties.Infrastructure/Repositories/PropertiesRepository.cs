@@ -74,7 +74,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         Price = pi.Property.Price,
                         NumberOfRooms = pi.Property.NumberOfRooms,
                         Space = pi.Property.Space,
-                        Images = pi.Images.Select(img => img.ImageURL)
+                        Images = pi.Images.OrderBy(img => img.Id).Select(img => img.ImageURL)
                     })
                     .Skip(PageSize * (query.Page - 1))
                     .Take(PageSize)
@@ -135,7 +135,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         Property = pua.property,
                         User = pua.user,
                         UserData = pua.additionalUserData,
-                        Images = image
+                        Images = image.OrderBy(img => img.Id)
                     })
                 .ProjectTo<T>(_mapper.ConfigurationProvider);
 

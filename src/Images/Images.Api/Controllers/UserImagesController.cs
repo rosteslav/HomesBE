@@ -1,10 +1,8 @@
-﻿using BuildingMarket.Common.Models.Security;
-using BuildingMarket.Images.Application.Attributes;
+﻿using BuildingMarket.Images.Application.Attributes;
 using BuildingMarket.Images.Application.Features.Images.Commands.AddUserImage;
 using BuildingMarket.Images.Application.Features.Images.Commands.DeleteUserImage;
 using BuildingMarket.Images.Application.Features.Images.Commands.EditUserImage;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -12,7 +10,6 @@ namespace BuildingMarket.Images.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker}")]
     public class UserImagesController(
         IMediator mediator,
         ILogger<ImageController> logger) : ControllerBase

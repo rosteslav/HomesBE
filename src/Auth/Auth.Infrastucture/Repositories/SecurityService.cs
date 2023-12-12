@@ -46,6 +46,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 authClaims.Add(new Claim(ClaimTypes.Surname, additData.LastName));
             if (!string.IsNullOrEmpty(additData?.PhoneNumber)) 
                 authClaims.Add(new Claim(ClaimTypes.MobilePhone, additData.PhoneNumber));
+            if (!string.IsNullOrEmpty(additData?.ImageURL))
+                authClaims.Add(new Claim(ClaimTypes.Uri, additData.ImageURL));
 
             foreach (var userRole in userRoles)
             {

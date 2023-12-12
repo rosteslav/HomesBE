@@ -4,11 +4,11 @@ using MediatR;
 
 namespace BuildingMarket.Images.Application.Features.Images.Commands.AddUserImage
 {
-    public class AddUserImageCommandHandler(IImgbbService imgbbService) : IRequestHandler<AddUserImageCommand, string>
+    public class AddUserImageCommandHandler(IImgbbService imgbbService) : IRequestHandler<AddUserImageCommand, ImageData>
     {
         private readonly IImgbbService _imgbbService = imgbbService;
 
-        public async Task<string> Handle(AddUserImageCommand request, CancellationToken cancellationToken)
+        public async Task<ImageData> Handle(AddUserImageCommand request, CancellationToken cancellationToken)
         {
             string ext = Path.GetExtension(request.FormFile.FileName);
             var imageName = $"UserImg-{Guid.NewGuid()}{ext}";
@@ -17,10 +17,10 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.AddUserImag
 
             if (imageData is null)
             {
-                return string.Empty;
+                return new ImageData();
             }
 
-            return imageData.DisplayUrl;
+            return imageData;
         }
     }
 }

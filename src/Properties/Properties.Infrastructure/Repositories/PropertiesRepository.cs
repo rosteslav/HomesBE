@@ -36,6 +36,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query)
         {
+            await Task.Yield();
             _logger.LogInformation("DB get all properties");
             query ??= new();
 
@@ -47,7 +48,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             try
             {
-                var properties = await _context.Properties
+                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(query.OrderBy ?? nameof(GetAllPropertiesOutputModel.CreatedOnLocalTime));
+                var properties = _context.Properties
                     .Where(property =>
                         (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
                         (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
@@ -75,16 +77,13 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         NumberOfRooms = pi.Property.NumberOfRooms,
                         Space = pi.Property.Space,
                         Images = pi.Images.OrderBy(img => img.Id).Select(img => img.ImageURL)
-                    })
-                    .Skip(PageSize * (query.Page - 1))
-                    .Take(PageSize)
-                    .ToArrayAsync();
+                    });
 
-                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(query.OrderBy ?? nameof(GetAllPropertiesOutputModel.CreatedOnLocalTime));
-
-                return query.IsAscending
-                    ? properties.OrderBy(orderByPropInfo.GetValue)
+                var orderedProps = query.IsAscending
+                    ? properties.OrderBy(orderByPropInfo.GetValue).Skip(PageSize * (query.Page - 1)).Take(PageSize)
                     : properties.OrderByDescending(orderByPropInfo.GetValue);
+
+                return orderedProps.Skip(PageSize * (query.Page - 1)).Take(PageSize);
             }
             catch (Exception ex)
             {

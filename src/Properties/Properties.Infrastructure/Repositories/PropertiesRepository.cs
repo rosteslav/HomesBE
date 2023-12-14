@@ -80,7 +80,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     });
 
                 var orderedProps = query.IsAscending
-                    ? properties.OrderBy(orderByPropInfo.GetValue).Skip(PageSize * (query.Page - 1)).Take(PageSize)
+                    ? properties.OrderBy(orderByPropInfo.GetValue)
                     : properties.OrderByDescending(orderByPropInfo.GetValue);
 
                 return orderedProps.Skip(PageSize * (query.Page - 1)).Take(PageSize);

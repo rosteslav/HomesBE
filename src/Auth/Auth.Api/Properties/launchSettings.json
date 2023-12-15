@@ -1,0 +1,47 @@
+﻿{
+    "$schema": "http://json.schemastore.org/launchsettings.json",
+    "iisSettings": {
+        "windowsAuthentication": false,
+        "anonymousAuthentication": true,
+        "iisExpress": {
+            "applicationUrl": "http://localhost:45627",
+            "sslPort": 44310
+        }
+    },
+    "profiles": {
+        "AuthProject-Dev": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "http://localhost:5220",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Dev",
+                "ConnectionStrings__PostgresConnectionString": "Host=pg-1aa4dc17-rosteslav-7241.a.aivencloud.com;Port=20269;Database=defaultdb;Username=avnadmin;Password=AVNS_Mszjk2UQX7SDgd-Z-t0;ApplicationName=BuildingMarket;",
+                "JWT__Secret": "JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr"
+            }
+        },
+        "AuthProject-Test": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "http://localhost:5220",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Test",
+                "ConnectionStrings__PostgresConnectionString": "Host=pg-1aa4dc17-rosteslav-7241.a.aivencloud.com;Port=20269;Database=test;Username=avnadmin;Password=AVNS_Mszjk2UQX7SDgd-Z-t0;ApplicationName=BuildingMarket;",
+                "JWT__Secret": "JWTAuthenticationHIGHsecuredPasswordafesafEFs"
+            }
+        },
+        "AuthProject-Prod": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "http://localhost:5220",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Prod"
+            }
+        }
+    }
+}

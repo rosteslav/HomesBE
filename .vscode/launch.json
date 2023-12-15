@@ -1,0 +1,117 @@
+{
+    "configurations": [
+        {
+            "name": "Auth.Api",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Auth\\Auth.Api\\Auth.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;AuthProject-Dev"
+        },
+        {
+            "name": "Properties.Api",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Properties\\Properties.Api\\Properties.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;DemoProject-Dev"
+        },
+        {
+            "name": "Admins.Api",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Admins\\Admins.Api\\Admins.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;AdminsProject-Dev"
+        },
+        {
+            "name": "Images.Api",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Images\\Images.Api\\Images.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;Images-Dev"
+        },
+        {
+            "name": "Auth.Api Mac",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/src/Auth/Auth.Api/Auth.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;AuthProject-Dev"
+        },
+        {
+            "name": "Properties.Api Mac",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/src/Properties/Properties.Api/Properties.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;DemoProject-Dev"
+        },
+        {
+            "name": "Admins.Api Mac",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/src/Admins/Admins.Api/Admins.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;AdminsProject-Dev"
+        },
+        {
+            "name": "Images.Api Mac",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/src/Images/Images.Api/Images.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;Images-Dev"
+        },
+        {
+            "name": "Auth.Api Test",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Auth\\Auth.Api\\Auth.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;AuthProject-Test"
+        },
+        {
+            "name": "Properties.Api Test",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Properties\\Properties.Api\\Properties.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;DemoProject-Test"
+        },
+        {
+            "name": "Images.Api Test",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Images\\Images.Api\\Images.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;Images-Test"
+        },
+        {
+            "name": "Admins.Api Test",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\src\\Admins\\Admins.Api\\Admins.Api.csproj",
+            "launchConfigurationId": "TargetFramework=;AdminsProject-Test"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "BE",
+            "configurations": [
+                "Auth.Api",
+                "Properties.Api",
+                "Admins.Api",
+                "Images.Api"
+            ]
+        },
+        {
+            "name": "BE Mac",
+            "configurations": [
+                "Auth.Api Mac",
+                "Properties.Api Mac",
+                "Admins.Api Mac",
+                "Images.Api Mac"
+            ]
+        },
+        {
+            "name": "BE Test",
+            "configurations": [
+                "Auth.Api Test",
+                "Properties.Api Test",
+                "Admins.Api Test",
+                "Images.Api Test"
+            ]
+        }
+    ]
+}

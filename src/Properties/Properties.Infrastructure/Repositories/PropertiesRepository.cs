@@ -36,6 +36,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query)
         {
+            await Task.Yield();
             _logger.LogInformation("DB get all properties");
             query ??= new();
 
@@ -47,7 +48,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             try
             {
-                var properties = await _context.Properties
+                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(query.OrderBy ?? nameof(GetAllPropertiesOutputModel.CreatedOnLocalTime));
+                var properties = _context.Properties
                     .Where(property =>
                         (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
                         (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
@@ -74,17 +76,14 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         Price = pi.Property.Price,
                         NumberOfRooms = pi.Property.NumberOfRooms,
                         Space = pi.Property.Space,
-                        Images = pi.Images.Select(img => img.ImageURL)
-                    })
-                    .Skip(PageSize * (query.Page - 1))
-                    .Take(PageSize)
-                    .ToArrayAsync();
+                        Images = pi.Images.OrderBy(img => img.Id).Select(img => img.ImageURL)
+                    });
 
-                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(query.OrderBy ?? nameof(GetAllPropertiesOutputModel.CreatedOnLocalTime));
-
-                return query.IsAscending
+                var orderedProps = query.IsAscending
                     ? properties.OrderBy(orderByPropInfo.GetValue)
                     : properties.OrderByDescending(orderByPropInfo.GetValue);
+
+                return orderedProps.Skip(PageSize * (query.Page - 1)).Take(PageSize);
             }
             catch (Exception ex)
             {
@@ -135,7 +134,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         Property = pua.property,
                         User = pua.user,
                         UserData = pua.additionalUserData,
-                        Images = image
+                        Images = image.OrderBy(img => img.Id)
                     })
                 .ProjectTo<T>(_mapper.ConfigurationProvider);
 

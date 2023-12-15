@@ -6,12 +6,12 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.EditUserIma
 {
     public class EditUserImageCommandHandler(
         IUserImagesRepository repository,
-        IImgbbService imgbbService) : IRequestHandler<EditUserImageCommand, string>
+        IImgbbService imgbbService) : IRequestHandler<EditUserImageCommand, ImageData>
     {
         private readonly IUserImagesRepository _repository = repository;
         private readonly IImgbbService _imgbbService = imgbbService;
 
-        public async Task<string> Handle(
+        public async Task<ImageData> Handle(
             EditUserImageCommand request,
             CancellationToken cancellationToken)
         {
@@ -23,12 +23,12 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.EditUserIma
 
             if (imageData is null)
             {
-                return string.Empty;
+                return new ImageData();
             }
 
             await _repository.Add(imageData.DisplayUrl, request.UserId);
 
-            return imageData.DisplayUrl;
+            return imageData;
         }
     }
 }

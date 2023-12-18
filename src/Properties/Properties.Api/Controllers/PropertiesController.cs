@@ -6,6 +6,7 @@ using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllPr
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetById;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetBySeller;
+using BuildingMarket.Properties.Application.Features.Properties.Queries.GetRecommended;
 using BuildingMarket.Properties.Application.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -180,6 +181,21 @@ namespace BuildingMarket.Properties.Api.Controllers
 
                     return BadRequest();
             }
+        }
+
+        [HttpGet]
+        [Route("recommended")]
+        [Authorize(Roles = $"{UserRoles.Buyer}")]
+        [ProducesResponseType(
+            typeof(GetAllPropertiesOutputModel),
+            StatusCodes.Status200OK)]
+        public async Task<IActionResult> Recommended()
+        {
+            _logger.LogInformation($"Getting top 6 recommended properties.");
+
+            var properties = await _mediator.Send(new GetRecommendedQuery());
+
+            return Ok(properties);
         }
     }
 }

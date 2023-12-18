@@ -2,6 +2,6 @@
 {
     public class RedisStoreSettings
     {
-        public string TestHashKey { get; set; }
+        public string ImagesHashKey { get; set; }
     }
 }

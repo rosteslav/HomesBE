@@ -16,7 +16,7 @@ services.AddAuthenticationServices(configuration);
 services.AddCommonServices(configuration);
 services.AddApplicationServices(configuration);
 services.AddInfrastructureServices(configuration);
-services.AddHostedService<TestService>();
+services.AddHostedService<ImageUploaderService>();
 
 var app = builder.Build();
 

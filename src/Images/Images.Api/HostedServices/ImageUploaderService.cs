@@ -1,18 +1,18 @@
 ﻿using BuildingMarket.Common.Configuration;
-using BuildingMarket.Images.Application.Features.Test.Commands.UpdateTest;
+using BuildingMarket.Images.Application.Features.Images.Commands.UploadPropertiesImages;
 using MediatR;
 using Microsoft.Extensions.Options;
 using NCrontab;
 
 namespace BuildingMarket.Images.Api.HostedServices
 {
-    public class TestService(
-        ILogger<TestService> logger,
+    public class ImageUploaderService(
+        ILogger<ImageUploaderService> logger,
         IOptions<WorkerConfiguration> workerConfig,
-        IMediator mediator) 
+        IMediator mediator)
         : BackgroundService
     {
-        private readonly ILogger<TestService> _logger = logger;
+        private readonly ILogger<ImageUploaderService> _logger = logger;
         private readonly IMediator _mediator = mediator;
         private readonly CrontabSchedule _schedule = CrontabSchedule.Parse(workerConfig.Value.CronSchedule);
 
@@ -21,20 +21,19 @@ namespace BuildingMarket.Images.Api.HostedServices
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             await Task.Yield();
-            _logger.LogInformation("{0} is started", nameof(TestService));
+            _logger.LogInformation("{0} is started", nameof(ImageUploaderService));
 
-            while (!cancellationToken.IsCancellationRequested) 
+            while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
                     if (DateTime.UtcNow > nextRun)
                     {
-                        await _mediator.Send(new UpdateTestCommand(), cancellationToken);
-
+                        await _mediator.Send(new UploadPropertiesImagesCommand(), cancellationToken);
                         nextRun = _schedule.GetNextOccurrence(DateTime.UtcNow);
                     }
 
-                    await Task.Delay(Math.Max(Convert.ToInt32((nextRun - DateTime.UtcNow).TotalMilliseconds), 1000), cancellationToken); //wait at least one second
+                    await Task.Delay(Math.Max(Convert.ToInt32((nextRun - DateTime.UtcNow).TotalMilliseconds), 1000), cancellationToken); // wait at least one second
                 }
                 catch (Exception ex)
                 {

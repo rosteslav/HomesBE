@@ -27,7 +27,7 @@ namespace BuildingMarket.Images.Infrastructure
             services.AddScoped<IPropertyImagesRepository, PropertyImagesRepository>();
             services.AddScoped<IPropertiesRepository, PropertiesRepository>();
             services.AddScoped<IUserImagesRepository, UserImagesRepository>();
-            services.AddTransient<ITestStore, TestStore>();
+            services.AddSingleton<IPropertyImagesStore, PropertyImagesStore>();
 
             return services;
         }

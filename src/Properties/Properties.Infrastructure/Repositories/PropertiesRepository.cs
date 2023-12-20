@@ -162,7 +162,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task<bool> IsOwner(string userId, int propertyId)
             => await _context.Properties
-                .AnyAsync(p => p.Id == propertyId && p.SellerId == userId);
+                .AnyAsync(p => p.Id == propertyId && (p.SellerId == userId || p.BrokerId == userId));
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended(CancellationToken cancellationToken)
         {

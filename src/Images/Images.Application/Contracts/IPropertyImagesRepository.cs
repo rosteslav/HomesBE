@@ -6,7 +6,7 @@ namespace BuildingMarket.Images.Application.Contracts
     public interface IPropertyImagesRepository
     {
         Task<IEnumerable<Image>> GetAllForProperty(int propertyId);
-        Task<IEnumerable<PropertyImagesModel>> GetAllForAllProperties();
+        Task<IEnumerable<PropertyImagesModel>> GetAllForAllProperties(CancellationToken cancellationToken);
         Task Add(Image image);
         Task Delete(int imageId);
         Task<int> GetPropertyIdOfImageById(int imageId);

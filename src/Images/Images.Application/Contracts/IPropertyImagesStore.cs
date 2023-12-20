@@ -4,6 +4,6 @@ namespace BuildingMarket.Images.Application.Contracts
 {
     public interface IPropertyImagesStore
     {
-        Task UploadPropertiesImages(IEnumerable<PropertyImagesModel> properties);
+        Task UploadPropertiesImages(IEnumerable<PropertyImagesModel> properties, CancellationToken cancellationToken);
     }
 }

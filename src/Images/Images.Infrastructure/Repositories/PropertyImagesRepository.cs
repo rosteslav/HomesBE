@@ -67,7 +67,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<PropertyImagesModel>> GetAllForAllProperties()
+        public async Task<IEnumerable<PropertyImagesModel>> GetAllForAllProperties(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Attempting to retrieve all the images for all properties");
 
@@ -80,7 +80,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
                         PropertyId = pi.Key,
                         Images = pi.OrderBy(img => img.Id).Select(img => _mapper.Map<ImagesResult>(img))
                     })
-                    .ToArrayAsync();
+                    .ToArrayAsync(cancellationToken);
 
                 return images;
             }

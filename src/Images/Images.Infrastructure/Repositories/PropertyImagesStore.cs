@@ -21,10 +21,10 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         private readonly IRedisProvider _redisProvider = redisProvider;
         private readonly IDatabase _redisDb = redisProvider.GetDatabase();
 
-        public async Task UploadPropertiesImages(IEnumerable<PropertyImagesModel> properties)
+        public async Task UploadPropertiesImages(IEnumerable<PropertyImagesModel> properties, CancellationToken cancellationToken)
         {
             await Task.Yield();
-            await _semaphoreConnect.WaitAsync();
+            await _semaphoreConnect.WaitAsync(cancellationToken);
 
             try
             {

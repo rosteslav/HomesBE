@@ -15,11 +15,11 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.UploadPrope
 
         public async Task Handle(UploadPropertiesImagesCommand request, CancellationToken cancellationToken)
         {
-            var properties = await _propertyImagesRepository.GetAllForAllProperties();
+            var properties = await _propertyImagesRepository.GetAllForAllProperties(cancellationToken);
 
             if (properties.Any())
             {
-                await propertyImagesStore.UploadPropertiesImages(properties);
+                await propertyImagesStore.UploadPropertiesImages(properties, cancellationToken);
             }
             else
             {

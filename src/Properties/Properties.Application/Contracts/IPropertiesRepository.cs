@@ -24,6 +24,6 @@ namespace BuildingMarket.Properties.Application.Contracts
 
         Task<bool> IsOwner(string userId, int propertyId);
 
-        Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended();
+        Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended(CancellationToken cancellationToken);
     }
 }

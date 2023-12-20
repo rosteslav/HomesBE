@@ -13,7 +13,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetR
             GetRecommendedQuery request,
             CancellationToken cancellationToken)
         {
-            return await _repository.GetRecommended();
+            return await _repository.GetRecommended(cancellationToken);
         }
     }
 }

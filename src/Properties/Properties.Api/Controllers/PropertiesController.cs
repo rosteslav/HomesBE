@@ -186,9 +186,9 @@ namespace BuildingMarket.Properties.Api.Controllers
         [HttpGet]
         [Route("recommended")]
         [Authorize(Roles = $"{UserRoles.Buyer}")]
-        [ProducesResponseType(
-            typeof(GetAllPropertiesOutputModel),
-            StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetAllPropertiesOutputModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Recommended()
         {
             _logger.LogInformation($"Getting top 6 recommended properties.");

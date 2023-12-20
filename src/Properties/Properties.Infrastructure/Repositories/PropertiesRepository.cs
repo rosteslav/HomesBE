@@ -164,26 +164,22 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             => await _context.Properties
                 .AnyAsync(p => p.Id == propertyId && p.SellerId == userId);
 
-        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended()
+        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended(CancellationToken cancellationToken)
         {
-            return await _context.Properties
-                .Take(6)
+            var properties = await _context.Properties
                 .GroupJoin(_context.Images,
                         property => property.Id,
                         image => image.PropertyId,
                         (property, image) => new { Property = property, Images = image })
-                .Select(pi => new GetAllPropertiesOutputModel
+                .Select(pi => new PropertyDetailsWithImagesModel
                 {
-                    Id = pi.Property.Id,
-                    CreatedOnLocalTime = pi.Property.CreatedOnUtcTime.ToLocalTime(),
-                    Details = string.Join(',', pi.Property.BuildingType, pi.Property.Finish, pi.Property.Furnishment, pi.Property.Heating, pi.Property.Exposure),
-                    Neighbourhood = pi.Property.Neighbourhood,
-                    Price = pi.Property.Price,
-                    NumberOfRooms = pi.Property.NumberOfRooms,
-                    Space = pi.Property.Space,
-                    Images = pi.Images.OrderBy(img => img.Id).Select(img => img.ImageURL)
+                    Property = pi.Property,
+                    Images = pi.Images
                 })
-                .ToListAsync();
+                .Take(6)
+                .ToListAsync(cancellationToken);
+
+            return _mapper.Map<IEnumerable<GetAllPropertiesOutputModel>>(properties);
         }
     }
 }

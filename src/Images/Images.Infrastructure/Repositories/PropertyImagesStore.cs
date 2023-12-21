@@ -17,21 +17,21 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
     {
         private readonly ILogger<PropertyImagesStore> _logger = logger;
         private readonly RedisStoreSettings _storeSettings = storeSettings.Value;
-        private readonly SemaphoreSlim _semaphoreConnect = new(1, 1);
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
         private readonly IRedisProvider _redisProvider = redisProvider;
         private readonly IDatabase _redisDb = redisProvider.GetDatabase();
 
         public async Task UploadPropertiesImages(IEnumerable<PropertyImagesModel> properties, CancellationToken cancellationToken)
         {
             await Task.Yield();
-            await _semaphoreConnect.WaitAsync(cancellationToken);
+            await _semaphore.WaitAsync(cancellationToken);
 
             try
             {
+                var key = new RedisKey(_storeSettings.ImagesHashKey);
                 var entries = properties
                     .Select(p => new HashEntry(p.PropertyId, MessagePackSerializer.Serialize(p.Images)))
                     .ToArray();
-                var key = new RedisKey(_storeSettings.ImagesHashKey);
 
                 await _redisDb.HashSetAsync(key, entries);
                 _logger.LogInformation("Images of {0} properties have been uploaded to Redis", entries.Length);
@@ -43,7 +43,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             finally
             {
                 _redisProvider.Dispose();
-                _semaphoreConnect.Release();
+                _semaphore.Release();
             }
         }
     }

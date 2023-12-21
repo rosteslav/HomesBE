@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using BuildingMarket.Images.Application.Contracts;
+﻿using BuildingMarket.Images.Application.Contracts;
 using BuildingMarket.Images.Application.Models;
 using BuildingMarket.Images.Domain.Entities;
 using BuildingMarket.Images.Infrastructure.Persistence;
@@ -10,13 +9,11 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
 {
     public class PropertyImagesRepository(
         ImagesDbContext context,
-        ILogger<PropertyImagesRepository> logger,
-        IMapper mapper)
+        ILogger<PropertyImagesRepository> logger)
         : IPropertyImagesRepository
     {
         private readonly ImagesDbContext _context = context;
         private readonly ILogger<PropertyImagesRepository> _logger = logger;
-        private readonly IMapper _mapper = mapper;
 
         public async Task Add(Image image)
         {
@@ -78,7 +75,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
                     .Select(pi => new PropertyImagesModel
                     {
                         PropertyId = pi.Key,
-                        Images = pi.OrderBy(img => img.Id).Select(img => _mapper.Map<ImagesResult>(img))
+                        Images = pi.OrderBy(img => img.Id).Select(img => img.ImageURL)
                     })
                     .ToArrayAsync(cancellationToken);
 

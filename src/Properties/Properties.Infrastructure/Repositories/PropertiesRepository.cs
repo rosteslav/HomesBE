@@ -20,6 +20,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         : IPropertiesRepository
     {
         private readonly int PageSize = configuration.GetValue<int>("PropertiesPageSize");
+        private readonly int RecommendedCount = configuration.GetValue<int>("PropertiesRecommendedCount");
         private readonly PropertiesDbContext _context = context;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<PropertiesRepository> _logger = logger;
@@ -176,7 +177,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     Property = pi.Property,
                     Images = pi.Images
                 })
-                .Take(6)
+                .Take(RecommendedCount)
                 .ToListAsync(cancellationToken);
 
             return _mapper.Map<IEnumerable<GetAllPropertiesOutputModel>>(properties);

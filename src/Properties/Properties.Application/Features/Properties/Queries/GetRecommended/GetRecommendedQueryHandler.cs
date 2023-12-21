@@ -12,8 +12,6 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetR
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> Handle(
             GetRecommendedQuery request,
             CancellationToken cancellationToken)
-        {
-            return await _repository.GetRecommended(cancellationToken);
-        }
+        => await _repository.GetRecommended(cancellationToken);
     }
 }

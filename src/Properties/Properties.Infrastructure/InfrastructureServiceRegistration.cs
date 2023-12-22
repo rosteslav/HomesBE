@@ -22,6 +22,7 @@ namespace BuildingMarket.Properties.Infrastructure
 
             services.AddScoped<IPropertiesRepository, PropertiesRepository>();
             services.AddScoped<IPropertyOptionsRepository, PropertyOptionsRepository>();
+            services.AddTransient<IPropertyImagesStore, PropertyImagesStore>();
 
             return services;
         }

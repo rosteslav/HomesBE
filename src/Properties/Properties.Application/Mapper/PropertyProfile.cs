@@ -11,8 +11,6 @@ namespace BuildingMarket.Properties.Application.Mapper
         {
             CreateMap<AddPropertyInputModel, Property>();
 
-            CreateMap<Image, string>().ConvertUsing(img => img.ImageURL);
-
             CreateMap<Property, PropertyModel>()
                 .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()))
                 .IncludeAllDerived();
@@ -36,6 +34,10 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<Property, AddPropertyCommand>()
                 .ForMember(x => x.Model, opt => opt.MapFrom(src => src))
                 .ReverseMap();
+
+            CreateMap<Property, GetAllPropertiesOutputModel>()
+                .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()))
+                .ForMember(x => x.Details, opt => opt.MapFrom(src => string.Join(',', src.BuildingType, src.Finish, src.Furnishment, src.Heating, src.Exposure)));
 
             CreateMap<PublishedOn, PublishedOnModel>();
             CreateMap<OrderBy, OrderByModel>();

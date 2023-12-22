@@ -9,7 +9,8 @@ services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGenBearer();
 services.AddCommonServices(configuration);
-services.AddApplicationServices();
+services.AddAuthenticationServices(configuration);
+services.AddApplicationServices(configuration);
 services.AddInfrastructureServices(configuration);
 
 var app = builder.Build();

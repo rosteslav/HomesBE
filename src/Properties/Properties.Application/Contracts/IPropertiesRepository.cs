@@ -6,13 +6,13 @@ namespace BuildingMarket.Properties.Application.Contracts
 {
     public interface IPropertiesRepository
     {
-        Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query);
+        Task<IList<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query);
 
-        Task<PropertyModel> GetById(int id);
+        Task<PropertyModel> GetById(int id, CancellationToken cancellationToken);
 
-        Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId);
+        Task<IList<PropertyModelWithId>> GetBySeller(string sellerId, CancellationToken cancellationToken);
 
-        Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId);
+        Task<IList<PropertyModelWithId>> GetByBroker(string brokerId, CancellationToken cancellationToken);
 
         Task<AddPropertyOutputModel> Add(Property item);
 

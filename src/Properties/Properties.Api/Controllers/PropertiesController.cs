@@ -16,7 +16,7 @@ using System.Security.Claims;
 namespace BuildingMarket.Properties.Api.Controllers
 {
     [ApiController]
-    [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker + "," + UserRoles.Admin)]
+    [Authorize(Roles = $"{UserRoles.Buyer},{UserRoles.Seller},{UserRoles.Broker},{UserRoles.Admin}")]
     [Route("[controller]")]
     public class PropertiesController(IMediator mediator, ILogger<PropertiesController> logger) : ControllerBase
     {
@@ -24,6 +24,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         private readonly ILogger<PropertiesController> _logger = logger;
 
         [HttpPost]
+        [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker}")]
         [ProducesResponseType(typeof(AddPropertyOutputModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -46,7 +47,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
+        [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker}")]
         [ProducesResponseType(typeof(IEnumerable<PropertyModelWithId>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -100,7 +101,7 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
+        [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -186,7 +187,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         [HttpGet]
         [Route("recommended")]
         [Authorize(Roles = $"{UserRoles.Buyer}")]
-        [ProducesResponseType(typeof(GetAllPropertiesOutputModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<GetAllPropertiesOutputModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Recommended()

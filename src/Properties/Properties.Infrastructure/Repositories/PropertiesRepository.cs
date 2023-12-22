@@ -167,11 +167,14 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended(CancellationToken cancellationToken)
         {
-            var properties = await _context.Properties
+            try
+            {
+                var properties = await _context.Properties
                 .GroupJoin(_context.Images,
                         property => property.Id,
                         image => image.PropertyId,
                         (property, image) => new { Property = property, Images = image })
+                .OrderBy(p => p.Property.Id)
                 .Select(pi => new PropertyDetailsWithImagesModel
                 {
                     Property = pi.Property,
@@ -180,7 +183,14 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 .Take(RecommendedCount)
                 .ToListAsync(cancellationToken);
 
-            return _mapper.Map<IEnumerable<GetAllPropertiesOutputModel>>(properties);
+                return _mapper.Map<IEnumerable<GetAllPropertiesOutputModel>>(properties);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{err}\n{message}", ex.Message, "Error trying to retrieve recommended properties.");
+
+                return Enumerable.Empty<GetAllPropertiesOutputModel>();
+            }
         }
     }
 }

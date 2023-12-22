@@ -20,6 +20,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         : IPropertiesRepository
     {
         private readonly int PageSize = configuration.GetValue<int>("PropertiesPageSize");
+        private readonly int RecommendedCount = configuration.GetValue<int>("PropertiesRecommendedCount");
         private readonly PropertiesDbContext _context = context;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<PropertiesRepository> _logger = logger;
@@ -163,5 +164,33 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         public async Task<bool> IsOwner(string userId, int propertyId)
             => await _context.Properties
                 .AnyAsync(p => p.Id == propertyId && (p.SellerId == userId || p.BrokerId == userId));
+
+        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var properties = await _context.Properties
+                .GroupJoin(_context.Images,
+                        property => property.Id,
+                        image => image.PropertyId,
+                        (property, image) => new { Property = property, Images = image })
+                .OrderBy(p => p.Property.Id)
+                .Select(pi => new PropertyDetailsWithImagesModel
+                {
+                    Property = pi.Property,
+                    Images = pi.Images
+                })
+                .Take(RecommendedCount)
+                .ToListAsync(cancellationToken);
+
+                return _mapper.Map<IEnumerable<GetAllPropertiesOutputModel>>(properties);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("{err}\n{message}", ex.Message, "Error trying to retrieve recommended properties.");
+
+                return Enumerable.Empty<GetAllPropertiesOutputModel>();
+            }
+        }
     }
 }

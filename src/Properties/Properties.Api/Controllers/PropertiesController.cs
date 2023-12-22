@@ -16,7 +16,6 @@ using System.Security.Claims;
 namespace BuildingMarket.Properties.Api.Controllers
 {
     [ApiController]
-    [Authorize(Roles = $"{UserRoles.Buyer},{UserRoles.Seller},{UserRoles.Broker},{UserRoles.Admin}")]
     [Route("[controller]")]
     public class PropertiesController(IMediator mediator, ILogger<PropertiesController> logger) : ControllerBase
     {
@@ -76,7 +75,6 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        [AllowAnonymous]
         [ProducesResponseType(typeof(PropertyModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById([FromRoute] int id)
@@ -90,7 +88,6 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpGet]
         [Route("all")]
-        [AllowAnonymous]
         [ProducesResponseType(typeof(IEnumerable<GetAllPropertiesOutputModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll([FromQuery] GetAllPropertiesQuery query)
         {

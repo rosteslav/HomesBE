@@ -3,12 +3,12 @@
     public class GetAllPropertiesOutputModel
     {
         public int Id { get; set; }
-        public string Neighbourhood { get; set; }
-        public string NumberOfRooms { get; set; }
-        public decimal Space { get; set; }
-        public decimal Price { get; set; }
-        public string Details { get; set; }
-        public DateTime CreatedOnLocalTime { get; set; }
-        public IEnumerable<string> Images { get; set; } = new List<string>();
+        public required string Neighbourhood { get; set; }
+        public required string NumberOfRooms { get; set; }
+        public required decimal Space { get; set; }
+        public required decimal Price { get; set; }
+        public required string Details { get; set; }
+        public required DateTime CreatedOnLocalTime { get; set; }
+        public required IEnumerable<string> Images { get; set; } = new List<string>();
     }
 }

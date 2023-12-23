@@ -17,7 +17,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetB
             {
                 var propertiesImages = await _propertyImagesStore.GetPropertiesImages(request.Id.ToString());
                 if (propertiesImages.Any())
-                    property.Images = propertiesImages.First().Images;
+                    property.Images = propertiesImages.Single().Images;
             }
 
             return property;

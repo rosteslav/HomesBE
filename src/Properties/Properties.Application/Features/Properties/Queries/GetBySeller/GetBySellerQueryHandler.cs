@@ -19,9 +19,8 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetB
                 var propertiesImages = await _propertyImagesStore.GetPropertiesImages(propertiesIds);
                 if (propertiesImages.Any())
                 {
-                    int index = 0;
-                    foreach (var property in propertiesImages)
-                        properties[index++].Images = property.Images;
+                    for (int i = 0; i < propertiesImages.Count(); i++)
+                        properties.ElementAt(i).Images = propertiesImages.ElementAt(i).Images;
                 }
             }
 

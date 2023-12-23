@@ -10,6 +10,7 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.UploadPrope
         ILogger<UploadPropertiesImagesCommandHandler> logger)
         : IRequestHandler<UploadPropertiesImagesCommand>
     {
+        private readonly IPropertyImagesStore _propertyImagesStore = propertyImagesStore;
         private readonly IPropertyImagesRepository _propertyImagesRepository = propertyImagesRepository;
         private readonly ILogger<UploadPropertiesImagesCommandHandler> _logger = logger;
 
@@ -19,7 +20,7 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.UploadPrope
 
             if (properties.Any())
             {
-                await propertyImagesStore.UploadPropertiesImages(properties, cancellationToken);
+                await _propertyImagesStore.UploadPropertiesImages(properties, cancellationToken);
             }
             else
             {

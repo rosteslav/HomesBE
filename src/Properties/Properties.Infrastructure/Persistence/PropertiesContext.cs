@@ -355,7 +355,7 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     new { Id = 23, Description = "Хаджи Димитър", Region = "Север" },
                     new { Id = 24, Description = "Малашевци", Region = "Север" },
                     new { Id = 25, Description = "Левски В", Region = "Изток" },
-                    new { Id = 26, Description = "Левски Г", Region = "Изток" },
+                    new { Id = 26, Description = "Левски Г", Region = "Север" },
                     new { Id = 27, Description = "Левски", Region = "Изток" },
                     new { Id = 28, Description = "Сухата река", Region = "Изток" },
                     new { Id = 29, Description = "Подуяне", Region = "Изток" },

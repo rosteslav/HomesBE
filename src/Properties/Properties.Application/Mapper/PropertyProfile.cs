@@ -41,6 +41,14 @@ namespace BuildingMarket.Properties.Application.Mapper
 
             CreateMap<PublishedOn, PublishedOnModel>();
             CreateMap<OrderBy, OrderByModel>();
+
+            CreateMap<Property, GetAllPropertiesOutputModel>();
+            CreateMap<PropertyDetailsWithImagesModel, GetAllPropertiesOutputModel>()
+                .IncludeMembers(src => src.Property)
+                .ForMember(dest => dest.CreatedOnLocalTime, opt => opt.MapFrom(src => src.Property.CreatedOnUtcTime.ToLocalTime()))
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src =>
+                    string.Join(',', src.Property.BuildingType, src.Property.Finish, src.Property.Furnishment, src.Property.Heating, src.Property.Exposure)))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.OrderBy(img => img.Id).Select(img => img.ImageURL)));
         }
     }
 }

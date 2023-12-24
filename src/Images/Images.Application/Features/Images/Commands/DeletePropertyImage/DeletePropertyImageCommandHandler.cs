@@ -6,10 +6,12 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.DeletePrope
 {
     public class DeletePropertyImageCommandHandler(
         IPropertyImagesRepository imagesRepository,
+        IPropertyImagesStore imagesStore,
         IPropertiesRepository propertiesRepository)
         : IRequestHandler<DeletePropertyImageCommand, DeleteImageResult>
     {
         private readonly IPropertyImagesRepository _imagesRepository = imagesRepository;
+        private readonly IPropertyImagesStore _imagesStore = imagesStore;
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
 
         public async Task<DeleteImageResult> Handle(DeletePropertyImageCommand request,
@@ -34,6 +36,11 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.DeletePrope
             }
 
             await _imagesRepository.Delete(request.ImageId);
+
+            var propertyImages = await _imagesRepository.GetAllForProperty(propertyId);
+            var imagesURLs = propertyImages.Select(img => img.ImageURL);
+            await _imagesStore.UpdatePropertyImages(propertyId, imagesURLs, cancellationToken);
+
             return DeleteImageResult.Success;
         }
     }

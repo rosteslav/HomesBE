@@ -10,6 +10,7 @@ services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 services.AddSwaggerGenBearer();
+services.AddAuthenticationServices(configuration);
 services.AddCommonServices(configuration);
 services.AddApplicationServices(configuration);
 services.AddInfrastructureServices(configuration);

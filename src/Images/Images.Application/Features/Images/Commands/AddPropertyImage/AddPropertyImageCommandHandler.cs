@@ -6,12 +6,14 @@ using MediatR;
 namespace BuildingMarket.Images.Application.Features.Images.Commands.AddPropertyImage
 {
     public class AddPropertyImageCommandHandler(
-        IPropertyImagesRepository repository,
+        IPropertyImagesRepository imagesRepository,
+        IPropertyImagesStore imagesStore,
         IPropertiesRepository propertiesRepository,
         IImgbbService imgbbService)
         : IRequestHandler<AddPropertyImageCommand, (string, int)>
     {
-        private readonly IPropertyImagesRepository _repository = repository;
+        private readonly IPropertyImagesRepository _imagesRepository = imagesRepository;
+        private readonly IPropertyImagesStore _imagesStore = imagesStore;
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
         private readonly IImgbbService _imgbbService = imgbbService;
 
@@ -41,7 +43,11 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.AddProperty
                 ImageURL = imageData.DisplayUrl
             };
 
-            await _repository.Add(image);
+            await _imagesRepository.Add(image);
+
+            var propertyImages = await _imagesRepository.GetAllForProperty(request.PropertyId);
+            var imagesURLs = propertyImages.Select(img => img.ImageURL);
+            await _imagesStore.UpdatePropertyImages(request.PropertyId, imagesURLs, cancellationToken);
 
             return (image.ImageURL, image.Id);
         }

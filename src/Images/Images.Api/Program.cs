@@ -1,4 +1,5 @@
 using BuildingMarket.Common;
+using BuildingMarket.Images.Api.HostedServices;
 using BuildingMarket.Images.Application;
 using BuildingMarket.Images.Infrastructure;
 
@@ -13,6 +14,8 @@ services.AddSwaggerGenBearer();
 services.AddCommonServices(configuration);
 services.AddApplicationServices(configuration);
 services.AddInfrastructureServices(configuration);
+
+services.AddSingleton<ImageUploaderService>();
 
 var app = builder.Build();
 

@@ -40,11 +40,11 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
             var additData = await _additionalUserDataRepository.GetById(user.Id);
 
-            if(!string.IsNullOrEmpty(additData?.FirstName)) 
+            if (!string.IsNullOrEmpty(additData?.FirstName))
                 authClaims.Add(new Claim(ClaimTypes.Name, additData.FirstName));
-            if (!string.IsNullOrEmpty(additData?.LastName)) 
+            if (!string.IsNullOrEmpty(additData?.LastName))
                 authClaims.Add(new Claim(ClaimTypes.Surname, additData.LastName));
-            if (!string.IsNullOrEmpty(additData?.PhoneNumber)) 
+            if (!string.IsNullOrEmpty(additData?.PhoneNumber))
                 authClaims.Add(new Claim(ClaimTypes.MobilePhone, additData.PhoneNumber));
             if (!string.IsNullOrEmpty(additData?.ImageURL))
                 authClaims.Add(new Claim(ClaimTypes.Uri, additData.ImageURL));

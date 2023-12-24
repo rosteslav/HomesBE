@@ -4,6 +4,6 @@ namespace BuildingMarket.Auth.Application.Contracts
 {
     public interface IPreferencesStore
     {
-        Task SetBuyersPreferences(IEnumerable<PreferencesRedisModel> buyersPreferences, CancellationToken cancellationToken);
+        Task SetBuyersPreferences(IEnumerable<BuyerPreferencesRedisModel> buyersPreferences, CancellationToken cancellationToken);
     }
 }

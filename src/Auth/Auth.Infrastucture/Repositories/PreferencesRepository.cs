@@ -11,14 +11,14 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
         private readonly ApplicationDbContext _context = context;
         private readonly ILogger<PreferencesRepository> _logger = logger;
 
-        public async Task<IEnumerable<PreferencesRedisModel>> GetAllBuyersPreferences(CancellationToken cancellationToken)
+        public async Task<IEnumerable<BuyerPreferencesRedisModel>> GetAllBuyersPreferences(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Attempting to retrieve preferences for all buyers.");
 
             try
             {
                 var preferences = await _context.Preferences
-                    .Select(pref => new PreferencesRedisModel
+                    .Select(pref => new BuyerPreferencesRedisModel
                     {
                         UserId = pref.UserId,
                         Purpose = pref.Purpose,
@@ -35,7 +35,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 _logger.LogError(ex, "Failed to retrieve preferences for all buyers.");
             }
 
-            return Enumerable.Empty<PreferencesRedisModel>();
+            return Enumerable.Empty<BuyerPreferencesRedisModel>();
         }
     }
 }

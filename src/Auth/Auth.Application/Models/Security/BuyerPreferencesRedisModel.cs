@@ -3,7 +3,7 @@
 namespace BuildingMarket.Auth.Application.Models.Security
 {
     [MessagePackObject]
-    public class PreferencesRedisModel
+    public class BuyerPreferencesRedisModel
     {
         [Key(0)]
         public string UserId { get; set; }

@@ -4,6 +4,6 @@ namespace BuildingMarket.Auth.Application.Contracts
 {
     public interface IPreferencesRepository
     {
-        Task<IEnumerable<PreferencesRedisModel>> GetAllBuyersPreferences(CancellationToken cancellationToken);
+        Task<IEnumerable<BuyerPreferencesRedisModel>> GetAllBuyersPreferences(CancellationToken cancellationToken);
     }
 }

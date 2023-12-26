@@ -15,8 +15,10 @@ namespace BuildingMarket.Images.Api.HostedServices
         private readonly ILogger<ImageUploaderService> _logger = logger;
         private readonly IMediator _mediator = mediator;
         private readonly CrontabSchedule _schedule = CrontabSchedule.Parse(workerConfig.Value.CronSchedule);
+        private readonly int PeriodInSeconds = workerConfig.Value.PeriodInSeconds;
 
         protected DateTime nextRun = DateTime.UtcNow;
+        internal bool IsForced { get; set; } = false;
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -27,13 +29,13 @@ namespace BuildingMarket.Images.Api.HostedServices
             {
                 try
                 {
-                    if (DateTime.UtcNow > nextRun)
+                    if (DateTime.UtcNow > nextRun || IsForced)
                     {
                         await _mediator.Send(new UploadPropertiesImagesCommand(), cancellationToken);
                         nextRun = _schedule.GetNextOccurrence(DateTime.UtcNow);
                     }
 
-                    await Task.Delay(Math.Max(Convert.ToInt32((nextRun - DateTime.UtcNow).TotalMilliseconds), 1000), cancellationToken); // wait at least one second
+                    await Task.Delay(PeriodInSeconds * 1000, cancellationToken);
                 }
                 catch (Exception ex)
                 {

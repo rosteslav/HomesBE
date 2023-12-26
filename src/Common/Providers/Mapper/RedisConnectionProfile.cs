@@ -6,7 +6,7 @@ namespace BuildingMarket.Common.Providers.Mapper
 {
     public class RedisConnectionProfile : Profile
     {
-        public RedisConnectionProfile() 
+        public RedisConnectionProfile()
         {
             CreateMap<RedisConnectionConfig, ConfigurationOptions>()
                 .ForMember(c => c.EndPoints, opt => opt.MapFrom(src => new EndPointCollection() { $"{src.Host}:{src.Port}" }))

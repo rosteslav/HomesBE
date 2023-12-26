@@ -1,3 +1,4 @@
+using BuildingMarket.Auth.Api.HostedServices;
 using BuildingMarket.Auth.Application;
 using BuildingMarket.Auth.Infrastructure;
 using BuildingMarket.Auth.Infrastructure.Persistence;
@@ -23,9 +24,13 @@ services.AddIdentity<IdentityUser, IdentityRole>(options =>
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 services.AddSwaggerGenBearer();
+services.AddWorkerConfiguration(configuration);
+services.AddAuthenticationServices(configuration);
 services.AddCommonServices(configuration);
-services.AddApplicationServices();
+services.AddApplicationServices(configuration);
 services.AddInfrastructureServices(configuration);
+services.AddSingleton<BuyerPreferencesService>();
+services.AddHostedService(provider => provider.GetRequiredService<BuyerPreferencesService>());
 
 var app = builder.Build();
 app.UseSwagger();

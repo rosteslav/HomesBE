@@ -1,4 +1,5 @@
 ﻿using BuildingMarket.Images.Application.Contracts;
+using BuildingMarket.Images.Application.Models;
 using BuildingMarket.Images.Domain.Entities;
 using BuildingMarket.Images.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,8 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
 {
     public class PropertyImagesRepository(
         ImagesDbContext context,
-        ILogger<PropertyImagesRepository> logger) : IPropertyImagesRepository
+        ILogger<PropertyImagesRepository> logger)
+        : IPropertyImagesRepository
     {
         private readonly ImagesDbContext _context = context;
         private readonly ILogger<PropertyImagesRepository> _logger = logger;
@@ -60,6 +62,31 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
 
                 return false;
             }
+        }
+
+        public async Task<IEnumerable<PropertyImagesModel>> GetAllForAllProperties(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Attempting to retrieve all the images for all properties");
+
+            try
+            {
+                var images = await _context.Images
+                    .GroupBy(img => img.PropertyId)
+                    .Select(pi => new PropertyImagesModel
+                    {
+                        PropertyId = pi.Key,
+                        Images = pi.OrderBy(img => img.Id).Select(img => img.ImageURL)
+                    })
+                    .ToArrayAsync(cancellationToken);
+
+                return images;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve all the images for all properties");
+            }
+
+            return Enumerable.Empty<PropertyImagesModel>();
         }
 
         public async Task<IEnumerable<Image>> GetAllForProperty(int propertyId)

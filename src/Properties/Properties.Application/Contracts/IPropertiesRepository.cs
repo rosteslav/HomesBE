@@ -8,11 +8,11 @@ namespace BuildingMarket.Properties.Application.Contracts
     {
         Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query);
 
-        Task<PropertyModel> GetById(int id);
+        Task<PropertyModel> GetById(int id, CancellationToken cancellationToken);
 
-        Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId);
+        Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId, CancellationToken cancellationToken);
 
-        Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId);
+        Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId, CancellationToken cancellationToken);
 
         Task<AddPropertyOutputModel> Add(Property item);
 

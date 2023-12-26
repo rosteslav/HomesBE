@@ -1,6 +1,7 @@
 ﻿using BuildingMarket.Common.Providers.Interfaces;
 using BuildingMarket.Images.Application.Configurations;
 using BuildingMarket.Images.Application.Contracts;
+using BuildingMarket.Images.Application.Models;
 using MessagePack;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -35,6 +36,32 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while adding images into Redis for property with ID: {0} in {1}", propertyId, nameof(PropertyImagesStore));
+            }
+            finally
+            {
+                _redisProvider.Dispose();
+                _semaphore.Release();
+            }
+        }
+
+        public async Task UploadPropertiesImages(IEnumerable<PropertyImagesModel> properties, CancellationToken cancellationToken)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync(cancellationToken);
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.ImagesHashKey);
+                var entries = properties
+                    .Select(p => new HashEntry(p.PropertyId, MessagePackSerializer.Serialize(p.Images)))
+                    .ToArray();
+
+                await _redisDb.HashSetAsync(key, entries);
+                _logger.LogInformation("Images of {0} properties have been uploaded to Redis", entries.Length);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while uploading images into Redis in {0}", nameof(PropertyImagesStore));
             }
             finally
             {

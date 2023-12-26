@@ -21,6 +21,29 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         private readonly IRedisProvider _redisProvider = redisProvider;
         private readonly IDatabase _redisDb = redisProvider.GetDatabase();
 
+        public async Task UpdatePropertyImages(int propertyId, IEnumerable<string> imageURLs, CancellationToken cancellationToken)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync(cancellationToken);
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.ImagesHashKey);
+                await _redisDb.HashSetAsync(key, propertyId, MessagePackSerializer.Serialize(imageURLs, options: null, cancellationToken));
+
+                _logger.LogInformation("A {0} images were successfully added to Redis for property with ID: {1}", imageURLs.Count(), propertyId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding images into Redis for property with ID: {0} in {1}", propertyId, nameof(PropertyImagesStore));
+            }
+            finally
+            {
+                _redisProvider.Dispose();
+                _semaphore.Release();
+            }
+        }
+
         public async Task UploadPropertiesImages(IEnumerable<PropertyImagesModel> properties, CancellationToken cancellationToken)
         {
             await Task.Yield();

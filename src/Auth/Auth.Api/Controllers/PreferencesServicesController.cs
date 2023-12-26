@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BuildingMarket.Auth.Api.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class PreferencesServicesController(
         ILogger<PreferencesServicesController> logger,
         BuyerPreferencesService preferencesService
@@ -11,9 +13,9 @@ namespace BuildingMarket.Auth.Api.Controllers
         private readonly ILogger<PreferencesServicesController> _logger = logger;
         private readonly BuyerPreferencesService _preferencesService = preferencesService;
 
-        [HttpGet("force/test")]
+        [HttpGet("force/buyerspreferences")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> ForceTestRervice()
+        public async Task<IActionResult> ForceSetBuyersPreferences()
         {
             await Task.Yield();
             _logger.LogInformation("{service} is forced.", nameof(BuyerPreferencesService));

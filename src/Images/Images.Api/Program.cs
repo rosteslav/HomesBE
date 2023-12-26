@@ -11,9 +11,12 @@ services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 services.AddSwaggerGenBearer();
+services.AddWorkerConfiguration(configuration);
+services.AddAuthenticationServices(configuration);
 services.AddCommonServices(configuration);
 services.AddApplicationServices(configuration);
 services.AddInfrastructureServices(configuration);
+services.AddHostedService<ImageUploaderService>();
 
 services.AddSingleton<ImageUploaderService>();
 

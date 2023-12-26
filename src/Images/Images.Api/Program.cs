@@ -16,9 +16,8 @@ services.AddAuthenticationServices(configuration);
 services.AddCommonServices(configuration);
 services.AddApplicationServices(configuration);
 services.AddInfrastructureServices(configuration);
-services.AddHostedService<ImageUploaderService>();
-
 services.AddSingleton<ImageUploaderService>();
+services.AddHostedService(provider => provider.GetRequiredService<ImageUploaderService>());
 
 var app = builder.Build();
 

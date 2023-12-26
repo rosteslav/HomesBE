@@ -64,27 +64,13 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
                         (query.Exposure == null || query.Exposure.Any(e => EF.Functions.Like(property.Exposure, e))) &&
                         (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date))
-                    .GroupJoin(_context.Images,
-                        property => property.Id,
-                        image => image.PropertyId,
-                        (property, image) => new { Property = property, Images = image })
-                    .Select(pi => new GetAllPropertiesOutputModel
-                    {
-                        Id = pi.Property.Id,
-                        CreatedOnLocalTime = pi.Property.CreatedOnUtcTime.ToLocalTime(),
-                        Details = string.Join(',', pi.Property.BuildingType, pi.Property.Finish, pi.Property.Furnishment, pi.Property.Heating, pi.Property.Exposure),
-                        Neighbourhood = pi.Property.Neighbourhood,
-                        Price = pi.Property.Price,
-                        NumberOfRooms = pi.Property.NumberOfRooms,
-                        Space = pi.Property.Space,
-                        Images = pi.Images.OrderBy(img => img.Id).Select(img => img.ImageURL)
-                    });
+                    .ProjectTo<GetAllPropertiesOutputModel>(_mapper.ConfigurationProvider);
 
                 var orderedProps = query.IsAscending
                     ? properties.OrderBy(orderByPropInfo.GetValue)
                     : properties.OrderByDescending(orderByPropInfo.GetValue);
 
-                return orderedProps.Skip(PageSize * (query.Page - 1)).Take(PageSize);
+                return orderedProps.Skip(PageSize * (query.Page - 1)).Take(PageSize).ToArray();
             }
             catch (Exception ex)
             {
@@ -94,27 +80,27 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<GetAllPropertiesOutputModel>();
         }
 
-        public async Task<PropertyModel> GetById(int id)
+        public async Task<PropertyModel> GetById(int id, CancellationToken cancellationToken)
         {
             _logger.LogInformation("DB get property with ID {id}", id);
 
-            var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id).SingleOrDefaultAsync();
+            var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id).SingleOrDefaultAsync(cancellationToken);
 
             return result;
         }
 
-        public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId)
+        public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId, CancellationToken cancellationToken)
         {
             _logger.LogInformation("DB get all properties for broker with id " + brokerId);
 
-            return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId).ToListAsync();
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId)
+        public async Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId, CancellationToken cancellationToken)
         {
             _logger.LogInformation("DB get all properties for seller with id " + sellerId);
 
-            return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId).ToListAsync();
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId).ToListAsync(cancellationToken);
         }
 
         private IQueryable<T> GetByFilterExpression<T>(Expression<Func<Property, bool>> filterExpression)
@@ -126,16 +112,11 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 .Join(_context.AdditionalUserData,
                     pu => pu.user.Id,
                     additionalUserData => additionalUserData.UserId,
-                    (pu, additionalUserData) => new { pu.user, pu.property, additionalUserData })
-                .GroupJoin(_context.Images,
-                    pua => pua.property.Id,
-                    img => img.PropertyId,
-                    (pua, image) => new PropertyProjectToModel
+                    (pu, additionalUserData) => new PropertyProjectToModel
                     {
-                        Property = pua.property,
-                        User = pua.user,
-                        UserData = pua.additionalUserData,
-                        Images = image.OrderBy(img => img.Id)
+                        Property = pu.property,
+                        User = pu.user,
+                        UserData = additionalUserData
                     })
                 .ProjectTo<T>(_mapper.ConfigurationProvider);
 
@@ -167,30 +148,24 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("DB get recommended properties");
+
             try
             {
                 var properties = await _context.Properties
-                .GroupJoin(_context.Images,
-                        property => property.Id,
-                        image => image.PropertyId,
-                        (property, image) => new { Property = property, Images = image })
-                .OrderBy(p => p.Property.Id)
-                .Select(pi => new PropertyDetailsWithImagesModel
-                {
-                    Property = pi.Property,
-                    Images = pi.Images
-                })
-                .Take(RecommendedCount)
-                .ToListAsync(cancellationToken);
+                    .OrderBy(p => p.Id)
+                    .ProjectTo<GetAllPropertiesOutputModel>(_mapper.ConfigurationProvider)
+                    .Take(RecommendedCount)
+                    .ToArrayAsync(cancellationToken);
 
-                return _mapper.Map<IEnumerable<GetAllPropertiesOutputModel>>(properties);
+                return properties;
             }
             catch (Exception ex)
             {
-                _logger.LogError("{err}\n{message}", ex.Message, "Error trying to retrieve recommended properties.");
-
-                return Enumerable.Empty<GetAllPropertiesOutputModel>();
+                _logger.LogError(ex, "Error trying to retrieve recommended properties.");
             }
+
+            return Enumerable.Empty<GetAllPropertiesOutputModel>();
         }
     }
 }

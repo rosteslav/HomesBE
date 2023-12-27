@@ -6,6 +6,7 @@ using MessagePack;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BuildingMarket.Auth.Infrastructure.Repositories
 {
@@ -22,7 +23,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
         private readonly IDatabase _redisDb = redisProvider.GetDatabase();
 
         public async Task SetBuyersPreferences(
-            IEnumerable<BuyerPreferencesRedisModel> buyersPreferences,
+            IDictionary<string, BuyerPreferencesRedisModel> buyersPreferences,
             CancellationToken cancellationToken)
         {
             await Task.Yield();
@@ -32,7 +33,9 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             {
                 var key = new RedisKey(_storeSettings.PreferencesHashKey);
                 var entries = buyersPreferences
-                    .Select(p => new HashEntry(p.UserId, MessagePackSerializer.Serialize(new { p.Purpose, p.Region, p.BuildingType, p.PriceHigherEnd })))
+                    .Select(p => new HashEntry(
+                        p.Key,
+                        MessagePackSerializer.Serialize(p.Value)))
                     .ToArray();
 
                 await _redisDb.HashSetAsync(key, entries);

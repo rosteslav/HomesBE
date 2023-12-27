@@ -33,6 +33,7 @@ namespace BuildingMarket.Images.Api.HostedServices
                     {
                         await _mediator.Send(new UploadPropertiesImagesCommand(), cancellationToken);
                         nextRun = _schedule.GetNextOccurrence(DateTime.UtcNow);
+                        IsForced = false;
                     }
 
                     await Task.Delay(PeriodInSeconds * 1000, cancellationToken);

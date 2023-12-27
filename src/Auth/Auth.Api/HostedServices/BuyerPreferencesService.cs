@@ -35,6 +35,7 @@ namespace BuildingMarket.Auth.Api.HostedServices
                         await _mediator.Send(new SetBuyersPreferencesCommand(), cancellationToken);
 
                         nextRun = _schedule.GetNextOccurrence(DateTime.UtcNow);
+                        IsForced = false;
                     }
 
                     await Task.Delay(PeriodInSeconds * 1000, cancellationToken);

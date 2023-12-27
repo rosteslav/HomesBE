@@ -61,11 +61,11 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             try
             {
                 var key = new RedisKey(_storeSettings.PreferencesHashKey);
-                var entry = new HashEntry(
-                        userId,
-                        MessagePackSerializer.Serialize(preferencesModel));
 
-                await _redisDb.HashSetAsync(key, [entry]);
+                await _redisDb.HashSetAsync(
+                    key,
+                    userId,
+                    MessagePackSerializer.Serialize(preferencesModel));
                 _logger.LogInformation("Preferences of buyer with id: {id} has been uploaded to Redis.", userId);
             }
             catch (Exception ex)

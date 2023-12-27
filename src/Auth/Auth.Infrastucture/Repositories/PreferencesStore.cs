@@ -6,7 +6,6 @@ using MessagePack;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BuildingMarket.Auth.Infrastructure.Repositories
 {
@@ -40,6 +39,34 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
                 await _redisDb.HashSetAsync(key, entries);
                 _logger.LogInformation("Preferences of {0} buyers have been uploaded to Redis.", entries.Length);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while uploading buyers preferences into Redis in {0}", nameof(PreferencesStore));
+            }
+            finally
+            {
+                _redisProvider.Dispose();
+                _semaphore.Release();
+            }
+        }
+
+        public async Task SetRegisteredBuyerPreferences(
+            string userId,
+            BuyerPreferencesRedisModel preferencesModel)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync();
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.PreferencesHashKey);
+                var entry = new HashEntry(
+                        userId,
+                        MessagePackSerializer.Serialize(preferencesModel));
+
+                await _redisDb.HashSetAsync(key, [entry]);
+                _logger.LogInformation("Preferences of buyer with id: {id} has been uploaded to Redis.", userId);
             }
             catch (Exception ex)
             {

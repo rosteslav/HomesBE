@@ -191,7 +191,8 @@ namespace BuildingMarket.Properties.Api.Controllers
         {
             _logger.LogInformation($"Getting top 6 recommended properties.");
 
-            var properties = await _mediator.Send(new GetRecommendedQuery());
+            var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            var properties = await _mediator.Send(new GetRecommendedQuery() { BuyerId = userId });
 
             return Ok(properties);
         }

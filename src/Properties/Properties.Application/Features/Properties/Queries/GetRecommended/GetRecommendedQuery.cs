@@ -4,5 +4,7 @@ using MediatR;
 namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetRecommended
 {
     public class GetRecommendedQuery : IRequest<IEnumerable<GetAllPropertiesOutputModel>>
-    { }
+    {
+        public string BuyerId { get; set; }
+    }
 }

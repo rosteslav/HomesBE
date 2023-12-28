@@ -1,5 +1,5 @@
-﻿using BuildingMarket.Properties.Application.Contracts;
-using BuildingMarket.Properties.Application.Models.Security;
+﻿using BuildingMarket.Common.Models;
+using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +17,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly PropertiesDbContext _context = context;
         private readonly ILogger<RecommendationRepository> _logger = logger;
 
-        public async Task<IEnumerable<int>> GetRecommended(PreferencesModel preferences, CancellationToken cancellationToken)
+        public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
         {
             // NOTE: If there are no preferences for the given buyer, the "preferences" argument will be null.
 
@@ -26,8 +26,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             try
             {
                 var properties = await _context.Properties
-                    .OrderBy(p => p.Id)
                     .Select(p => p.Id)
+                    .OrderBy(id => id)
                     .Take(RecommendedCount)
                     .ToArrayAsync(cancellationToken);
 

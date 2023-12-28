@@ -21,7 +21,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetR
             var preferences = await _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
             var recommendedIds = await _recommendationRepository.GetRecommended(preferences, cancellationToken);
             
-            var properties = await _propertiesRepository.GetById(recommendedIds, cancellationToken);
+            var properties = await _propertiesRepository.GetByIds(recommendedIds, cancellationToken);
             if (properties.Any())
             {
                 var propertyIds = properties.Select(p => p.Id.ToString()).ToArray();

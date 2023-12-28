@@ -10,7 +10,7 @@ namespace BuildingMarket.Properties.Application.Contracts
 
         Task<PropertyModel> GetById(int id, CancellationToken cancellationToken);
 
-        Task<IEnumerable<GetAllPropertiesOutputModel>> GetById(IEnumerable<int> ids, CancellationToken cancellationToken);
+        Task<IEnumerable<GetAllPropertiesOutputModel>> GetByIds(IEnumerable<int> ids, CancellationToken cancellationToken);
 
         Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId, CancellationToken cancellationToken);
 

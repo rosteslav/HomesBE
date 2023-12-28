@@ -1,7 +1,7 @@
-﻿using BuildingMarket.Common.Providers.Interfaces;
+﻿using BuildingMarket.Common.Models;
+using BuildingMarket.Common.Providers.Interfaces;
 using BuildingMarket.Properties.Application.Configurations;
 using BuildingMarket.Properties.Application.Contracts;
-using BuildingMarket.Properties.Application.Models.Security;
 using MessagePack;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -21,7 +21,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly ILogger<PreferencesStore> _logger = logger;
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-        public async Task<PreferencesModel> GetPreferences(string buyerId, CancellationToken cancellationToken)
+        public async Task<BuyerPreferencesRedisModel> GetPreferences(string buyerId, CancellationToken cancellationToken)
         {
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);
@@ -34,7 +34,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var value = await _redisDb.HashGetAsync(key, buyerId);
 
                 var preferences = value.HasValue
-                    ? MessagePackSerializer.Deserialize<PreferencesModel>(value)
+                    ? MessagePackSerializer.Deserialize<BuyerPreferencesRedisModel>(value)
                     : default;
 
                 return preferences;

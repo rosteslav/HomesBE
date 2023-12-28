@@ -88,22 +88,29 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetById(IEnumerable<int> ids,  CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetByIds(IEnumerable<int> ids,  CancellationToken cancellationToken)
         {
-            _logger.LogInformation("DB get properties");
-
-            try
+            if (ids is not null && ids.Any())
             {
-                var properties = await _context.Properties
-                    .Where(p => ids.Contains(p.Id))
-                    .ProjectTo<GetAllPropertiesOutputModel>(_mapper.ConfigurationProvider)
-                    .ToArrayAsync(cancellationToken);
+                _logger.LogInformation("DB get properties");
 
-                return properties;
+                try
+                {
+                    var properties = await _context.Properties
+                        .Where(p => ids.Contains(p.Id))
+                        .ProjectTo<GetAllPropertiesOutputModel>(_mapper.ConfigurationProvider)
+                        .ToArrayAsync(cancellationToken);
+
+                    return properties;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while getting properties");
+                }
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "Error while getting properties");
+                _logger.LogInformation("DB there are no property ids");
             }
 
             return Enumerable.Empty<GetAllPropertiesOutputModel>();

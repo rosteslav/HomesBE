@@ -1,9 +1,9 @@
 ﻿using MessagePack;
 
-namespace BuildingMarket.Properties.Application.Models.Security
+namespace BuildingMarket.Common.Models
 {
     [MessagePackObject]
-    public class PreferencesModel
+    public class BuyerPreferencesRedisModel
     {
         [Key(0)]
         public string Purpose { get; set; }

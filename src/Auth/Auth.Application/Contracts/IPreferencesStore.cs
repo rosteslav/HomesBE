@@ -1,4 +1,4 @@
-﻿using BuildingMarket.Auth.Application.Models.Security;
+﻿using BuildingMarket.Common.Models;
 
 namespace BuildingMarket.Auth.Application.Contracts
 {

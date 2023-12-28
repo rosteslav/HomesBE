@@ -1,9 +1,9 @@
-﻿using BuildingMarket.Properties.Application.Models.Security;
+﻿using BuildingMarket.Common.Models;
 
 namespace BuildingMarket.Properties.Application.Contracts
 {
     public interface IPreferencesStore
     {
-        Task<PreferencesModel> GetPreferences(string buyerId, CancellationToken cancellationToken);
+        Task<BuyerPreferencesRedisModel> GetPreferences(string buyerId, CancellationToken cancellationToken);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using BuildingMarket.Auth.Application.Contracts;
-using BuildingMarket.Auth.Application.Models.Security;
 using BuildingMarket.Auth.Infrastructure.Persistence;
+using BuildingMarket.Common.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

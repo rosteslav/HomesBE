@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace BuildingMarket.Auth.Application.Models.Security
+namespace BuildingMarket.Common.Models
 {
     [MessagePackObject]
     public class BuyerPreferencesRedisModel

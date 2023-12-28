@@ -20,7 +20,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         : IPropertiesRepository
     {
         private readonly int PageSize = configuration.GetValue<int>("PropertiesPageSize");
-        private readonly int RecommendedCount = configuration.GetValue<int>("PropertiesRecommendedCount");
         private readonly PropertiesDbContext _context = context;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<PropertiesRepository> _logger = logger;
@@ -89,6 +88,34 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetByIds(IEnumerable<int> ids,  CancellationToken cancellationToken)
+        {
+            if (ids is not null && ids.Any())
+            {
+                _logger.LogInformation("DB get properties");
+
+                try
+                {
+                    var properties = await _context.Properties
+                        .Where(p => ids.Contains(p.Id))
+                        .ProjectTo<GetAllPropertiesOutputModel>(_mapper.ConfigurationProvider)
+                        .ToArrayAsync(cancellationToken);
+
+                    return properties;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while getting properties");
+                }
+            }
+            else
+            {
+                _logger.LogInformation("DB there are no property ids");
+            }
+
+            return Enumerable.Empty<GetAllPropertiesOutputModel>();
+        }
+
         public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId, CancellationToken cancellationToken)
         {
             _logger.LogInformation("DB get all properties for broker with id " + brokerId);
@@ -145,27 +172,5 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         public async Task<bool> IsOwner(string userId, int propertyId)
             => await _context.Properties
                 .AnyAsync(p => p.Id == propertyId && (p.SellerId == userId || p.BrokerId == userId));
-
-        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("DB get recommended properties");
-
-            try
-            {
-                var properties = await _context.Properties
-                    .OrderBy(p => p.Id)
-                    .ProjectTo<GetAllPropertiesOutputModel>(_mapper.ConfigurationProvider)
-                    .Take(RecommendedCount)
-                    .ToArrayAsync(cancellationToken);
-
-                return properties;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error trying to retrieve recommended properties.");
-            }
-
-            return Enumerable.Empty<GetAllPropertiesOutputModel>();
-        }
     }
 }

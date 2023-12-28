@@ -4,15 +4,24 @@ using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetRecommended
 {
-    public class GetRecommendedQueryHandler(IPropertiesRepository repository, IPropertyImagesStore propertyImagesStore) 
+    public class GetRecommendedQueryHandler(
+        IPropertiesRepository propertiesRepository,
+        IRecommendationRepository recommendationRepository,
+        IPropertyImagesStore propertyImagesStore,
+        IPreferencesStore preferencesStore)
         : IRequestHandler<GetRecommendedQuery, IEnumerable<GetAllPropertiesOutputModel>>
     {
-        private readonly IPropertiesRepository _repository = repository;
+        private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
+        private readonly IRecommendationRepository _recommendationRepository = recommendationRepository;
         private readonly IPropertyImagesStore _propertyImagesStore = propertyImagesStore;
+        private readonly IPreferencesStore _preferencesStore = preferencesStore;
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> Handle(GetRecommendedQuery request, CancellationToken cancellationToken)
         {
-            var properties = await _repository.GetRecommended(cancellationToken);
+            var preferences = await _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
+            var recommendedIds = await _recommendationRepository.GetRecommended(preferences, cancellationToken);
+            
+            var properties = await _propertiesRepository.GetByIds(recommendedIds, cancellationToken);
             if (properties.Any())
             {
                 var propertyIds = properties.Select(p => p.Id.ToString()).ToArray();

@@ -3,5 +3,7 @@
     public class RedisStoreSettings
     {
         public string ImagesHashKey { get; set; }
+
+        public string PreferencesHashKey { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using BuildingMarket.Auth.Application.Configurations;
 using BuildingMarket.Auth.Application.Contracts;
-using BuildingMarket.Auth.Application.Models.Security;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Common.Providers.Interfaces;
 using MessagePack;
 using Microsoft.Extensions.Logging;

@@ -1,6 +1,7 @@
 ﻿using BuildingMarket.Auth.Application.Contracts;
 using BuildingMarket.Auth.Application.Models.Security;
 using BuildingMarket.Auth.Application.Models.Security.Enums;
+using BuildingMarket.Common.Models;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

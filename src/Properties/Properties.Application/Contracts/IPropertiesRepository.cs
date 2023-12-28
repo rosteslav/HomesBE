@@ -10,6 +10,8 @@ namespace BuildingMarket.Properties.Application.Contracts
 
         Task<PropertyModel> GetById(int id, CancellationToken cancellationToken);
 
+        Task<IEnumerable<GetAllPropertiesOutputModel>> GetByIds(IEnumerable<int> ids, CancellationToken cancellationToken);
+
         Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId, CancellationToken cancellationToken);
 
         Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId, CancellationToken cancellationToken);
@@ -23,7 +25,5 @@ namespace BuildingMarket.Properties.Application.Contracts
         Task<bool> Exists(int id);
 
         Task<bool> IsOwner(string userId, int propertyId);
-
-        Task<IEnumerable<GetAllPropertiesOutputModel>> GetRecommended(CancellationToken cancellationToken);
     }
 }

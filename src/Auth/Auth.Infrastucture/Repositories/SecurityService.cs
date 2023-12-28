@@ -11,13 +11,15 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
         UserManager<IdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IAdditionalUserDataRepository additionalUserDataRepository,
-        IAuthOptionsRepository authOptionsRepository)
+        IAuthOptionsRepository authOptionsRepository,
+        IPreferencesStore preferencesStore)
         : ISecurityService
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly IAdditionalUserDataRepository _additionalUserDataRepository = additionalUserDataRepository;
         private readonly IAuthOptionsRepository _authOptionsRepository = authOptionsRepository;
+        private readonly IPreferencesStore _preferencesStore = preferencesStore;
 
         public async Task<IEnumerable<Claim>> GetLoginClaims(string username, string password)
         {
@@ -101,6 +103,16 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                     BuildingType = model.BuildingType,
                     PriceHigherEnd = model.PriceHigherEnd
                 });
+
+                await _preferencesStore.SetRegisteredBuyerPreferences(
+                    user.Id,
+                    new BuyerPreferencesRedisModel
+                    {
+                        Purpose = model.Purpose,
+                        Region = model.Region,
+                        BuildingType = model.BuildingType,
+                        PriceHigherEnd = model.PriceHigherEnd
+                    });
             }
 
             foreach (var role in roles)

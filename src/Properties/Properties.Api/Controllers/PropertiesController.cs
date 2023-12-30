@@ -114,7 +114,7 @@ namespace BuildingMarket.Properties.Api.Controllers
             {
                 PropertyId = id,
                 UserId = userId,
-                IsAdmin = User.IsInRole("Admin")
+                IsAdmin = User.IsInRole(UserRoles.Admin)
             });
 
             switch (result)

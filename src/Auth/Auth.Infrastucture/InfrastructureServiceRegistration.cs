@@ -24,7 +24,7 @@ namespace BuildingMarket.Auth.Infrastructure
             services.AddScoped<IAdditionalUserDataRepository, AdditionalUserDataRepository>();
             services.AddScoped<IAuthOptionsRepository, AuthOptionsRepository>();
             services.AddScoped<IPreferencesRepository, PreferencesRepository>();
-            services.AddTransient<IPreferencesStore, PreferencesStore>();
+            services.AddSingleton<IPreferencesStore, PreferencesStore>();
 
             return services;
         }

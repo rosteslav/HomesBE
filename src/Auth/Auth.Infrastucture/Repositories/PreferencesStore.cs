@@ -46,7 +46,6 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             }
             finally
             {
-                _redisProvider.Dispose();
                 _semaphore.Release();
             }
         }
@@ -74,7 +73,6 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             }
             finally
             {
-                _redisProvider.Dispose();
                 _semaphore.Release();
             }
         }

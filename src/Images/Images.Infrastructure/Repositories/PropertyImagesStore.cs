@@ -39,7 +39,6 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
             finally
             {
-                _redisProvider.Dispose();
                 _semaphore.Release();
             }
         }
@@ -65,7 +64,6 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
             finally
             {
-                _redisProvider.Dispose();
                 _semaphore.Release();
             }
         }

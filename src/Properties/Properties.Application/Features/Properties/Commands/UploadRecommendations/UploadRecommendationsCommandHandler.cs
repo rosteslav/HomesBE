@@ -1,7 +1,7 @@
-﻿using BuildingMarket.Common.Models;
-using BuildingMarket.Properties.Application.Contracts;
+﻿using BuildingMarket.Properties.Application.Contracts;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Collections.Frozen;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Commands.UploadRecommendations
 {
@@ -22,13 +22,9 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Commands.Upl
             var buyersPreferences = await _preferencesStore.GetAllBuyersPreferences(cancellationToken);
             if (buyersPreferences is not null && buyersPreferences.Any())
             {
-                var buyersRecommendations = new Dictionary<string, IEnumerable<int>>();
-                foreach ((string buyerId, BuyerPreferencesRedisModel preferences) in buyersPreferences)
-                {
-                    var recommendations = await _recommendationRepository.GetRecommended(preferences, cancellationToken);
-                    if (recommendations.Any())
-                        buyersRecommendations.Add(buyerId, recommendations);
-                }
+                var buyersRecommendations = buyersPreferences.ToFrozenDictionary(
+                    b => b.Key, 
+                    b => _recommendationRepository.GetRecommended(b.Value, cancellationToken).Result);
 
                 if (buyersRecommendations.Count > 0)
                     await _recommendationStore.UploadRecommendations(buyersRecommendations, cancellationToken);

@@ -14,6 +14,7 @@ namespace BuildingMarket.Auth.Application.Models.Security
 
         [Range(0, 100_000_000_000)]
         public decimal PriceHigherEnd { get; set; }
+
         public string NumberOfRooms { get; set; }
     }
 }

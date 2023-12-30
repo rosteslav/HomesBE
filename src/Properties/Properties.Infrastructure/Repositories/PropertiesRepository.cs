@@ -79,6 +79,34 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<GetAllPropertiesOutputModel>();
         }
 
+        public async Task<IDictionary<int, PropertyRedisModel>> GetForRecommendations(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("DB get all properties for recommendations");
+
+            try
+            {
+                return await _context.Properties
+                    .Join(_context.Neighborhoods,
+                        p => p.Neighbourhood,
+                        n => n.Description,
+                        (p, n) => new { p.Id, p.Price, p.BuildingType, p.Neighbourhood, p.NumberOfRooms, n.Region })
+                    .ToDictionaryAsync(model => model.Id, model => new PropertyRedisModel
+                    {
+                        Price = model.Price,
+                        BuildingType = model.BuildingType,
+                        Neighbourhood = model.Neighbourhood,
+                        NumberOfRooms = model.NumberOfRooms,
+                        Region = model.Region
+                    }, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting all properties");
+            }
+
+            return default;
+        }
+
         public async Task<PropertyModel> GetById(int id, CancellationToken cancellationToken)
         {
             _logger.LogInformation("DB get property with ID {id}", id);
@@ -88,7 +116,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetByIds(IEnumerable<int> ids,  CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetByIds(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             if (ids is not null && ids.Any())
             {

@@ -26,6 +26,7 @@ namespace BuildingMarket.Properties.Infrastructure
             services.AddSingleton<IPropertyImagesStore, PropertyImagesStore>();
             services.AddSingleton<IPreferencesStore, PreferencesStore>();
             services.AddSingleton<IRecommendationStore, RecommendationStore>();
+            services.AddSingleton<IPropertiesStore, PropertiesStore>();
 
             return services;
         }

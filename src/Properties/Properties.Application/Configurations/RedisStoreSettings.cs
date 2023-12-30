@@ -7,5 +7,7 @@
         public string PreferencesHashKey { get; set; }
 
         public string RecommendationsHashKey { get; set; }
+
+        public string PropertiesHashKey { get; set; }
     }
 }

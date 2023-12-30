@@ -5,24 +5,10 @@ using StackExchange.Redis;
 
 namespace BuildingMarket.Common.Providers
 {
-    public class RedisProvider(
-        RedisConnectionConfig config,
-        IMapper mapper) : IRedisProvider, IDisposable
+    public class RedisProvider(RedisConnectionConfig config, IMapper mapper) : IRedisProvider
     {
-        private IMapper _mapper = mapper;
-        private ConfigurationOptions _configuration;
-        private IConnectionMultiplexer _connection;
+        private IConnectionMultiplexer _connection = ConnectionMultiplexer.Connect(mapper.Map<ConfigurationOptions>(config));
 
-        public IDatabase GetDatabase()
-        {
-            _configuration = _mapper.Map<ConfigurationOptions>(config);
-            _connection = ConnectionMultiplexer.Connect(_configuration);
-            return _connection.GetDatabase();
-        }
-
-        public void Dispose()
-        {
-            _connection.Dispose();
-        }
+        public IDatabase GetDatabase() => _connection.GetDatabase();
     }
 }

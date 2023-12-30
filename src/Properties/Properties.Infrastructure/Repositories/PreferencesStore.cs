@@ -6,6 +6,7 @@ using MessagePack;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
+using System.Collections.Frozen;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
@@ -20,6 +21,35 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly IDatabase _redisDb = redisProvider.GetDatabase();
         private readonly ILogger<PreferencesStore> _logger = logger;
         private readonly SemaphoreSlim _semaphore = new(1, 1);
+
+        public async Task<IDictionary<string, BuyerPreferencesRedisModel>> GetAllBuyersPreferences(CancellationToken cancellationToken)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync(cancellationToken);
+
+            _logger.LogInformation("Attempt to retrieve all buyers preferences");
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.PreferencesHashKey);
+                var entries = await _redisDb.HashGetAllAsync(key);
+                var buyersPreferences = entries.Where(entry => entry.Value.HasValue).ToFrozenDictionary(
+                    entry => entry.Name.ToString(),
+                    entry => MessagePackSerializer.Deserialize<BuyerPreferencesRedisModel>(entry.Value, options: null, cancellationToken));
+
+                return buyersPreferences;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while retrieving preferences from Redis in {store}", nameof(PreferencesStore));
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+
+            return default;
+        }
 
         public async Task<BuyerPreferencesRedisModel> GetPreferences(string buyerId, CancellationToken cancellationToken)
         {
@@ -45,7 +75,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
             finally
             {
-                _redisProvider.Dispose();
                 _semaphore.Release();
             }
 

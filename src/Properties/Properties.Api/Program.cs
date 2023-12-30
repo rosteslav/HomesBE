@@ -1,4 +1,5 @@
 using BuildingMarket.Common;
+using BuildingMarket.Properties.Api.HostedServices;
 using BuildingMarket.Properties.Application;
 using BuildingMarket.Properties.Infrastructure;
 
@@ -9,9 +10,11 @@ services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGenBearer();
 services.AddCommonServices(configuration);
+services.AddWorkerConfiguration(configuration);
 services.AddAuthenticationServices(configuration);
 services.AddApplicationServices(configuration);
 services.AddInfrastructureServices(configuration);
+services.AddHostedService<RecommendationUploaderService>();
 
 var app = builder.Build();
 app.UseSwagger();

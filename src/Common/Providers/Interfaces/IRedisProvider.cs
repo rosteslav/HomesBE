@@ -2,7 +2,7 @@
 
 namespace BuildingMarket.Common.Providers.Interfaces
 {
-    public interface IRedisProvider : IDisposable
+    public interface IRedisProvider
     {
         IDatabase GetDatabase();
     }

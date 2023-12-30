@@ -5,5 +5,7 @@
         public string ImagesHashKey { get; set; }
 
         public string PreferencesHashKey { get; set; }
+
+        public string RecommendationsHashKey { get; set; }
     }
 }

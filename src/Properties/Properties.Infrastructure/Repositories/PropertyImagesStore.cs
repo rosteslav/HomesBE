@@ -51,7 +51,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
             finally
             {
-                _redisProvider.Dispose();
                 _semaphore.Release();
             }
 

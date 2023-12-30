@@ -6,6 +6,9 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Commands.Del
     public class DeletePropertyCommand : IRequest<DeletePropertyResult>
     {
         public int PropertyId { get; set; }
+
         public string UserId { get; set; }
+
+        public bool IsAdmin { get; set; }
     }
 }

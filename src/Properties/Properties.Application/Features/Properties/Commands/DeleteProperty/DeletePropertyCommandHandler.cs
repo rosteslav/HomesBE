@@ -17,7 +17,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Commands.Del
                 return DeletePropertyResult.NotFound;
             }
 
-            if (!await _repository.IsOwner(request.UserId, request.PropertyId))
+            if (!request.IsAdmin && !await _repository.IsOwner(request.UserId, request.PropertyId))
             {
                 return DeletePropertyResult.Unauthorized;
             }

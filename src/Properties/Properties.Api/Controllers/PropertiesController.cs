@@ -98,7 +98,7 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker}")]
+        [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker},{UserRoles.Admin}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -113,7 +113,8 @@ namespace BuildingMarket.Properties.Api.Controllers
             var result = await _mediator.Send(new DeletePropertyCommand
             {
                 PropertyId = id,
-                UserId = userId
+                UserId = userId,
+                IsAdmin = User.IsInRole("Admin")
             });
 
             switch (result)

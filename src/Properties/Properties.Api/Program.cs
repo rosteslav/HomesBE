@@ -14,7 +14,10 @@ services.AddWorkerConfiguration(configuration);
 services.AddAuthenticationServices(configuration);
 services.AddApplicationServices(configuration);
 services.AddInfrastructureServices(configuration);
-services.AddHostedService<RecommendationUploaderService>();
+services.AddSingleton<RecommendationUploaderService>();
+services.AddSingleton<PropertiesUploaderService>();
+services.AddHostedService(provider => provider.GetRequiredService<RecommendationUploaderService>());
+services.AddHostedService(provider => provider.GetRequiredService<PropertiesUploaderService>());
 
 var app = builder.Build();
 app.UseSwagger();

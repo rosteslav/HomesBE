@@ -1,19 +1,19 @@
 ﻿using BuildingMarket.Common.Configuration;
-using BuildingMarket.Properties.Application.Features.Properties.Commands.UploadRecommendations;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.UploadProperties;
 using MediatR;
 using Microsoft.Extensions.Options;
 using NCrontab;
 
 namespace BuildingMarket.Properties.Api.HostedServices
 {
-    public class RecommendationUploaderService(
-        ILogger<RecommendationUploaderService> logger,
-        IOptions<WorkerConfiguration> workerConfig,
-        IMediator mediator)
+    public class PropertiesUploaderService(
+        IMediator mediator, 
+        ILogger<PropertiesUploaderService> logger,
+        IOptions<WorkerConfiguration> workerConfig) 
         : BackgroundService
     {
-        private readonly ILogger<RecommendationUploaderService> _logger = logger;
         private readonly IMediator _mediator = mediator;
+        private readonly ILogger<PropertiesUploaderService> _logger = logger;
         private readonly CrontabSchedule _schedule = CrontabSchedule.Parse(workerConfig.Value.CronSchedule);
         private readonly int PeriodInSeconds = workerConfig.Value.PeriodInSeconds;
 
@@ -23,7 +23,7 @@ namespace BuildingMarket.Properties.Api.HostedServices
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             await Task.Yield();
-            _logger.LogInformation("{service} is started", nameof(RecommendationUploaderService));
+            _logger.LogInformation("{service} is started", nameof(PropertiesUploaderService));
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -31,7 +31,7 @@ namespace BuildingMarket.Properties.Api.HostedServices
                 {
                     if (DateTime.UtcNow > nextRun || IsForced)
                     {
-                        await _mediator.Send(new UploadRecommendationsCommand(), cancellationToken);
+                        await _mediator.Send(new UploadPropertiesCommand(), cancellationToken);
                         nextRun = _schedule.GetNextOccurrence(DateTime.UtcNow);
                         IsForced = false;
                     }

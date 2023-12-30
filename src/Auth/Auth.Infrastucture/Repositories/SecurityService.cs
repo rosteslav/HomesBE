@@ -94,7 +94,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             if (model.Purpose != null ||
                 model.Region != null ||
                 model.BuildingType != null ||
-                model.PriceHigherEnd != 0)
+                model.PriceHigherEnd != 0 ||
+                model.NumberOfRooms != null)
             {
                 await _authOptionsRepository.AddPreferences(new PreferencesModel
                 {
@@ -102,7 +103,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                     Purpose = model.Purpose,
                     Region = model.Region,
                     BuildingType = model.BuildingType,
-                    PriceHigherEnd = model.PriceHigherEnd
+                    PriceHigherEnd = model.PriceHigherEnd,
+                    NumberOfRooms = model.NumberOfRooms
                 });
 
                 await _preferencesStore.SetRegisteredBuyerPreferences(
@@ -112,7 +114,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                         Purpose = model.Purpose,
                         Region = model.Region,
                         BuildingType = model.BuildingType,
-                        PriceHigherEnd = model.PriceHigherEnd
+                        PriceHigherEnd = model.PriceHigherEnd,
+                        NumberOfRooms = model.NumberOfRooms
                     });
             }
 

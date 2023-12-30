@@ -1,4 +1,5 @@
-﻿using BuildingMarket.Auth.Application.Contracts;
+﻿using AutoMapper;
+using BuildingMarket.Auth.Application.Contracts;
 using BuildingMarket.Auth.Application.Models.Security;
 using BuildingMarket.Auth.Application.Models.Security.Enums;
 using BuildingMarket.Common.Models;
@@ -13,7 +14,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
         RoleManager<IdentityRole> roleManager,
         IAdditionalUserDataRepository additionalUserDataRepository,
         IAuthOptionsRepository authOptionsRepository,
-        IPreferencesStore preferencesStore)
+        IPreferencesStore preferencesStore,
+        IMapper mapper)
         : ISecurityService
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
@@ -21,6 +23,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
         private readonly IAdditionalUserDataRepository _additionalUserDataRepository = additionalUserDataRepository;
         private readonly IAuthOptionsRepository _authOptionsRepository = authOptionsRepository;
         private readonly IPreferencesStore _preferencesStore = preferencesStore;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<IEnumerable<Claim>> GetLoginClaims(string username, string password)
         {
@@ -97,26 +100,16 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 model.PriceHigherEnd != 0 ||
                 model.NumberOfRooms != null)
             {
-                await _authOptionsRepository.AddPreferences(new PreferencesModel
-                {
-                    UserId = user.Id,
-                    Purpose = model.Purpose,
-                    Region = model.Region,
-                    BuildingType = model.BuildingType,
-                    PriceHigherEnd = model.PriceHigherEnd,
-                    NumberOfRooms = model.NumberOfRooms
-                });
+                var preferences = _mapper.Map<PreferencesModel>(model);
+                preferences.UserId = user.Id;
+                
+                await _authOptionsRepository.AddPreferences(preferences);
+
+                var buyerPreferences = _mapper.Map<BuyerPreferencesRedisModel>(model);
 
                 await _preferencesStore.SetRegisteredBuyerPreferences(
                     user.Id,
-                    new BuyerPreferencesRedisModel
-                    {
-                        Purpose = model.Purpose,
-                        Region = model.Region,
-                        BuildingType = model.BuildingType,
-                        PriceHigherEnd = model.PriceHigherEnd,
-                        NumberOfRooms = model.NumberOfRooms
-                    });
+                    buyerPreferences);
             }
 
             foreach (var role in roles)

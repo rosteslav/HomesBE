@@ -105,7 +105,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 
                 await _authOptionsRepository.AddPreferences(preferences);
 
-                var buyerPreferences = _mapper.Map<BuyerPreferencesRedisModel>(model);
+                var buyerPreferences = _mapper.Map<BuyerPreferencesRedisModel>(preferences);
 
                 await _preferencesStore.SetRegisteredBuyerPreferences(
                     user.Id,

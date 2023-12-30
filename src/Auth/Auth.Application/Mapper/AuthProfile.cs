@@ -11,9 +11,9 @@ namespace BuildingMarket.Auth.Application.Mapper
         {
             CreateMap<PreferencesModel, Preferences>();
 
-            CreateMap<RegisterModel, BuyerPreferencesRedisModel>();
             CreateMap<RegisterModel, PreferencesModel>()
                 .ForMember(dest => dest.UserId, opt => opt.Ignore());
+            CreateMap<PreferencesModel, BuyerPreferencesRedisModel>();
         }
     }
 }

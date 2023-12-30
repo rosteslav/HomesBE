@@ -1,4 +1,5 @@
 ﻿using BuildingMarket.Auth.Domain.Entities;
+using BuildingMarket.Properties.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,8 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
         public virtual DbSet<BuildingType> BuildingTypes { get; set; }
 
         public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
+
+        public virtual DbSet<NumberOfRooms> NumberOfRooms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -118,6 +121,10 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
                 entity.Property(pref => pref.PriceHigherEnd)
                 .HasColumnName("price_higher_end")
                 .HasColumnType("real");
+
+                entity.Property(pref => pref.NumberOfRooms)
+                    .HasColumnName("number_of_rooms")
+                    .HasColumnType("character varying");
             });
 
             modelBuilder.Entity<BuildingType>(entity =>
@@ -144,6 +151,20 @@ namespace BuildingMarket.Auth.Infrastructure.Persistence
 
                 entity.Property(e => e.Description)
                     .HasColumnName("region")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<NumberOfRooms>(entity =>
+            {
+                entity.ToTable("NumberOfRoomsType", "properties", e => e.ExcludeFromMigrations());
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("number_of_rooms_type")
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
             });

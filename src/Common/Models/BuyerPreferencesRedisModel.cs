@@ -16,5 +16,8 @@ namespace BuildingMarket.Common.Models
 
         [Key(3)]
         public decimal PriceHigherEnd { get; set; }
+
+        [Key(4)]
+        public string NumberOfRooms { get; set; }
     }
 }

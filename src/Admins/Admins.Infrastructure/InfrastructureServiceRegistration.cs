@@ -27,6 +27,7 @@ namespace BuildingMarket.Admins.Infrastructure
                 .AddEntityFrameworkStores<AdminsDbContext>();
 
             services.AddScoped<IAdminRepository, AdminRepository>();
+            services.AddSingleton<IReportsStore, ReportsStore>();
 
             return services;
         }

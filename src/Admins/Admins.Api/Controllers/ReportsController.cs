@@ -1,4 +1,5 @@
-﻿using BuildingMarket.Admins.Application.Features.Reports.Queries;
+﻿using BuildingMarket.Admins.Application.Features.Reports.Commands.DeletePropertyReports;
+using BuildingMarket.Admins.Application.Features.Reports.Queries.GetAllReports;
 using BuildingMarket.Common.Models.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BuildingMarket.Admins.Api.Controllers
 {
     [ApiController]
-    //[Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Roles = UserRoles.Admin)]
     [Route("[controller]")]
     public class ReportsController(
         IMediator mediator,
@@ -30,6 +31,11 @@ namespace BuildingMarket.Admins.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeletePropertyReports(int id)
         {
+            _logger.LogInformation("Attempting to delete reports of property with id: {id}.", id);
+            await _mediator.Send(new DeletePropertyReportsCommand
+            {
+                PropertyId = id
+            });
             return NoContent();
         }
     }

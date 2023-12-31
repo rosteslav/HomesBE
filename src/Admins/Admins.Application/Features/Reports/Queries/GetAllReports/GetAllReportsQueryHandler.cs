@@ -1,7 +1,7 @@
 ﻿using BuildingMarket.Admins.Application.Contracts;
 using MediatR;
 
-namespace BuildingMarket.Admins.Application.Features.Reports.Queries
+namespace BuildingMarket.Admins.Application.Features.Reports.Queries.GetAllReports
 {
     public class GetAllReportsQueryHandler(IReportsStore reportsStore)
         : IRequestHandler<GetAllReportsQuery>

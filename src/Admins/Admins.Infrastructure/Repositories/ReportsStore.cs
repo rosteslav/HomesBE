@@ -19,6 +19,26 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
         private readonly ILogger<ReportsStore> _logger = logger;
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
+        public async Task DeletePropertyReports(int propertyId, CancellationToken cancellationToken)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync(cancellationToken);
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.ReportsHashKey);
+                await _redisDb.HashDeleteAsync(key, propertyId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while deleting all the reports for property with id: {propId} from Redis in {store}.", propertyId, nameof(ReportsStore));
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
         public async Task GetAllReports(CancellationToken cancellationToken)
         {
             await Task.Yield();

@@ -209,11 +209,11 @@ namespace BuildingMarket.Properties.Api.Controllers
             [FromRoute] int id,
             [FromBody] ReportModel model)
         {
-            var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            var userName = User.Claims.First(x => x.Type == ClaimTypes.GivenName).Value;
 
             await _mediator.Send(new ReportPropertyCommand
             {
-                UserId = userId,
+                UserName = userName,
                 PropertyId = id,
                 ReportModel = model,
             });

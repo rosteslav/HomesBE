@@ -6,7 +6,7 @@ namespace BuildingMarket.Common.Models
     public class ReportRedisModel
     {
         [Key(0)]
-        public string UserId { get; set; }
+        public string UserName { get; set; }
 
         [Key(1)]
         public DateTime TimeStamp { get; set; }

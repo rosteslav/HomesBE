@@ -5,7 +5,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Commands.Rep
 {
     public class ReportPropertyCommand : IRequest
     {
-        public string UserId { get; set; }
+        public string UserName { get; set; }
 
         public int PropertyId { get; set; }
 

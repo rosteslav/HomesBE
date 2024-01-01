@@ -61,18 +61,9 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var key = new RedisKey(_storeSettings.ReportsHashKey);
                 var oldReports = await _redisDb.HashGetAsync(key, model.PropertyId);
                 var redisModel = _mapper.Map<ReportRedisModel>(model);
-                var deserializedReports = new List<ReportRedisModel>();
-                
-                if (oldReports.IsNull)
-                {
-                    deserializedReports.Add(redisModel);
-                }
-                else
-                {
-                    deserializedReports = MessagePackSerializer.Deserialize<List<ReportRedisModel>>(oldReports, cancellationToken: cancellationToken);
-
-                    deserializedReports.Add(redisModel);
-                }
+                List<ReportRedisModel> deserializedReports = !oldReports.IsNull
+                    ? [.. MessagePackSerializer.Deserialize<List<ReportRedisModel>>(oldReports, cancellationToken: cancellationToken), redisModel]
+                    : [redisModel];
 
                 await _redisDb.HashSetAsync(
                         key,

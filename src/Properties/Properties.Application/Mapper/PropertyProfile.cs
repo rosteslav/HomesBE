@@ -45,7 +45,7 @@ namespace BuildingMarket.Properties.Application.Mapper
             CreateMap<OrderBy, OrderByModel>();
 
             CreateMap<ReportPropertyCommand, ReportRedisModel>()
-                .BeforeMap((_, d) => d.TimeStamp = DateTime.Now)
+                .BeforeMap((_, d) => d.TimeStamp = DateTime.UtcNow)
                 .ForMember(x => x.Reason,
                     opt => opt.MapFrom(src => src.ReportModel.Reason));
         }

@@ -9,7 +9,7 @@ namespace BuildingMarket.Admins.Application.Features.Reports.Queries.GetAllRepor
     {
         private readonly IReportsStore _reportsStore = reportsStore;
 
-        public Task<List<AllReportsModel>> Handle(GetAllReportsQuery request, CancellationToken cancellationToken)
-            => _reportsStore.GetAllReports(cancellationToken);
+        public async Task<List<AllReportsModel>> Handle(GetAllReportsQuery request, CancellationToken cancellationToken)
+            => await _reportsStore.GetAllReports(cancellationToken);
     }
 }

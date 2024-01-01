@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace BuildingMarket.Properties.Application.Models
+namespace BuildingMarket.Common.Models
 {
     [MessagePackObject]
     public class ReportRedisModel

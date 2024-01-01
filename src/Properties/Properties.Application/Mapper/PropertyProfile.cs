@@ -1,4 +1,5 @@
 using AutoMapper;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.ReportProperty;
 using BuildingMarket.Properties.Application.Models;

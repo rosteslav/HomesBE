@@ -1,5 +1,7 @@
 ﻿using BuildingMarket.Admins.Application.Configurations;
 using BuildingMarket.Admins.Application.Contracts;
+using BuildingMarket.Admins.Application.Models;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Common.Providers.Interfaces;
 using MessagePack;
 using Microsoft.Extensions.Logging;
@@ -28,6 +30,8 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             {
                 var key = new RedisKey(_storeSettings.ReportsHashKey);
                 await _redisDb.HashDeleteAsync(key, propertyId);
+
+                _logger.LogInformation("Reports for property with id: {id} were deleted successfully.", propertyId);
             }
             catch (Exception ex)
             {
@@ -39,7 +43,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             }
         }
 
-        public async Task GetAllReports(CancellationToken cancellationToken)
+        public async Task<List<AllReportsModel>> GetAllReports(CancellationToken cancellationToken)
         {
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);
@@ -50,8 +54,14 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             {
                 var key = new RedisKey(_storeSettings.ReportsHashKey);
                 var entries = await _redisDb.HashGetAllAsync(key);
-                // deserialize
-                //return entries;
+                var deserialized = entries
+                    .Select(e => new AllReportsModel {
+                        PropertyId = int.Parse(e.Name),
+                        Reports = MessagePackSerializer.Deserialize<List<ReportRedisModel>>(e.Value, cancellationToken: cancellationToken) 
+                    })
+                    .ToList();
+
+                return deserialized;
             }
             catch (Exception ex)
             {
@@ -62,7 +72,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
                 _semaphore.Release();
             }
 
-            //return default;
+            return default;
         }
     }
 }

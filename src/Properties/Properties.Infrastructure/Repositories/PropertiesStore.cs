@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Common.Providers.Interfaces;
 using BuildingMarket.Properties.Application.Configurations;
 using BuildingMarket.Properties.Application.Contracts;
@@ -42,7 +43,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while uploading properties into Redis in {0}", nameof(PropertiesStore));
+                _logger.LogError(ex, "Error while uploading properties into Redis in {store}", nameof(PropertiesStore));
             }
             finally
             {

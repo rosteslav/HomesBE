@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BuildingMarket.Common.Models;
 
 namespace BuildingMarket.Admins.Application.Models
 {
-    internal class AllReportsModel
+    public class AllReportsModel
     {
+        public int PropertyId { get; set; }
+
+        public List<ReportRedisModel> Reports { get; set; }
     }
 }

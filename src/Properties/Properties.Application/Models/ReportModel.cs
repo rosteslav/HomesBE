@@ -1,6 +1,4 @@
-﻿using MessagePack;
-
-namespace BuildingMarket.Properties.Application.Models
+﻿namespace BuildingMarket.Properties.Application.Models
 {
     public class ReportModel
     {

@@ -55,9 +55,10 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
                 var key = new RedisKey(_storeSettings.ReportsHashKey);
                 var entries = await _redisDb.HashGetAllAsync(key);
                 var deserialized = entries
-                    .Select(e => new AllReportsModel {
+                    .Select(e => new AllReportsModel
+                    {
                         PropertyId = int.Parse(e.Name),
-                        Reports = MessagePackSerializer.Deserialize<List<ReportRedisModel>>(e.Value, cancellationToken: cancellationToken) 
+                        Reports = MessagePackSerializer.Deserialize<List<ReportRedisModel>>(e.Value, cancellationToken: cancellationToken)
                     })
                     .ToList();
 

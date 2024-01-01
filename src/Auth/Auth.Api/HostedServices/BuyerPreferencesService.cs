@@ -1,4 +1,4 @@
-﻿using BuildingMarket.Auth.Application.Features.Preferences;
+﻿using BuildingMarket.Auth.Application.Features.Preferences.Commands;
 using BuildingMarket.Common.Configuration;
 using MediatR;
 using Microsoft.Extensions.Options;

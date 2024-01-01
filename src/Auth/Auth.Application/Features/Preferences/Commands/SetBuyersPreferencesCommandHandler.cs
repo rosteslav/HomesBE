@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace BuildingMarket.Auth.Application.Features.Preferences
+namespace BuildingMarket.Auth.Application.Features.Preferences.Commands
 {
     public class SetBuyersPreferencesCommandHandler(
         ILogger<SetBuyersPreferencesCommandHandler> logger,

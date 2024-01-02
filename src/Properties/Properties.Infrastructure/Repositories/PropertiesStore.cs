@@ -65,7 +65,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     ? [redisModel]
                     : MessagePackSerializer
                         .Deserialize<List<ReportRedisModel>>(oldReports, cancellationToken: cancellationToken)
-                        .Concat([redisModel]);
+                        .Append(redisModel);
 
                 await _redisDb.HashSetAsync(
                         key,

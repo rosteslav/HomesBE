@@ -3,6 +3,7 @@ using System;
 using BuildingMarket.Admins.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BuildingMarket.Admins.Infrastructure.Migrations
 {
     [DbContext(typeof(AdminsDbContext))]
-    partial class AdminsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240101220251_AddNeighbourhoodsRatingEntity")]
+    partial class AddNeighbourhoodsRatingEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

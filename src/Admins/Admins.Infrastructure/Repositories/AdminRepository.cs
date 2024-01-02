@@ -1,10 +1,14 @@
 ﻿using BuildingMarket.Admins.Application.Contracts;
+using BuildingMarket.Admins.Application.Features.Admins.Commands.AddNeighbourhoodsRating;
+using BuildingMarket.Admins.Application.Models;
 using BuildingMarket.Admins.Domain.Entities;
 using BuildingMarket.Admins.Infrastructure.Persistence;
 using BuildingMarket.Common.Models.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace BuildingMarket.Admins.Infrastructure.Repositories
@@ -61,6 +65,47 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             }
         }
 
+        public async Task AddNeighbourhoodsRating(AddNeighbourhoodsRatingCommand command, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation($"DB add neighbourhoods rating");
+
+            try
+            {
+                var best = new NeighbourhoodsRating
+                {
+                    Id = 1,
+                    ForLiving = JsonConvert.SerializeObject(command.ForLiving.First()),
+                    ForInvestment = JsonConvert.SerializeObject(command.ForInvestment.First()),
+                    Budget = JsonConvert.SerializeObject(command.Budget.First()),
+                    Luxury = JsonConvert.SerializeObject(command.Luxury.First())
+                };
+                var secondary = new NeighbourhoodsRating
+                {
+                    Id = 2,
+                    ForLiving = JsonConvert.SerializeObject(command.ForLiving.ElementAt(1)),
+                    ForInvestment = JsonConvert.SerializeObject(command.ForInvestment.ElementAt(1)),
+                    Budget = JsonConvert.SerializeObject(command.Budget.ElementAt(1)),
+                    Luxury = JsonConvert.SerializeObject(command.Luxury.ElementAt(1))
+                };
+
+                if (_context.NeighbourhoodsRating.Any(n => n.Id == best.Id))
+                    _context.NeighbourhoodsRating.Update(best);
+                else
+                    await _context.NeighbourhoodsRating.AddAsync(best, cancellationToken);
+
+                if (_context.NeighbourhoodsRating.Any(n => n.Id == secondary.Id))
+                    _context.NeighbourhoodsRating.Update(secondary);
+                else
+                    await _context.NeighbourhoodsRating.AddAsync(secondary, cancellationToken);
+
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding neighbourhoods rating.");
+            }
+        }
+
         public async Task<IEnumerable<IdentityUser>> GetAllBrokers()
         {
             _logger.LogInformation("DB get all brokers");
@@ -76,6 +121,31 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             }
 
             return Enumerable.Empty<IdentityUser>();
+        }
+
+        public async Task<NeighbourhoodsRatingModel> GetNeighbourhoodsRating(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("DB get neighbourhoods rating");
+
+            try
+            {
+                var ratings = await _context.NeighbourhoodsRating.Where(n => n.Id == 1 || n.Id == 2).ToArrayAsync(cancellationToken);
+                var result = new NeighbourhoodsRatingModel
+                {
+                    ForLiving = ratings.Select(r => JsonConvert.DeserializeObject<string[]>(r.ForLiving)),
+                    ForInvestment = ratings.Select(r => JsonConvert.DeserializeObject<string[]>(r.ForInvestment)),
+                    Budget = ratings.Select(r => JsonConvert.DeserializeObject<string[]>(r.Budget)),
+                    Luxury = ratings.Select(r => JsonConvert.DeserializeObject<string[]>(r.Luxury))
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting neighbourhoods rating");
+            }
+
+            return new NeighbourhoodsRatingModel();
         }
 
         private async Task<IEnumerable<Property>> MapPropertiesFromCsvFile(IFormFile file)

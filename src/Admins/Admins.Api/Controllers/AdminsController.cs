@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BuildingMarket.Admins.Application.Attributes;
 using BuildingMarket.Admins.Application.Features.Admins.Commands.AddMultipleProperties;
+using BuildingMarket.Admins.Application.Features.Admins.Commands.AddNeighbourhoodsRating;
 using BuildingMarket.Admins.Application.Features.Admins.Queries.GetAllBrokers;
+using BuildingMarket.Admins.Application.Features.Admins.Queries.GetNeighbourhoodsRating;
 using BuildingMarket.Admins.Application.Models;
 using BuildingMarket.Common.Models.Security;
 using MediatR;
@@ -48,6 +50,35 @@ namespace BuildingMarket.Admins.Api.Controllers
             _logger.LogInformation($"Attempt to insert multiple properties from the admin with ID {adminId}");
             await _mediator.Send(new AddMultiplePropertiesCommand { File = csvFile });
             return NoContent();
+        }
+
+        [HttpPost]
+        [Route("NeighbourhoodsRating")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> AddNeighbourhoodsRating(AddNeighbourhoodsRatingCommand command)
+        {
+            var adminId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            _logger.LogInformation($"Attempt to insert neighbourhoods rating from the admin with ID {adminId}");
+            await _mediator.Send(command);
+            
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("NeighbourhoodsRating")]
+        [ProducesResponseType(typeof(NeighbourhoodsRatingModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> GetNeighbourhoodsRating()
+        {
+            var adminId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            _logger.LogInformation($"Attempt to get neighbourhoods rating from the admin with ID {adminId}");
+            var result = await _mediator.Send(new GetNeighbourhoodsRatingQuery());
+
+            return Ok(result);
         }
     }
 }

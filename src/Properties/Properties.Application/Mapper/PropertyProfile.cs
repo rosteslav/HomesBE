@@ -1,5 +1,7 @@
 using AutoMapper;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.ReportProperty;
 using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
 
@@ -41,6 +43,11 @@ namespace BuildingMarket.Properties.Application.Mapper
 
             CreateMap<PublishedOn, PublishedOnModel>();
             CreateMap<OrderBy, OrderByModel>();
+
+            CreateMap<ReportPropertyCommand, ReportRedisModel>()
+                .BeforeMap((_, d) => d.TimeStamp = DateTime.UtcNow)
+                .ForMember(x => x.Reason,
+                    opt => opt.MapFrom(src => src.ReportModel.Reason));
         }
     }
 }

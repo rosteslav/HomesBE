@@ -2,6 +2,7 @@ using BuildingMarket.Common.Models.Security;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.DeleteProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.EditProperty;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.ReportProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetById;
@@ -196,6 +197,28 @@ namespace BuildingMarket.Properties.Api.Controllers
             var properties = await _mediator.Send(new GetRecommendedQuery { BuyerId = userId });
 
             return Ok(properties);
+        }
+
+        [HttpPost]
+        [Route("{id}/report")]
+        [Authorize(Roles = $"{UserRoles.Buyer},{UserRoles.Seller},{UserRoles.Broker}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Report(
+            [FromRoute] int id,
+            [FromBody] ReportModel model)
+        {
+            var userName = User.Claims.First(x => x.Type == ClaimTypes.GivenName).Value;
+
+            await _mediator.Send(new ReportPropertyCommand
+            {
+                UserName = userName,
+                PropertyId = id,
+                ReportModel = model,
+            });
+
+            return NoContent();
         }
     }
 }

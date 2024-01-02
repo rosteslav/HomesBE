@@ -9,5 +9,7 @@
         public string RecommendationsHashKey { get; set; }
 
         public string PropertiesHashKey { get; set; }
+
+        public string ReportsHashKey { get; set; }
     }
 }

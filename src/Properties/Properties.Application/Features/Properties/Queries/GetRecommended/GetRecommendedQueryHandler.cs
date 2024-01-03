@@ -1,6 +1,7 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Models;
 using MediatR;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetRecommended
 {
@@ -22,21 +23,19 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetR
         {
             var recommendedIds = await _recommendedStore.GetRecommendedByUserId(request.BuyerId, cancellationToken);
 
-            var properties = recommendedIds.Any()
-                ? await _propertiesRepository.GetByIds(recommendedIds, cancellationToken) : null;
-
-            if (properties is null)
+            if (!recommendedIds.Any())
             {
-                var preferences = await _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
-                var ids = await _recommendationRepository.GetRecommended(preferences, cancellationToken);
-                properties = await _propertiesRepository.GetByIds(ids, cancellationToken);
+                var preferences = _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
+                recommendedIds = await _recommendationRepository.GetRecommended(await preferences, cancellationToken);
             }
+            
+            var properties = await _propertiesRepository.GetByIds(recommendedIds, cancellationToken);
 
             if (properties.Any())
             {
-                var propertiesImages = await _propertyImagesStore.GetPropertiesImages(properties.Select(p => p.Id.ToString()).ToArray());
+                var propertiesImages = _propertyImagesStore.GetPropertiesImages(properties.Select(p => p.Id.ToString()).ToArray());
 
-                properties = properties.Zip(propertiesImages, (prop, img) =>
+                properties = properties.Zip(await propertiesImages, (prop, img) =>
                 {
                     prop.Images = img.Images;
                     return prop;

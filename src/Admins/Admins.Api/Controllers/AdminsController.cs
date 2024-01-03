@@ -4,6 +4,7 @@ using BuildingMarket.Admins.Application.Features.Admins.Commands.AddMultipleProp
 using BuildingMarket.Admins.Application.Features.Admins.Commands.AddNeighbourhoodsRating;
 using BuildingMarket.Admins.Application.Features.Admins.Queries.GetAllBrokers;
 using BuildingMarket.Admins.Application.Features.Admins.Queries.GetNeighbourhoodsRating;
+using BuildingMarket.Admins.Application.Features.Admins.Queries.GetNeighbourhoodsRegions;
 using BuildingMarket.Admins.Application.Models;
 using BuildingMarket.Common.Models.Security;
 using MediatR;
@@ -79,6 +80,21 @@ namespace BuildingMarket.Admins.Api.Controllers
             var result = await _mediator.Send(new GetNeighbourhoodsRatingQuery());
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("neighbourhoods/regions")]
+        [ProducesResponseType(typeof(IDictionary<string, IEnumerable<string>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetNeighbourhoodsRegions()
+        {
+            var adminId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            _logger.LogInformation($"Attempt to get neighbourhoods ragions from the admin with ID {adminId}");
+            var result = await _mediator.Send(new GetNeighbourhoodsRegionsQuery());
+
+            return result is not null ? Ok(result) : NotFound();
         }
     }
 }

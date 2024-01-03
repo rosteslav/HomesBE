@@ -148,6 +148,26 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             return new NeighbourhoodsRatingModel();
         }
 
+        public async Task<IDictionary<string, IEnumerable<string>>> GetNeighbourhoodsRegions(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("DB get neighbourhoods regions");
+
+            try
+            {
+                var regions = await _context.Neighborhoods
+                    .GroupBy(n => n.Region)
+                    .ToDictionaryAsync(model => model.Key, model => model.Select(n => n.Description), cancellationToken);
+
+                return regions;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting neighbourhoods regions");
+            }
+
+            return default;
+        }
+
         private async Task<IEnumerable<Property>> MapPropertiesFromCsvFile(IFormFile file)
         {
             var properties = new List<Property>();

@@ -11,5 +11,6 @@ namespace BuildingMarket.Admins.Application.Contracts
         Task AddMultiplePropertiesFromCsvFile(IFormFile csvFile);
         Task AddNeighbourhoodsRating(AddNeighbourhoodsRatingCommand command, CancellationToken cancellationToken);
         Task<NeighbourhoodsRatingModel> GetNeighbourhoodsRating(CancellationToken cancellationToken);
+        Task<IDictionary<string, IEnumerable<string>>> GetNeighbourhoodsRegions(CancellationToken cancellationToken);
     }
 }

@@ -9,6 +9,8 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
     {
         public DbSet<Property> Properties { get; set; }
 
+        public DbSet<Neighborhood> Neighborhoods { get; set; }
+
         public DbSet<NeighbourhoodsRating> NeighbourhoodsRating { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -107,6 +109,20 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
                     .HasColumnName("created_on_utc_time")
                     .HasColumnType("timestamptz")
                     .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
+            });
+
+            modelBuilder.Entity<Neighborhood>(entity =>
+            {
+                entity.ToTable("Neighbourhoods", "properties", e => e.ExcludeFromMigrations());
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("region")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
             });
 
             modelBuilder.Entity<NeighbourhoodsRating>(entity =>

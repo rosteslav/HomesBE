@@ -22,14 +22,18 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetR
         {
             var recommendedIds = await _recommendedStore.GetRecommendedByUserId(request.BuyerId, cancellationToken);
 
+            IEnumerable<GetAllPropertiesOutputModel> properties;
+
             if (recommendedIds != null)
             {
-                return await _propertiesRepository.GetByIds(recommendedIds, cancellationToken);
+                properties = await _propertiesRepository.GetByIds(recommendedIds, cancellationToken);
             }
-
-            var preferences = await _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
-            var properties = await _propertiesRepository.GetByIds(
-                (await _recommendationRepository.GetRecommended(preferences, cancellationToken)).Take(1).ToList(), cancellationToken);
+            else
+            {
+                var preferences = await _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
+                properties = await _propertiesRepository.GetByIds(
+                    (await _recommendationRepository.GetRecommended(preferences, cancellationToken)).Take(1).ToList(), cancellationToken);
+            }
 
             if (properties.Any())
             {

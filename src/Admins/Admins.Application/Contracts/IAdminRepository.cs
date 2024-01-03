@@ -1,5 +1,4 @@
-﻿using BuildingMarket.Admins.Application.Features.Admins.Commands.AddNeighbourhoodsRating;
-using BuildingMarket.Admins.Application.Models;
+﻿using BuildingMarket.Admins.Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
@@ -9,7 +8,7 @@ namespace BuildingMarket.Admins.Application.Contracts
     {
         Task<IEnumerable<IdentityUser>> GetAllBrokers();
         Task AddMultiplePropertiesFromCsvFile(IFormFile csvFile);
-        Task AddNeighbourhoodsRating(AddNeighbourhoodsRatingCommand command, CancellationToken cancellationToken);
+        Task AddNeighbourhoodsRating(NeighbourhoodsRatingModel rating, CancellationToken cancellationToken);
         Task<NeighbourhoodsRatingModel> GetNeighbourhoodsRating(CancellationToken cancellationToken);
         Task<IDictionary<string, IEnumerable<string>>> GetNeighbourhoodsRegions(CancellationToken cancellationToken);
     }

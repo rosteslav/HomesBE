@@ -65,39 +65,35 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             }
         }
 
-        public async Task AddNeighbourhoodsRating(AddNeighbourhoodsRatingCommand command, CancellationToken cancellationToken)
+        public async Task AddNeighbourhoodsRating(NeighbourhoodsRatingModel rating, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"DB add neighbourhoods rating");
 
             try
             {
-                var best = new NeighbourhoodsRating
+                var ratings = new[]
                 {
-                    Id = 1,
-                    ForLiving = JsonConvert.SerializeObject(command.ForLiving.First()),
-                    ForInvestment = JsonConvert.SerializeObject(command.ForInvestment.First()),
-                    Budget = JsonConvert.SerializeObject(command.Budget.First()),
-                    Luxury = JsonConvert.SerializeObject(command.Luxury.First())
+                    new NeighbourhoodsRating
+                    {
+                        Id = 1,
+                        ForLiving = JsonConvert.SerializeObject(rating.ForLiving.First()),
+                        ForInvestment = JsonConvert.SerializeObject(rating.ForInvestment.First()),
+                        Budget = JsonConvert.SerializeObject(rating.Budget.First()),
+                        Luxury = JsonConvert.SerializeObject(rating.Luxury.First())
+                    },
+                    new NeighbourhoodsRating
+                    {
+                        Id = 2,
+                        ForLiving = JsonConvert.SerializeObject(rating.ForLiving.Last()),
+                        ForInvestment = JsonConvert.SerializeObject(rating.ForInvestment.Last()),
+                        Budget = JsonConvert.SerializeObject(rating.Budget.Last()),
+                        Luxury = JsonConvert.SerializeObject(rating.Luxury.Last())
+                    }
                 };
-                var secondary = new NeighbourhoodsRating
-                {
-                    Id = 2,
-                    ForLiving = JsonConvert.SerializeObject(command.ForLiving.ElementAt(1)),
-                    ForInvestment = JsonConvert.SerializeObject(command.ForInvestment.ElementAt(1)),
-                    Budget = JsonConvert.SerializeObject(command.Budget.ElementAt(1)),
-                    Luxury = JsonConvert.SerializeObject(command.Luxury.ElementAt(1))
-                };
 
-                if (_context.NeighbourhoodsRating.Any(n => n.Id == best.Id))
-                    _context.NeighbourhoodsRating.Update(best);
-                else
-                    await _context.NeighbourhoodsRating.AddAsync(best, cancellationToken);
+                await _context.NeighbourhoodsRating.ExecuteDeleteAsync(cancellationToken);
 
-                if (_context.NeighbourhoodsRating.Any(n => n.Id == secondary.Id))
-                    _context.NeighbourhoodsRating.Update(secondary);
-                else
-                    await _context.NeighbourhoodsRating.AddAsync(secondary, cancellationToken);
-
+                await _context.NeighbourhoodsRating.AddRangeAsync(ratings, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
@@ -129,13 +125,13 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
 
             try
             {
-                var ratings = await _context.NeighbourhoodsRating.Where(n => n.Id == 1 || n.Id == 2).ToArrayAsync(cancellationToken);
+                var ratings = await _context.NeighbourhoodsRating.ToArrayAsync(cancellationToken);
                 var result = new NeighbourhoodsRatingModel
                 {
-                    ForLiving = ratings.Select(r => JsonConvert.DeserializeObject<string[]>(r.ForLiving)),
-                    ForInvestment = ratings.Select(r => JsonConvert.DeserializeObject<string[]>(r.ForInvestment)),
-                    Budget = ratings.Select(r => JsonConvert.DeserializeObject<string[]>(r.Budget)),
-                    Luxury = ratings.Select(r => JsonConvert.DeserializeObject<string[]>(r.Luxury))
+                    ForLiving = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.ForLiving)),
+                    ForInvestment = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.ForInvestment)),
+                    Budget = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.Budget)),
+                    Luxury = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.Luxury))
                 };
 
                 return result;

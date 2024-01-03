@@ -8,32 +8,43 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetR
         IPropertiesRepository propertiesRepository,
         IRecommendationRepository recommendationRepository,
         IPropertyImagesStore propertyImagesStore,
-        IPreferencesStore preferencesStore)
+        IPreferencesStore preferencesStore,
+        IRecommendationStore recommendedStore)
         : IRequestHandler<GetRecommendedQuery, IEnumerable<GetAllPropertiesOutputModel>>
     {
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
         private readonly IRecommendationRepository _recommendationRepository = recommendationRepository;
         private readonly IPropertyImagesStore _propertyImagesStore = propertyImagesStore;
         private readonly IPreferencesStore _preferencesStore = preferencesStore;
+        private readonly IRecommendationStore _recommendedStore = recommendedStore;
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> Handle(GetRecommendedQuery request, CancellationToken cancellationToken)
         {
-            var preferences = await _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
-            var recommendedIds = await _recommendationRepository.GetRecommended(preferences, cancellationToken);
-            
-            var properties = await _propertiesRepository.GetByIds(recommendedIds, cancellationToken);
-            if (properties.Any())
+            var recommendedIds = await _recommendedStore.GetRecommendedByUserId(request.BuyerId, cancellationToken);
+
+            if (recommendedIds != null)
             {
-                var propertyIds = properties.Select(p => p.Id.ToString()).ToArray();
-                var propertiesImages = await _propertyImagesStore.GetPropertiesImages(propertyIds);
-                if (propertiesImages.Any())
-                {
-                    for (int i = 0; i < propertiesImages.Count(); i++)
-                        properties.ElementAt(i).Images = propertiesImages.ElementAt(i).Images;
-                }
+                return await _propertiesRepository.GetByIds(recommendedIds, cancellationToken);
             }
 
-            return properties;
+            var preferences = await _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
+            var properties = await _propertiesRepository.GetByIds(
+                (await _recommendationRepository.GetRecommended(preferences, cancellationToken)).Take(1).ToList(), cancellationToken);
+
+            if (properties.Any())
+            {
+                var propertiesImages = await _propertyImagesStore.GetPropertiesImages(properties.Select(p => p.Id.ToString()).ToArray());
+
+                properties = properties.Zip(propertiesImages, (prop, img) =>
+                {
+                    prop.Images = img.Images;
+                    return prop;
+                });
+
+                return properties;
+            }
+
+            return Enumerable.Empty<GetAllPropertiesOutputModel>();
         }
     }
 }

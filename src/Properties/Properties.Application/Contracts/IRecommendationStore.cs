@@ -4,6 +4,6 @@
     {
         Task UploadRecommendations(IDictionary<string, IEnumerable<int>> buyersRecommendations, CancellationToken cancellationToken);
 
-        Task<int[]> GetRecommendedByUserId(string buyerId, CancellationToken cancellationToken);
+        Task<IEnumerable<int>> GetRecommendedByUserId(string buyerId, CancellationToken cancellationToken);
     }
 }

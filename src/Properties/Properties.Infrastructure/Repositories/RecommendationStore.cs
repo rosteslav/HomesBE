@@ -47,7 +47,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
         }
 
-        public async Task<int[]> GetRecommendedByUserId(string buyerId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<int>> GetRecommendedByUserId(string buyerId, CancellationToken cancellationToken)
         {
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);
@@ -60,10 +60,10 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var recommendations = await _redisDb.HashGetAsync(key, buyerId);
 
                 var deserialized = recommendations.HasValue
-                    ? MessagePackSerializer.Deserialize<int[]>(recommendations, cancellationToken: cancellationToken)
-                    : default;
+                    ? MessagePackSerializer.Deserialize<IEnumerable<int>>(recommendations, cancellationToken: cancellationToken)
+                    : Enumerable.Empty<int>();
 
-                return deserialized ?? default;
+                return deserialized;
             }
             catch (Exception ex)
             {
@@ -74,7 +74,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 _semaphore.Release();
             }
 
-            return default;
+            return Enumerable.Empty<int>();
         }
     }
 }

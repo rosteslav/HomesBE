@@ -46,5 +46,35 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 _semaphore.Release();
             }
         }
+
+        public async Task<IEnumerable<int>> GetRecommendedByUserId(string buyerId, CancellationToken cancellationToken)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync(cancellationToken);
+
+            _logger.LogInformation("Getting all recommendations for buyer with id: {id}.", buyerId);
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.RecommendationsHashKey);
+                var recommendations = await _redisDb.HashGetAsync(key, buyerId);
+
+                var deserialized = recommendations.HasValue
+                    ? MessagePackSerializer.Deserialize<IEnumerable<int>>(recommendations, cancellationToken: cancellationToken)
+                    : Enumerable.Empty<int>();
+
+                return deserialized;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while uploading recommendations to Redis in {store}", nameof(RecommendationStore));
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+
+            return Enumerable.Empty<int>();
+        }
     }
 }

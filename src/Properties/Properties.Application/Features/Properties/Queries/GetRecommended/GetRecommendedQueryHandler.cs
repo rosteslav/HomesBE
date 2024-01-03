@@ -1,6 +1,7 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Models;
 using MediatR;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetRecommended
 {
@@ -8,32 +9,42 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetR
         IPropertiesRepository propertiesRepository,
         IRecommendationRepository recommendationRepository,
         IPropertyImagesStore propertyImagesStore,
-        IPreferencesStore preferencesStore)
+        IPreferencesStore preferencesStore,
+        IRecommendationStore recommendedStore)
         : IRequestHandler<GetRecommendedQuery, IEnumerable<GetAllPropertiesOutputModel>>
     {
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
         private readonly IRecommendationRepository _recommendationRepository = recommendationRepository;
         private readonly IPropertyImagesStore _propertyImagesStore = propertyImagesStore;
         private readonly IPreferencesStore _preferencesStore = preferencesStore;
+        private readonly IRecommendationStore _recommendedStore = recommendedStore;
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> Handle(GetRecommendedQuery request, CancellationToken cancellationToken)
         {
-            var preferences = await _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
-            var recommendedIds = await _recommendationRepository.GetRecommended(preferences, cancellationToken);
+            var recommendedIds = await _recommendedStore.GetRecommendedByUserId(request.BuyerId, cancellationToken);
+
+            if (!recommendedIds.Any())
+            {
+                var preferences = _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
+                recommendedIds = await _recommendationRepository.GetRecommended(await preferences, cancellationToken);
+            }
             
             var properties = await _propertiesRepository.GetByIds(recommendedIds, cancellationToken);
+
             if (properties.Any())
             {
-                var propertyIds = properties.Select(p => p.Id.ToString()).ToArray();
-                var propertiesImages = await _propertyImagesStore.GetPropertiesImages(propertyIds);
-                if (propertiesImages.Any())
+                var propertiesImages = _propertyImagesStore.GetPropertiesImages(properties.Select(p => p.Id.ToString()).ToArray());
+
+                properties = properties.Zip(await propertiesImages, (prop, img) =>
                 {
-                    for (int i = 0; i < propertiesImages.Count(); i++)
-                        properties.ElementAt(i).Images = propertiesImages.ElementAt(i).Images;
-                }
+                    prop.Images = img.Images;
+                    return prop;
+                });
+
+                return properties;
             }
 
-            return properties;
+            return Enumerable.Empty<GetAllPropertiesOutputModel>();
         }
     }
 }

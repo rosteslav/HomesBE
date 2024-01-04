@@ -1,4 +1,4 @@
-﻿using BuildingMarket.Admins.Application.Models;
+﻿using BuildingMarket.Common.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 

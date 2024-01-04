@@ -6,6 +6,7 @@ using BuildingMarket.Admins.Application.Features.Admins.Queries.GetAllBrokers;
 using BuildingMarket.Admins.Application.Features.Admins.Queries.GetNeighbourhoodsRating;
 using BuildingMarket.Admins.Application.Features.Admins.Queries.GetNeighbourhoodsRegions;
 using BuildingMarket.Admins.Application.Models;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Common.Models.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

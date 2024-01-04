@@ -22,7 +22,8 @@ namespace BuildingMarket.Properties.Infrastructure
 
             services.AddScoped<IPropertiesRepository, PropertiesRepository>();
             services.AddScoped<IPropertyOptionsRepository, PropertyOptionsRepository>();
-            services.AddScoped<IRecommendationRepository, RecommendationRepository>();
+            services.AddTransient<IRecommendationRepository, RecommendationRepository>();
+            services.AddScoped<INeighbourhoodsRepository, NeighbourhoodsRepository>();
             services.AddSingleton<IPropertyImagesStore, PropertyImagesStore>();
             services.AddSingleton<IPreferencesStore, PreferencesStore>();
             services.AddSingleton<IRecommendationStore, RecommendationStore>();

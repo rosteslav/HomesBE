@@ -8,7 +8,7 @@ namespace BuildingMarket.Properties.Application.Contracts
     {
         Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query);
 
-        Task<IDictionary<int, PropertyRedisModel>> GetForRecommendations(CancellationToken cancellationToken);
+        Task<IDictionary<int, PropertyRedisModel>> GetForRecommendations(CancellationToken cancellationToken = default);
 
         Task<PropertyModel> GetById(int id, CancellationToken cancellationToken);
 

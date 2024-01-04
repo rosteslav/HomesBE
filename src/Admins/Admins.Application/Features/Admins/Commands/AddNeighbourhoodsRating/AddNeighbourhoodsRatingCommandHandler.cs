@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BuildingMarket.Admins.Application.Contracts;
-using BuildingMarket.Admins.Application.Models;
+using BuildingMarket.Common.Models;
 using MediatR;
 
 namespace BuildingMarket.Admins.Application.Features.Admins.Commands.AddNeighbourhoodsRating

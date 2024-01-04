@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace BuildingMarket.Admins.Infrastructure.Repositories
 {
@@ -76,18 +76,18 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
                     new NeighbourhoodsRating
                     {
                         Id = 1,
-                        ForLiving = JsonConvert.SerializeObject(rating.ForLiving.First()),
-                        ForInvestment = JsonConvert.SerializeObject(rating.ForInvestment.First()),
-                        Budget = JsonConvert.SerializeObject(rating.Budget.First()),
-                        Luxury = JsonConvert.SerializeObject(rating.Luxury.First())
+                        ForLiving = JsonSerializer.Serialize(rating.ForLiving.First()),
+                        ForInvestment = JsonSerializer.Serialize(rating.ForInvestment.First()),
+                        Budget = JsonSerializer.Serialize(rating.Budget.First()),
+                        Luxury = JsonSerializer.Serialize(rating.Luxury.First())
                     },
                     new NeighbourhoodsRating
                     {
                         Id = 2,
-                        ForLiving = JsonConvert.SerializeObject(rating.ForLiving.Last()),
-                        ForInvestment = JsonConvert.SerializeObject(rating.ForInvestment.Last()),
-                        Budget = JsonConvert.SerializeObject(rating.Budget.Last()),
-                        Luxury = JsonConvert.SerializeObject(rating.Luxury.Last())
+                        ForLiving = JsonSerializer.Serialize(rating.ForLiving.Last()),
+                        ForInvestment = JsonSerializer.Serialize(rating.ForInvestment.Last()),
+                        Budget = JsonSerializer.Serialize(rating.Budget.Last()),
+                        Luxury = JsonSerializer.Serialize(rating.Luxury.Last())
                     }
                 };
 
@@ -128,10 +128,10 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
                 var ratings = await _context.NeighbourhoodsRating.ToArrayAsync(cancellationToken);
                 var result = new NeighbourhoodsRatingModel
                 {
-                    ForLiving = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.ForLiving)),
-                    ForInvestment = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.ForInvestment)),
-                    Budget = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.Budget)),
-                    Luxury = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.Luxury))
+                    ForLiving = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.ForLiving)),
+                    ForInvestment = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.ForInvestment)),
+                    Budget = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.Budget)),
+                    Luxury = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.Luxury))
                 };
 
                 return result;

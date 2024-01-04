@@ -18,8 +18,7 @@ namespace BuildingMarket.Images.Infrastructure
 
             services.AddDbContext<ImagesDbContext>(options =>
             {
-                options.UseNpgsql(connectionString)
-                    .UseLazyLoadingProxies();
+                options.UseNpgsql(connectionString);
             },
             ServiceLifetime.Transient);
 

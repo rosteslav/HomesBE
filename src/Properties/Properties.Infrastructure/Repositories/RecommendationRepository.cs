@@ -19,6 +19,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async() => await propertiesStore.GetProperties());
         private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async() => await neighbourhoodsRepository.GetRating());
 
+        private readonly Random _random = new();
+
         public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
         {
             // NOTE: If there are no preferences for the given buyer, the "preferences" argument will be null.
@@ -48,7 +50,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         private int GradeProperty()
         {
-            int grade = 0;
+            int grade = _random.Next(0, 50);
 
             return grade;
         }

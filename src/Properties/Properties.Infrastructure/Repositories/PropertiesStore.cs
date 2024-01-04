@@ -37,8 +37,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var key = new RedisKey(_storeSettings.PropertiesHashKey);
                 var entries = await _redisDb.HashGetAllAsync(key);
                 var properties = entries.ToFrozenDictionary(
-                    e => int.Parse(e.Name), 
-                    e => MessagePackSerializer.Deserialize<PropertyRedisModel>(e.Value, options: null, cancellationToken));
+                    e => int.Parse(e.Name),
+                    e => MessagePackSerializer.Deserialize<PropertyRedisModel>(e.Value, cancellationToken: cancellationToken));
 
                 return properties;
             }

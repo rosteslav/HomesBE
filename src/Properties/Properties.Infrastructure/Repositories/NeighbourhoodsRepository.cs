@@ -3,7 +3,7 @@ using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
@@ -21,10 +21,10 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var ratings = await _context.NeighbourhoodsRating.ToArrayAsync(cancellationToken);
                 var result = new NeighbourhoodsRatingModel
                 {
-                    ForLiving = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.ForLiving)),
-                    ForInvestment = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.ForInvestment)),
-                    Budget = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.Budget)),
-                    Luxury = ratings.Select(r => JsonConvert.DeserializeObject<IEnumerable<string>>(r.Luxury))
+                    ForLiving = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.ForLiving)),
+                    ForInvestment = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.ForInvestment)),
+                    Budget = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.Budget)),
+                    Luxury = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.Luxury))
                 };
 
                 return result;

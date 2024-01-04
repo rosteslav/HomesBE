@@ -24,6 +24,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
         public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
 
+        public virtual DbSet<NeighbourhoodsRating> NeighbourhoodsRating { get; set; }
+
         public virtual DbSet<NumberOfRooms> NumberOfRooms { get; set; }
 
         public virtual DbSet<OrderBy> OrderBy { get; set; }
@@ -151,6 +153,38 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnName("region")
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<NeighbourhoodsRating>(entity =>
+            {
+                entity.ToTable("NeighbourhoodsRating", "properties", e => e.ExcludeFromMigrations());
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ForLiving)
+                    .HasColumnName("for_living")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.Property(e => e.ForInvestment)
+                    .HasColumnName("for_investment")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.Property(e => e.Budget)
+                    .HasColumnName("budget")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.Property(e => e.Luxury)
+                    .HasColumnName("luxury")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
             });
 
             modelBuilder.Entity<Heating>(entity =>

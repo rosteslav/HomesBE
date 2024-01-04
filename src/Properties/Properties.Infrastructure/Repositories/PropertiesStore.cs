@@ -9,6 +9,7 @@ using MessagePack;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
+using System.Collections.Frozen;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
@@ -25,6 +26,33 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly IRedisProvider _redisProvider = redisProvider;
         private readonly IDatabase _redisDb = redisProvider.GetDatabase();
         private readonly IMapper _mapper = mapper;
+
+        public async Task<IDictionary<int, PropertyRedisModel>> GetProperties(CancellationToken cancellationToken)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync(cancellationToken);
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.PropertiesHashKey);
+                var entries = await _redisDb.HashGetAllAsync(key);
+                var properties = entries.ToFrozenDictionary(
+                    e => int.Parse(e.Name), 
+                    e => MessagePackSerializer.Deserialize<PropertyRedisModel>(e.Value, options: null, cancellationToken));
+
+                return properties;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting properties from Redis in {store}", nameof(PropertiesStore));
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+
+            return default;
+        }
 
         public async Task UploadProperties(IDictionary<int, PropertyRedisModel> properties, CancellationToken cancellationToken)
         {

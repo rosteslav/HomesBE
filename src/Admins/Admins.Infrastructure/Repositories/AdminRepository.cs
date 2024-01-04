@@ -1,8 +1,7 @@
 ﻿using BuildingMarket.Admins.Application.Contracts;
-using BuildingMarket.Admins.Application.Features.Admins.Commands.AddNeighbourhoodsRating;
-using BuildingMarket.Admins.Application.Models;
 using BuildingMarket.Admins.Domain.Entities;
 using BuildingMarket.Admins.Infrastructure.Persistence;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Common.Models.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

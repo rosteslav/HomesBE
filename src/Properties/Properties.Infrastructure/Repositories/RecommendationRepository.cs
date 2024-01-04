@@ -1,7 +1,6 @@
 ﻿using BuildingMarket.Common.Models;
 using BuildingMarket.Properties.Application.Contracts;
-using BuildingMarket.Properties.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+using BuildingMarket.Properties.Application.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -9,13 +8,16 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
     public class RecommendationRepository(
         IConfiguration configuration,
-        PropertiesDbContext context,
+        IPropertiesStore propertiesStore,
+        INeighbourhoodsRepository neighbourhoodsRepository,
         ILogger<RecommendationRepository> logger)
         : IRecommendationRepository
     {
         private readonly int RecommendedCount = configuration.GetValue<int>("PropertiesRecommendedCount");
-        private readonly PropertiesDbContext _context = context;
         private readonly ILogger<RecommendationRepository> _logger = logger;
+
+        private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async() => await propertiesStore.GetProperties());
+        private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async() => await neighbourhoodsRepository.GetRating());
 
         public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
         {
@@ -25,13 +27,16 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             try
             {
-                var properties = await _context.Properties
-                    .Select(p => p.Id)
-                    .OrderBy(id => id)
-                    .Take(RecommendedCount)
-                    .ToArrayAsync(cancellationToken);
+                var properties = await _lazyProperties.Value;
+                var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
 
-                return properties;
+                var recommended = properties
+                    .Select(p => new { Id = p.Key, Grade = GradeProperty() })
+                    .OrderByDescending(p => p.Grade)
+                    .Take(RecommendedCount)
+                    .Select(p => p.Id);
+
+                return recommended;
             }
             catch (Exception ex)
             {
@@ -39,6 +44,13 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
 
             return Enumerable.Empty<int>();
+        }
+
+        private int GradeProperty()
+        {
+            int grade = 0;
+
+            return grade;
         }
     }
 }

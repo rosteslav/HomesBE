@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BuildingMarket.Admins.Application.Models
+namespace BuildingMarket.Common.Models
 {
     public class NeighbourhoodsRatingModel
     {

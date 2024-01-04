@@ -2,7 +2,9 @@
 using BuildingMarket.Auth.Application.Contracts;
 using BuildingMarket.Auth.Application.Models.Security;
 using BuildingMarket.Auth.Application.Models.Security.Enums;
+using BuildingMarket.Auth.Domain.Entities;
 using BuildingMarket.Common.Models;
+using BuildingMarket.Common.Models.Security;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -80,25 +82,15 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             if (!result.Succeeded)
                 return RegistrationResult.Failure;
 
-            if (model.FirstName != null ||
-                model.LastName != null ||
-                model.PhoneNumber != null)
+            if (roles.Contains(UserRoles.Seller) ||
+                roles.Contains(UserRoles.Broker))
             {
-                await _additionalUserDataRepository.AddAsync(new()
-                {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    PhoneNumber = model.PhoneNumber,
-                    UserId = user.Id,
-                    ImageURL = model.ImageUrl
-                });
+                var addUserData = _mapper.Map<AdditionalUserData>(model);
+                addUserData.UserId = user.Id;
+                await _additionalUserDataRepository.Add(addUserData);
             }
 
-            if (model.Purpose != null ||
-                model.Region != null ||
-                model.BuildingType != null ||
-                model.PriceHigherEnd != 0 ||
-                model.NumberOfRooms != null)
+            if (roles.Contains(UserRoles.Buyer))
             {
                 var preferences = _mapper.Map<PreferencesModel>(model);
                 preferences.UserId = user.Id;

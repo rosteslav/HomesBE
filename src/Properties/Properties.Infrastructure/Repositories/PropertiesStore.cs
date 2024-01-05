@@ -54,6 +54,48 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return default;
         }
 
+        public async Task RemoveProperty(int id, CancellationToken cancellationToken = default)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync(cancellationToken);
+            _logger.LogInformation("Attempt to remove property from Redis...");
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.PropertiesHashKey);
+                await _redisDb.HashDeleteAsync(key, id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while removing property from Redis.");
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+        public async Task UpdateProperty(int id, PropertyRedisModel model, CancellationToken cancellationToken = default)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync(cancellationToken);
+            _logger.LogInformation("Attempt to update property in Redis...");
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.PropertiesHashKey);
+                await _redisDb.HashSetAsync(key, id, MessagePackSerializer.Serialize(model, cancellationToken: cancellationToken));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while updating property in Redis.");
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
         public async Task UploadProperties(IDictionary<int, PropertyRedisModel> properties, CancellationToken cancellationToken)
         {
             await Task.Yield();

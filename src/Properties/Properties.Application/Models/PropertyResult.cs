@@ -1,6 +1,6 @@
 ﻿namespace BuildingMarket.Properties.Application.Models
 {
-    public enum DeletePropertyResult
+    public enum PropertyResult
     {
         Success,
         NotFound,

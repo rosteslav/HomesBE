@@ -41,6 +41,10 @@ namespace BuildingMarket.Properties.Application.Mapper
                 .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()))
                 .ForMember(x => x.Details, opt => opt.MapFrom(src => string.Join(',', src.BuildingType, src.Finish, src.Furnishment, src.Heating, src.Exposure)));
 
+            CreateMap<Property, PropertyRedisModel>();
+
+            CreateMap<AddPropertyInputModel, PropertyRedisModel>();
+
             CreateMap<PublishedOn, PublishedOnModel>();
             CreateMap<OrderBy, OrderByModel>();
 

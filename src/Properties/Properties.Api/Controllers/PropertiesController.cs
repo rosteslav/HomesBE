@@ -120,15 +120,15 @@ namespace BuildingMarket.Properties.Api.Controllers
 
             switch (result)
             {
-                case DeletePropertyResult.Success:
+                case PropertyResult.Success:
                     _logger.LogInformation("Property with id: {id} was deleted successfully!", id);
 
                     return NoContent();
-                case DeletePropertyResult.NotFound:
+                case PropertyResult.NotFound:
                     _logger.LogInformation("Property with id: {id} was not found!", id);
 
                     return NotFound();
-                case DeletePropertyResult.Unauthorized:
+                case PropertyResult.Unauthorized:
                     _logger.LogInformation("User with id {userId} tried to delete property {id} with no access to it!", userId, id);
 
                     return Unauthorized();
@@ -164,15 +164,15 @@ namespace BuildingMarket.Properties.Api.Controllers
 
             switch (result)
             {
-                case DeletePropertyResult.Success:
+                case PropertyResult.Success:
                     _logger.LogInformation("Property with id: {id} was edited successfully!", id);
 
                     return NoContent();
-                case DeletePropertyResult.NotFound:
+                case PropertyResult.NotFound:
                     _logger.LogInformation("Property with id: {id} was not found!", id);
 
                     return NotFound();
-                case DeletePropertyResult.Unauthorized:
+                case PropertyResult.Unauthorized:
                     _logger.LogInformation("User with id {userId} tried to edit property {id} with no access to it!", userId, id);
 
                     return Unauthorized();

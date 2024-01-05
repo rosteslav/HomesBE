@@ -12,6 +12,25 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly PropertiesDbContext _context = context;
         private readonly ILogger<NeighbourhoodsRepository> _logger = logger;
 
+        public async Task<string> GetNeighbourhoodRegion(string neighbourhood, CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("DB getting neighbourhood's region...");
+
+            try
+            {
+                return await _context.Neighborhoods
+                    .Where(n => n.Description == neighbourhood)
+                    .Select(n => n.Region)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting neighbourhood's region.");
+            }
+
+            return default;
+        }
+
         public async Task<NeighbourhoodsRatingModel> GetRating(CancellationToken cancellationToken)
         {
             _logger.LogInformation("DB get neighbourhoods rating");

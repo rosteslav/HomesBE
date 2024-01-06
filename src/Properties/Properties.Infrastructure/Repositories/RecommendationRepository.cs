@@ -16,8 +16,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly int RecommendedCount = configuration.GetValue<int>("PropertiesRecommendedCount");
         private readonly ILogger<RecommendationRepository> _logger = logger;
 
-        private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async() => await propertiesStore.GetProperties());
-        private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async() => await neighbourhoodsRepository.GetRating());
+        private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
+        private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async () => await neighbourhoodsRepository.GetRating());
 
         public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
         {
@@ -31,7 +31,11 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
 
                 var recommended = properties
-                    .Select(p => new { Id = p.Key, Grade = GradeProperty() })
+                    .Select(p => new
+                    {
+                        Id = p.Key,
+                        Grade = GradeProperty(p.Value, preferences)
+                    })
                     .OrderByDescending(p => p.Grade)
                     .Take(RecommendedCount)
                     .Select(p => p.Id);
@@ -46,9 +50,29 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private int GradeProperty()
+        private static int GradeProperty(
+            PropertyRedisModel property,
+            BuyerPreferencesRedisModel preferences)
         {
-            int grade = Random.Shared.Next();
+            if (string.IsNullOrEmpty(preferences.BuildingType)) return 10;
+
+            var buildingTypes = preferences.BuildingType.Split('/');
+            var grade = 0;
+
+            if (buildingTypes.Contains(property.BuildingType))
+            {
+                grade = 10;
+            }
+            else if ((property.BuildingType == "ЕПК" || property.BuildingType == "Тухла") &&
+                (buildingTypes.Contains("Тухла") || buildingTypes.Contains("ЕПК")))
+            {
+                grade = 5;
+            }
+            else if (property.BuildingType == "Панел" &&
+                (buildingTypes.Contains("Тухла") || buildingTypes.Contains("ЕПК")))
+            {
+                grade = 5;
+            }
 
             return grade;
         }

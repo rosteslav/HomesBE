@@ -50,25 +50,30 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private static int GradeProperty(
+        private int GradeProperty(
             PropertyRedisModel property,
             BuyerPreferencesRedisModel preferences)
         {
-            if (string.IsNullOrEmpty(preferences.BuildingType)) return 10;
+            return GradeByBuildingType(property.BuildingType, preferences.BuildingType);
+        }
 
-            var buildingTypes = preferences.BuildingType.Split('/');
+        private int GradeByBuildingType(string propertyBT, string preferencesBT)
+        {
+            if (string.IsNullOrEmpty(preferencesBT)) return 10;
+
+            var buildingTypes = preferencesBT.Split('/');
             var grade = 0;
 
-            if (buildingTypes.Contains(property.BuildingType))
+            if (buildingTypes.Contains(propertyBT))
             {
                 grade = 10;
             }
-            else if ((property.BuildingType == "ЕПК" || property.BuildingType == "Тухла") &&
+            else if ((propertyBT == "ЕПК" || propertyBT == "Тухла") &&
                 (buildingTypes.Contains("Тухла") || buildingTypes.Contains("ЕПК")))
             {
                 grade = 5;
             }
-            else if (property.BuildingType == "Панел" &&
+            else if (propertyBT == "Панел" &&
                 (buildingTypes.Contains("Тухла") || buildingTypes.Contains("ЕПК")))
             {
                 grade = 5;

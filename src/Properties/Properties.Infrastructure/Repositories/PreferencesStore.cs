@@ -78,7 +78,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 _semaphore.Release();
             }
 
-            return new BuyerPreferencesRedisModel();
+            return new();
         }
     }
 }

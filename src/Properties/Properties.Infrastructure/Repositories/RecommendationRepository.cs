@@ -16,8 +16,17 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly int RecommendedCount = configuration.GetValue<int>("PropertiesRecommendedCount");
         private readonly ILogger<RecommendationRepository> _logger = logger;
 
-        private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async() => await propertiesStore.GetProperties());
-        private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async() => await neighbourhoodsRepository.GetRating());
+        private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
+        private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async () => await neighbourhoodsRepository.GetRating());
+
+        private static readonly Dictionary<string, HashSet<string>> _nextToRegions = new()
+        {
+            { "Юг", new() { "Запад", "Център", "Изток" } },
+            { "Запад", new() { "Юг", "Център", "Север" } },
+            { "Север", new() { "Запад", "Център", "Изток" } },
+            { "Изток", new() { "Юг", "Център", "Север" } },
+            { "Център", new() { "Юг", "Запад", "Север", "Изток" } }
+        };
 
         public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
         {
@@ -30,8 +39,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var properties = await _lazyProperties.Value;
                 var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
 
+                var preferredRegions = new HashSet<string>(preferences.Region is not null
+                    ? preferences.Region.Split("/", StringSplitOptions.RemoveEmptyEntries)
+                    : Enumerable.Empty<string>());
+
                 var recommended = properties
-                    .Select(p => new { Id = p.Key, Grade = GradeProperty() })
+                    .Select(p => new { Id = p.Key, Grade = GradeProperty(p.Value, preferredRegions) })
                     .OrderByDescending(p => p.Grade)
                     .Take(RecommendedCount)
                     .Select(p => p.Id);
@@ -46,9 +59,14 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private int GradeProperty()
+        private static int GradeProperty(PropertyRedisModel property, IEnumerable<string> preferredRegions)
         {
-            int grade = Random.Shared.Next();
+            int grade = 0;
+
+            if (!preferredRegions.Any() || preferredRegions.Contains(property.Region))
+                grade += 10;
+            else if (_nextToRegions[property.Region].Overlaps(preferredRegions))
+                grade += 5;
 
             return grade;
         }

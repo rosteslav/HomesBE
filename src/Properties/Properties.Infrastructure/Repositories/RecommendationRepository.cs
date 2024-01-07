@@ -64,8 +64,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         {
             int grade = 0;
 
-            grade += GradeByRegion(property.Region, preferences.Region);
-            grade += GradeByBuildingType(property.BuildingType, preferences.BuildingType);
+            grade += GradeByRegion(property.Region, preferences?.Region);
+            grade += GradeByBuildingType(property.BuildingType, preferences?.BuildingType);
 
             return grade;
         }

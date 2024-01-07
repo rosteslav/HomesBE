@@ -28,6 +28,13 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             { Regions.Center, new() { Regions.South, Regions.West, Regions.North, Regions.East } }
         };
 
+        private readonly Dictionary<string, HashSet<string>> _nextToBuildingTypes = new()
+        {
+            { BuildingTypes.Brick, new() { BuildingTypes.EPK } },
+            { BuildingTypes.EPK, new() { BuildingTypes.Brick } },
+            { BuildingTypes.Panel, new() { BuildingTypes.Brick, BuildingTypes.EPK } },
+        };
+
         public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
         {
             _logger.LogInformation("DB get recommended properties");
@@ -56,7 +63,9 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private int GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences)
         {
             int grade = 0;
+
             grade += GradeByRegion(property.Region, preferences.Region);
+            grade += GradeByBuildingType(property.BuildingType, preferences.BuildingType);
 
             return grade;
         }
@@ -73,6 +82,19 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 return 5;
 
             return 0;
+        }
+
+        private int GradeByBuildingType(string propertyBType, string preferredBuildingTypes)
+        {
+            var buildingTypes = string.IsNullOrEmpty(preferredBuildingTypes)
+                ? Enumerable.Empty<string>()
+                : preferredBuildingTypes.Split("/");
+
+            if (!buildingTypes.Any()) return 10;
+
+            return buildingTypes.Contains(propertyBType) ? 10
+                : _nextToBuildingTypes[propertyBType].Overlaps(buildingTypes) ? 5
+                : 0;
         }
     }
 }

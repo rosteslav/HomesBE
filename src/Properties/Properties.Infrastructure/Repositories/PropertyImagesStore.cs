@@ -56,5 +56,31 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             return Enumerable.Empty<PropertyImagesModel>();
         }
+
+        public async Task<IEnumerable<int>> GetPropertyIdsWithImages(CancellationToken cancellationToken)
+        {
+            await Task.Yield();
+            await _semaphore.WaitAsync(cancellationToken);
+
+            _logger.LogInformation("Attempt to retrieve all property ids with images...");
+
+            try
+            {
+                var key = new RedisKey(_storeSettings.ImagesHashKey);
+                var fieldNames = await _redisDb.HashKeysAsync(key);
+
+                return fieldNames.Select(name => int.Parse(name)).ToHashSet();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while checking for property images in Redis in {store}", nameof(PropertyImagesStore));
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+
+            return Enumerable.Empty<int>();
+        }
     }
 }

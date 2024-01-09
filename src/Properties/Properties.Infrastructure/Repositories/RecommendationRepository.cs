@@ -13,13 +13,15 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         ILogger<RecommendationRepository> logger)
         : IRecommendationRepository
     {
-        private readonly int RecommendedCount = configuration.GetValue<int>("PropertiesRecommendedCount");
-        private readonly int ReduceGradeValue = configuration.GetValue<int>("ReduceGradeValue");
+        // extract
+        private readonly int PropertiesRecommendedCount = configuration.GetValue<int>(nameof(PropertiesRecommendedCount));
+        private readonly int ReduceGradeValue = configuration.GetValue<int>(nameof(ReduceGradeValue));
         private readonly ILogger<RecommendationRepository> _logger = logger;
 
         private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
         private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async () => await neighbourhoodsRepository.GetRating());
 
+        // extract
         private readonly Dictionary<string, HashSet<string>> _nextToRegions = new()
         {
             { Regions.South, new() { Regions.West, Regions.Center, Regions.East } },
@@ -59,9 +61,9 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
 
                 var recommended = properties
-                    .Select(p => new { Id = p.Key, Grade = GradeProperty(p, preferences) })
+                    .Select(p => new { Id = p.Key, Grade = GradeProperty(p.Value, preferences) })
                     .OrderByDescending(p => p.Grade)
-                    .Take(RecommendedCount)
+                    .Take(PropertiesRecommendedCount)
                     .Select(p => p.Id);
 
                 return recommended;
@@ -74,15 +76,15 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private int GradeProperty(KeyValuePair<int, PropertyRedisModel> property, BuyerPreferencesRedisModel preferences)
+        private int GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences)
         {
             int grade = 0;
 
-            grade += GradeBy(property.Value.Region, preferences?.Region, _nextToRegions);
-            grade += GradeBy(property.Value.BuildingType, preferences?.BuildingType, _nextToBuildingTypes);
-            grade += GradeBy(property.Value.NumberOfRooms, preferences?.NumberOfRooms, _nextToNumberOfRooms);
+            grade += GradeBy(property.Region, preferences?.Region, _nextToRegions);
+            grade += GradeBy(property.BuildingType, preferences?.BuildingType, _nextToBuildingTypes);
+            grade += GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextToNumberOfRooms);
 
-            if (property.Value.NumberOfImages == 0)
+            if (property.NumberOfImages == 0)
                 return grade < ReduceGradeValue ? 0 : grade - ReduceGradeValue;
 
             return grade;

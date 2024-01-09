@@ -4,7 +4,6 @@ using BuildingMarket.Auth.Infrastructure.Persistence;
 using BuildingMarket.Common.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Frozen;
 
 namespace BuildingMarket.Auth.Infrastructure.Repositories
 {
@@ -20,11 +19,12 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
 
             try
             {
-                var preferences = await _context.Preferences
-                    .Select(p => new KeyValuePair<string, BuyerPreferencesRedisModel>(p.UserId, _mapper.Map<BuyerPreferencesRedisModel>(p)))
-                    .ToArrayAsync(cancellationToken);
+                var preferences = await _context.Preferences.ToDictionaryAsync(
+                    m => m.UserId, 
+                    _mapper.Map<BuyerPreferencesRedisModel>, 
+                    cancellationToken);
 
-                return preferences.ToFrozenDictionary();
+                return preferences;
             }
             catch (Exception ex)
             {

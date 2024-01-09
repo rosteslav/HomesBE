@@ -54,12 +54,9 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             try
             {
-                var properties = await _lazyProperties.Value;
-                var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
-
-                var recommended = properties
-                    .Select(p => new { Id = p.Key, Grade = GradeProperty(p.Value, preferences, neighbourhoodsRating) })
-                    .OrderByDescending(p => p.Grade)
+                var recommended = (await _lazyProperties.Value)
+                    .Select(async p => new { Id = p.Key, Grade = await GradeProperty(p.Value, preferences) })
+                    .OrderByDescending(p => p.Result.Grade)
                     .Take(RecommendedCount)
                     .Select(p => p.Id);
 
@@ -73,44 +70,43 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private int GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences, NeighbourhoodsRatingModel neighbourhoodsRating)
+        private async Task<int> GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences)
         {
             int grade = 0;
 
-            grade += GradeBy(property.Region, preferences?.Region, _nextToRegions);
-            grade += GradeBy(property.BuildingType, preferences?.BuildingType, _nextToBuildingTypes);
-            grade += GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextToNumberOfRooms);
-            grade += GradeByPurpose(property.Neighbourhood, preferences?.Purpose, neighbourhoodsRating);
+            grade += await GradeBy(property.Region, preferences?.Region, _nextToRegions);
+            grade += await GradeBy(property.BuildingType, preferences?.BuildingType, _nextToBuildingTypes);
+            grade += await GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextToNumberOfRooms);
+            grade += await GradeByPurpose(property.Neighbourhood, preferences?.Purpose);
 
             return grade;
         }
 
-        private int GradeByPurpose(string neighbourhood, string purpose, NeighbourhoodsRatingModel neighbourhoodsRating)
+        private async Task<int> GradeByPurpose(string neighbourhood, string purpose)
         {
+            var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
             if (string.IsNullOrWhiteSpace(purpose) || neighbourhoodsRating is null)
                 return 10;
 
             if ((purpose.Contains(Purposes.ForLiving) && neighbourhoodsRating.ForLiving.First().Contains(neighbourhood))
-                || (purpose.Contains(Purposes.ForInvestment) && neighbourhoodsRating.ForInvestment.First().Contains(neighbourhood))
-                || (purpose.Contains(Purposes.Budget) && neighbourhoodsRating.Budget.First().Contains(neighbourhood))
-                || (purpose.Contains(Purposes.Luxury) && neighbourhoodsRating.Luxury.First().Contains(neighbourhood)))
-            {
+                    || (purpose.Contains(Purposes.ForInvestment) && neighbourhoodsRating.ForInvestment.First().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.Budget) && neighbourhoodsRating.Budget.First().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.Luxury) && neighbourhoodsRating.Luxury.First().Contains(neighbourhood)))
                 return 10;
-            }
 
             if ((purpose.Contains(Purposes.ForLiving) && neighbourhoodsRating.ForLiving.Last().Contains(neighbourhood))
-                || (purpose.Contains(Purposes.ForInvestment) && neighbourhoodsRating.ForInvestment.Last().Contains(neighbourhood))
-                || (purpose.Contains(Purposes.Budget) && neighbourhoodsRating.Budget.Last().Contains(neighbourhood))
-                || (purpose.Contains(Purposes.Luxury) && neighbourhoodsRating.Luxury.Last().Contains(neighbourhood)))
-            {
+                    || (purpose.Contains(Purposes.ForInvestment) && neighbourhoodsRating.ForInvestment.Last().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.Budget) && neighbourhoodsRating.Budget.Last().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.Luxury) && neighbourhoodsRating.Luxury.Last().Contains(neighbourhood)))
                 return 5;
-            }
 
             return 0;
         }
 
-        private int GradeBy(string sourceValue, string preferredValues, IDictionary<string, HashSet<string>> nextToValues)
+        private async Task<int> GradeBy(string sourceValue, string preferredValues, IDictionary<string, HashSet<string>> nextToValues)
         {
+            await Task.Yield();
+
             var preferredCollection = preferredValues is not null
                 ? preferredValues.Split("/", StringSplitOptions.RemoveEmptyEntries)
                 : Enumerable.Empty<string>();

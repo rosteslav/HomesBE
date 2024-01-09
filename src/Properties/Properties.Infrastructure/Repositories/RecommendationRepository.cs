@@ -36,6 +36,19 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             { BuildingTypes.Panel, new() { BuildingTypes.Brick, BuildingTypes.EPK } },
         };
 
+        private readonly Dictionary<string, HashSet<string>> _nextToNumberOfRooms = new()
+        {
+            { NumberOfRooms.Studio, new() { NumberOfRooms.OneBedroom, NumberOfRooms.Attic } },
+            { NumberOfRooms.OneBedroom, new() { NumberOfRooms.Studio, NumberOfRooms.ThreeBedroom } },
+            { NumberOfRooms.ThreeBedroom, new() { NumberOfRooms.OneBedroom, NumberOfRooms.FourRooms, NumberOfRooms.Maisonette } },
+            { NumberOfRooms.FourRooms, new() { NumberOfRooms.ThreeBedroom, NumberOfRooms.Multiroom, NumberOfRooms.Maisonette } },
+            { NumberOfRooms.Multiroom, new() { NumberOfRooms.ThreeBedroom, NumberOfRooms.FourRooms, NumberOfRooms.Maisonette } },
+            { NumberOfRooms.Maisonette, new() { NumberOfRooms.ThreeBedroom, NumberOfRooms.FourRooms, NumberOfRooms.Multiroom } },
+            { NumberOfRooms.Garage, new() },
+            { NumberOfRooms.Warehouse, new() { NumberOfRooms.Garage, NumberOfRooms.Attic } },
+            { NumberOfRooms.Attic, new() { NumberOfRooms.Garage, NumberOfRooms.Warehouse } },
+        };
+
         public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
         {
             _logger.LogInformation("DB get recommended properties");
@@ -65,8 +78,9 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         {
             int grade = 0;
 
-            grade += GradeByRegion(property.Value.Region, preferences?.Region);
-            grade += GradeByBuildingType(property.Value.BuildingType, preferences?.BuildingType);
+            grade += GradeBy(property.Value.Region, preferences?.Region, _nextToRegions);
+            grade += GradeBy(property.Value.BuildingType, preferences?.BuildingType, _nextToBuildingTypes);
+            grade += GradeBy(property.Value.NumberOfRooms, preferences?.NumberOfRooms, _nextToNumberOfRooms);
 
             if (property.Value.NumberOfImages == 0)
                 return grade < ReduceGradeValue ? 0 : grade - ReduceGradeValue;
@@ -74,31 +88,18 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return grade;
         }
 
-        private int GradeByRegion(string propertyRegion, string preferredRegions)
+        private int GradeBy(string sourceValue, string preferredValues, IDictionary<string, HashSet<string>> nextToValues)
         {
-            var regionsCollection = preferredRegions is not null
-                ? preferredRegions.Split("/", StringSplitOptions.RemoveEmptyEntries)
+            var preferredCollection = preferredValues is not null
+                ? preferredValues.Split("/", StringSplitOptions.RemoveEmptyEntries)
                 : Enumerable.Empty<string>();
 
-            if (regionsCollection.Contains(propertyRegion))
+            if (!preferredCollection.Any() || preferredCollection.Contains(sourceValue))
                 return 10;
-            else if (_nextToRegions[propertyRegion].Overlaps(regionsCollection))
+            else if (nextToValues[sourceValue].Overlaps(preferredCollection))
                 return 5;
 
             return 0;
-        }
-
-        private int GradeByBuildingType(string propertyBType, string preferredBuildingTypes)
-        {
-            var buildingTypes = string.IsNullOrEmpty(preferredBuildingTypes)
-                ? Enumerable.Empty<string>()
-                : preferredBuildingTypes.Split("/");
-
-            if (!buildingTypes.Any()) return 10;
-
-            return buildingTypes.Contains(propertyBType) ? 10
-                : _nextToBuildingTypes[propertyBType].Overlaps(buildingTypes) ? 5
-                : 0;
         }
     }
 }

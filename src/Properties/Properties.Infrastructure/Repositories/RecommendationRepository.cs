@@ -42,8 +42,10 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             try
             {
                 var properties = await _lazyProperties.Value;
+                var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
 
-                var recommended = (await Task.WhenAll(properties.Select(async p => new { Id = p.Key, Grade = await GradeProperty(p.Value, preferences) })))
+                var recommended = properties
+                    .Select(p => new { Id = p.Key, Grade = GradeProperty(p.Value, preferences, neighbourhoodsRating) })
                     .OrderByDescending(p => p.Grade)
                     .Take(RecommendedCount)
                     .Select(p => p.Id);
@@ -58,36 +60,37 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private async Task<int> GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences)
+        private int GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences, NeighbourhoodsRatingModel neighbourhoodsRating)
         {
             int grade = 0;
 
             grade += GradeByRegion(property.Region, preferences?.Region);
             grade += GradeByBuildingType(property.BuildingType, preferences?.BuildingType);
-            grade += await GradeByPurpose(property.Neighbourhood);
+            grade += GradeByPurpose(property.Neighbourhood, preferences.Purpose, neighbourhoodsRating);
 
             return grade;
         }
 
-        private async Task<int> GradeByPurpose(string propertyNeighbourhood)
+        private int GradeByPurpose(string neighbourhood, string purpose, NeighbourhoodsRatingModel neighbourhoodsRating)
         {
-            var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
-
-            bool isBest = neighbourhoodsRating.ForLiving.First().Contains(propertyNeighbourhood)
-                || neighbourhoodsRating.ForInvestment.First().Contains(propertyNeighbourhood)
-                || neighbourhoodsRating.Budget.First().Contains(propertyNeighbourhood)
-                || neighbourhoodsRating.Luxury.First().Contains(propertyNeighbourhood);
-
-            if (isBest)
+            if (string.IsNullOrWhiteSpace(purpose) || neighbourhoodsRating is null)
                 return 10;
 
-            bool isSecondary = neighbourhoodsRating.ForLiving.Last().Contains(propertyNeighbourhood)
-                || neighbourhoodsRating.ForInvestment.Last().Contains(propertyNeighbourhood)
-                || neighbourhoodsRating.Budget.Last().Contains(propertyNeighbourhood)
-                || neighbourhoodsRating.Luxury.Last().Contains(propertyNeighbourhood);
+            if ((purpose.Contains(Purposes.ForLiving) && neighbourhoodsRating.ForLiving.First().Contains(neighbourhood))
+                || (purpose.Contains(Purposes.ForInvestment) && neighbourhoodsRating.ForInvestment.First().Contains(neighbourhood))
+                || (purpose.Contains(Purposes.Budget) && neighbourhoodsRating.Budget.First().Contains(neighbourhood))
+                || (purpose.Contains(Purposes.Luxury) && neighbourhoodsRating.Luxury.First().Contains(neighbourhood)))
+            {
+                return 10;
+            }
 
-            if (isSecondary)
+            if ((purpose.Contains(Purposes.ForLiving) && neighbourhoodsRating.ForLiving.Last().Contains(neighbourhood))
+                || (purpose.Contains(Purposes.ForInvestment) && neighbourhoodsRating.ForInvestment.Last().Contains(neighbourhood))
+                || (purpose.Contains(Purposes.Budget) && neighbourhoodsRating.Budget.Last().Contains(neighbourhood))
+                || (purpose.Contains(Purposes.Luxury) && neighbourhoodsRating.Luxury.Last().Contains(neighbourhood)))
+            {
                 return 5;
+            }
 
             return 0;
         }

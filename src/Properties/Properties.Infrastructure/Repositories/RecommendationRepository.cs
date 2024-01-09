@@ -84,15 +84,15 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return grade;
         }
 
-        private int GradeBy(string propertyValue, string preferredValues, IDictionary<string, HashSet<string>> nextToValues)
+        private int GradeBy(string sourceValue, string preferredValues, IDictionary<string, HashSet<string>> nextToValues)
         {
             var preferredCollection = preferredValues is not null
                 ? preferredValues.Split("/", StringSplitOptions.RemoveEmptyEntries)
                 : Enumerable.Empty<string>();
 
-            if (!preferredCollection.Any() || preferredCollection.Contains(propertyValue))
+            if (!preferredCollection.Any() || preferredCollection.Contains(sourceValue))
                 return 10;
-            else if (nextToValues[propertyValue].Overlaps(preferredCollection))
+            else if (nextToValues[sourceValue].Overlaps(preferredCollection))
                 return 5;
 
             return 0;

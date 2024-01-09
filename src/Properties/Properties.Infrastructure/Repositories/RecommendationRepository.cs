@@ -10,7 +10,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         IConfiguration configuration,
         IPropertiesStore propertiesStore,
         INeighbourhoodsRepository neighbourhoodsRepository,
-        IPropertyImagesStore propertyImagesStore,
         ILogger<RecommendationRepository> logger)
         : IRecommendationRepository
     {
@@ -20,7 +19,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
         private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async () => await neighbourhoodsRepository.GetRating());
-        private readonly Lazy<Task<IEnumerable<int>>> _lazyPropertyIdsWithImages = new(async () => await propertyImagesStore.GetPropertyIdsWithImages());
 
         private readonly Dictionary<string, HashSet<string>> _nextToRegions = new()
         {
@@ -47,7 +45,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var properties = await _lazyProperties.Value;
                 var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
 
-                var recommended = (await Task.WhenAll(properties.Select(async p => new { Id = p.Key, Grade = await GradeProperty(p, preferences) })))
+                var recommended = properties
+                    .Select(p => new { Id = p.Key, Grade = GradeProperty(p, preferences) })
                     .OrderByDescending(p => p.Grade)
                     .Take(RecommendedCount)
                     .Select(p => p.Id);
@@ -62,18 +61,15 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private async Task<int> GradeProperty(KeyValuePair<int, PropertyRedisModel> property, BuyerPreferencesRedisModel preferences)
+        private int GradeProperty(KeyValuePair<int, PropertyRedisModel> property, BuyerPreferencesRedisModel preferences)
         {
             int grade = 0;
-            var propertyIdsWithImages = await _lazyPropertyIdsWithImages.Value;
 
             grade += GradeByRegion(property.Value.Region, preferences?.Region);
             grade += GradeByBuildingType(property.Value.BuildingType, preferences?.BuildingType);
 
-            grade -= propertyIdsWithImages.Contains(property.Key) ? 0 : ReduceGradeValue;
-
-            if (grade < 0)
-                grade = 0;
+            if (property.Value.NumberOfImages == 0)
+                return grade < ReduceGradeValue ? 0 : grade - ReduceGradeValue;
 
             return grade;
         }

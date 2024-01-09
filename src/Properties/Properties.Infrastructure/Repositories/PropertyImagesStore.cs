@@ -6,6 +6,7 @@ using MessagePack;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
+using System.Collections.Frozen;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
@@ -57,30 +58,32 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<PropertyImagesModel>();
         }
 
-        public async Task<IEnumerable<int>> GetPropertyIdsWithImages(CancellationToken cancellationToken)
+        public async Task<IDictionary<int, int>> GetPropertyIdsWithImagesCount(CancellationToken cancellationToken = default)
         {
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);
 
-            _logger.LogInformation("Attempt to retrieve all property ids with images...");
+            _logger.LogInformation("Attempt to retrieve all property ids with images count...");
 
             try
             {
                 var key = new RedisKey(_storeSettings.ImagesHashKey);
-                var fieldNames = await _redisDb.HashKeysAsync(key);
+                var entries = await _redisDb.HashGetAllAsync(key);
 
-                return fieldNames.Select(name => int.Parse(name)).ToHashSet();
+                return entries.ToFrozenDictionary(
+                    e => int.Parse(e.Name), 
+                    e => MessagePackSerializer.Deserialize<IEnumerable<string>>(e.Value).Count());
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while checking for property images in Redis in {store}", nameof(PropertyImagesStore));
+                _logger.LogError(ex, "Error while retrieving property ids with images count from Redis in {store}", nameof(PropertyImagesStore));
             }
             finally
             {
                 _semaphore.Release();
             }
 
-            return Enumerable.Empty<int>();
+            return new Dictionary<int, int>();
         }
     }
 }

@@ -5,6 +5,6 @@ namespace BuildingMarket.Properties.Application.Contracts
     public interface IPropertyImagesStore
     {
         Task<IEnumerable<PropertyImagesModel>> GetPropertiesImages(params string[] propertyIds);
-        Task<IEnumerable<int>> GetPropertyIdsWithImages(CancellationToken cancellationToken = default);
+        Task<IDictionary<int, int>> GetPropertyIdsWithImagesCount(CancellationToken cancellationToken = default);
     }
 }

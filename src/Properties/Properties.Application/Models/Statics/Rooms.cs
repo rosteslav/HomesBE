@@ -1,6 +1,6 @@
-﻿namespace BuildingMarket.Properties.Application.Models
+﻿namespace BuildingMarket.Properties.Application.Models.Statics
 {
-    public static class NumberOfRooms
+    public static class Rooms
     {
         public const string Studio = "Едностаен";
         public const string OneBedroom = "Двустаен";

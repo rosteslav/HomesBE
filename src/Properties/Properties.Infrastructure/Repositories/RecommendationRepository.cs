@@ -1,55 +1,26 @@
 ﻿using BuildingMarket.Common.Models;
+using BuildingMarket.Properties.Application.Configurations;
 using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
     public class RecommendationRepository(
-        IConfiguration configuration,
+        IOptions<PropertiesConfiguration> propertiesConfiguration,
         IPropertiesStore propertiesStore,
         INeighbourhoodsRepository neighbourhoodsRepository,
+        NextTo nextTo,
         ILogger<RecommendationRepository> logger)
         : IRecommendationRepository
     {
-        // extract
-        private readonly int PropertiesRecommendedCount = configuration.GetValue<int>(nameof(PropertiesRecommendedCount));
-        private readonly int ReduceGradeValue = configuration.GetValue<int>(nameof(ReduceGradeValue));
+        private readonly PropertiesConfiguration _propertiesConfiguration = propertiesConfiguration.Value;
+        private readonly NextTo _nextTo = nextTo;
         private readonly ILogger<RecommendationRepository> _logger = logger;
 
         private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
         private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async () => await neighbourhoodsRepository.GetRating());
-
-        // extract
-        private readonly Dictionary<string, HashSet<string>> _nextToRegions = new()
-        {
-            { Regions.South, new() { Regions.West, Regions.Center, Regions.East } },
-            { Regions.West, new() { Regions.South, Regions.Center, Regions.North } },
-            { Regions.North, new() { Regions.West, Regions.Center, Regions.East } },
-            { Regions.East, new() { Regions.South, Regions.Center, Regions.North } },
-            { Regions.Center, new() { Regions.South, Regions.West, Regions.North, Regions.East } }
-        };
-
-        private readonly Dictionary<string, HashSet<string>> _nextToBuildingTypes = new()
-        {
-            { BuildingTypes.Brick, new() { BuildingTypes.EPK } },
-            { BuildingTypes.EPK, new() { BuildingTypes.Brick } },
-            { BuildingTypes.Panel, new() { BuildingTypes.Brick, BuildingTypes.EPK } },
-        };
-
-        private readonly Dictionary<string, HashSet<string>> _nextToNumberOfRooms = new()
-        {
-            { NumberOfRooms.Studio, new() { NumberOfRooms.OneBedroom, NumberOfRooms.Attic } },
-            { NumberOfRooms.OneBedroom, new() { NumberOfRooms.Studio, NumberOfRooms.ThreeBedroom } },
-            { NumberOfRooms.ThreeBedroom, new() { NumberOfRooms.OneBedroom, NumberOfRooms.FourRooms, NumberOfRooms.Maisonette } },
-            { NumberOfRooms.FourRooms, new() { NumberOfRooms.ThreeBedroom, NumberOfRooms.Multiroom, NumberOfRooms.Maisonette } },
-            { NumberOfRooms.Multiroom, new() { NumberOfRooms.ThreeBedroom, NumberOfRooms.FourRooms, NumberOfRooms.Maisonette } },
-            { NumberOfRooms.Maisonette, new() { NumberOfRooms.ThreeBedroom, NumberOfRooms.FourRooms, NumberOfRooms.Multiroom } },
-            { NumberOfRooms.Garage, new() },
-            { NumberOfRooms.Warehouse, new() { NumberOfRooms.Garage, NumberOfRooms.Attic } },
-            { NumberOfRooms.Attic, new() { NumberOfRooms.Garage, NumberOfRooms.Warehouse } },
-        };
 
         public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
         {
@@ -63,7 +34,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var recommended = properties
                     .Select(p => new { Id = p.Key, Grade = GradeProperty(p.Value, preferences) })
                     .OrderByDescending(p => p.Grade)
-                    .Take(PropertiesRecommendedCount)
+                    .Take(_propertiesConfiguration.RecommendedCount)
                     .Select(p => p.Id);
 
                 return recommended;
@@ -80,12 +51,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         {
             int grade = 0;
 
-            grade += GradeBy(property.Region, preferences?.Region, _nextToRegions);
-            grade += GradeBy(property.BuildingType, preferences?.BuildingType, _nextToBuildingTypes);
-            grade += GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextToNumberOfRooms);
+            grade += GradeBy(property.Region, preferences?.Region, _nextTo.Region);
+            grade += GradeBy(property.BuildingType, preferences?.BuildingType, _nextTo.BuildingType);
+            grade += GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextTo.NumberOfRooms);
 
             if (property.NumberOfImages == 0)
-                return grade < ReduceGradeValue ? 0 : grade - ReduceGradeValue;
+                return grade < _propertiesConfiguration.ReduceGradeValue ? 0 : grade - _propertiesConfiguration.ReduceGradeValue;
 
             return grade;
         }

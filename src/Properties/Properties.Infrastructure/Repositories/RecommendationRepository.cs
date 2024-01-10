@@ -58,7 +58,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     .Select(async p => new { Id = p.Key, Grade = await GradeProperty(p.Value, preferences) })
                     .OrderByDescending(p => p.Result.Grade)
                     .Take(RecommendedCount)
-                    .Select(p => p.Id);
+                    .Select(p => p.Id)
+                    .ToArray();
 
                 return recommended;
             }

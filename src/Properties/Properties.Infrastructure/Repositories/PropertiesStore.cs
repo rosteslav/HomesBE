@@ -27,7 +27,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly IDatabase _redisDb = redisProvider.GetDatabase();
         private readonly IMapper _mapper = mapper;
 
-        public async Task<IDictionary<int, PropertyRedisModel>> GetProperties(CancellationToken cancellationToken)
+        public async Task<IEnumerable<PropertyRedisModel>> GetProperties(CancellationToken cancellationToken = default)
         {
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);
@@ -35,10 +35,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             try
             {
                 var key = new RedisKey(_storeSettings.PropertiesHashKey);
-                var entries = await _redisDb.HashGetAllAsync(key);
-                var properties = entries.ToFrozenDictionary(
-                    e => int.Parse(e.Name),
-                    e => MessagePackSerializer.Deserialize<PropertyRedisModel>(e.Value, cancellationToken: cancellationToken));
+                var entries = await _redisDb.SortedSetRangeByRankAsync(key);
+                var properties = entries.Select(e => MessagePackSerializer.Deserialize<PropertyRedisModel>(e, cancellationToken: cancellationToken));
 
                 return properties;
             }
@@ -54,7 +52,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return default;
         }
 
-        public async Task RemoveProperty(int id, CancellationToken cancellationToken = default)
+        public async Task RemoveProperty(PropertyRedisModel model, CancellationToken cancellationToken = default)
         {
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);
@@ -63,7 +61,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             try
             {
                 var key = new RedisKey(_storeSettings.PropertiesHashKey);
-                await _redisDb.HashDeleteAsync(key, id);
+                RedisValue member = MessagePackSerializer.Serialize(model, cancellationToken: cancellationToken);
+                await _redisDb.SortedSetRemoveAsync(key, member);
             }
             catch (Exception ex)
             {
@@ -75,7 +74,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
         }
 
-        public async Task UpdateProperty(int id, PropertyRedisModel model, CancellationToken cancellationToken = default)
+        public async Task UpdateProperty(PropertyRedisModel model, CancellationToken cancellationToken = default)
         {
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);
@@ -84,7 +83,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             try
             {
                 var key = new RedisKey(_storeSettings.PropertiesHashKey);
-                await _redisDb.HashSetAsync(key, id, MessagePackSerializer.Serialize(model, cancellationToken: cancellationToken));
+                RedisValue member = MessagePackSerializer.Serialize(model, cancellationToken: cancellationToken);
+                await _redisDb.SortedSetUpdateAsync(key, member, Convert.ToDouble(model.Price));
             }
             catch (Exception ex)
             {
@@ -96,7 +96,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
         }
 
-        public async Task UploadProperties(IDictionary<int, PropertyRedisModel> properties, CancellationToken cancellationToken)
+        public async Task UploadProperties(IEnumerable<PropertyRedisModel> properties, CancellationToken cancellationToken)
         {
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);
@@ -105,10 +105,10 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             {
                 var key = new RedisKey(_storeSettings.PropertiesHashKey);
                 var entries = properties
-                    .Select(p => new HashEntry(p.Key, MessagePackSerializer.Serialize(p.Value)))
+                    .Select(p => new SortedSetEntry(MessagePackSerializer.Serialize(p), Convert.ToDouble(p.Price)))
                     .ToArray();
 
-                await _redisDb.HashSetAsync(key, entries);
+                await _redisDb.SortedSetAddAsync(key, entries);
                 _logger.LogInformation("A {count} properties have been uploaded to Redis", entries.Length);
             }
             catch (Exception ex)
@@ -121,7 +121,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
         }
 
-        public async Task UploadReport(ReportPropertyCommand model, CancellationToken cancellationToken)
+        public async Task UploadReport(ReportPropertyCommand model, CancellationToken cancellationToken = default)
         {
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);

@@ -16,7 +16,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         private readonly int RecommendedCount = configuration.GetValue<int>("PropertiesRecommendedCount");
         private readonly ILogger<RecommendationRepository> _logger = logger;
 
-        private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
+        private readonly Lazy<Task<IEnumerable<PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
         private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async () => await neighbourhoodsRepository.GetRating());
 
         private readonly Dictionary<string, HashSet<string>> _nextToRegions = new()
@@ -46,10 +46,10 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var properties = await _lazyProperties.Value;
                 var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
 
-                var gradesByPrice = CalculateGradesByPrice(preferences.PriceHigherEnd, await GetOrderedProperties());
+                var gradesByPrice = CalculateGradesByPrice(preferences.PriceHigherEnd, properties);
 
                 var recommended = properties
-                    .Select(p => new { Id = p.Key, Grade = GradeProperty(p.Value, preferences) + gradesByPrice[p.Key] })
+                    .Select(p => new { p.Id, Grade = GradeProperty(p, preferences) + gradesByPrice[p.Id] })
                     .OrderByDescending(p => p.Grade)
                     .Take(RecommendedCount)
                     .Select(p => p.Id);
@@ -94,14 +94,15 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 ? Enumerable.Empty<string>()
                 : preferredBuildingTypes.Split("/");
 
-            if (!buildingTypes.Any()) return 10;
+            if (!buildingTypes.Any())
+                return 10;
 
             return buildingTypes.Contains(propertyBType) ? 10
                 : _nextToBuildingTypes[propertyBType].Overlaps(buildingTypes) ? 5
                 : 0;
         }
 
-        private IDictionary<int, int> CalculateGradesByPrice(decimal priceHigherEnd, IEnumerable<(int Id, decimal Price)> orderedProperties)
+        private IDictionary<int, int> CalculateGradesByPrice(decimal priceHigherEnd, IEnumerable<PropertyRedisModel> orderedProperties)
         {
             var grades = orderedProperties.Select(p => (p.Id, default(int))).ToDictionary();
 
@@ -166,7 +167,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return grades;
         }
 
-        private int FindClosestCheaperPropertyIndex(int left, int right, decimal priceTarget, IEnumerable<(int Id, decimal Price)> properties)
+        private int FindClosestCheaperPropertyIndex(int left, int right, decimal priceTarget, IEnumerable<PropertyRedisModel> properties)
         {
             while (left + 1 < right)
             {
@@ -190,14 +191,6 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return properties.ElementAt(right).Price <= priceTarget ? right
                 : properties.ElementAt(left).Price <= priceTarget ? left
                 : -1;
-        }
-
-        private async Task<IEnumerable<(int Id, decimal Price)>> GetOrderedProperties()
-        {
-            if (_orderedProperties == default)
-                _orderedProperties = (await _lazyProperties.Value).Select(p => (p.Key, p.Value.Price)).OrderBy(p => p.Price).ToArray();
-
-            return _orderedProperties;
         }
     }
 }

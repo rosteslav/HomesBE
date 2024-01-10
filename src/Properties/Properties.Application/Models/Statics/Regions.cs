@@ -1,4 +1,4 @@
-﻿namespace BuildingMarket.Properties.Application.Models
+﻿namespace BuildingMarket.Properties.Application.Models.Statics
 {
     public static class Regions
     {

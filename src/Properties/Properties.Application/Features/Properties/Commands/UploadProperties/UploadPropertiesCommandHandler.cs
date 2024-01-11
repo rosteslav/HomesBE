@@ -1,5 +1,4 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
-using BuildingMarket.Properties.Application.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -21,9 +20,9 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Commands.Upl
         {
             var properties = await _repository.GetForRecommendations(cancellationToken);
             var imagesCount = await _imagesStore.GetPropertyIdsWithImagesCount(cancellationToken);
-            foreach ((int id, PropertyRedisModel property) in properties)
+            foreach (var property in properties)
             {
-                if (imagesCount.TryGetValue(id, out int count))
+                if (imagesCount.TryGetValue(property.Id, out int count))
                     property.NumberOfImages = count;
             }
 

@@ -36,7 +36,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             {
                 var key = new RedisKey(_storeSettings.PropertiesHashKey);
                 var entries = await _redisDb.SortedSetRangeByRankAsync(key);
-                var properties = entries.Select(e => MessagePackSerializer.Deserialize<PropertyRedisModel>(e, cancellationToken: cancellationToken));
+                var properties = entries.Select(e => MessagePackSerializer.Deserialize<PropertyRedisModel>(e, cancellationToken: cancellationToken)).ToArray();
 
                 return properties;
             }

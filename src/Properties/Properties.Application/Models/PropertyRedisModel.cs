@@ -22,5 +22,8 @@ namespace BuildingMarket.Properties.Application.Models
 
         [Key(5)]
         public string BuildingType { get; set; }
+
+        [Key(5)]
+        public int NumberOfImages { get; set; }
     }
 }

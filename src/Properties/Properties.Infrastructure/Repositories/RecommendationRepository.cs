@@ -1,39 +1,26 @@
 ﻿using BuildingMarket.Common.Models;
+using BuildingMarket.Properties.Application.Configurations;
 using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
     public class RecommendationRepository(
-        IConfiguration configuration,
+        IOptions<PropertiesConfiguration> propertiesConfiguration,
         IPropertiesStore propertiesStore,
         INeighbourhoodsRepository neighbourhoodsRepository,
+        NextTo nextTo,
         ILogger<RecommendationRepository> logger)
         : IRecommendationRepository
     {
-        private readonly int RecommendedCount = configuration.GetValue<int>("PropertiesRecommendedCount");
+        private readonly PropertiesConfiguration _propertiesConfiguration = propertiesConfiguration.Value;
+        private readonly NextTo _nextTo = nextTo;
         private readonly ILogger<RecommendationRepository> _logger = logger;
 
         private readonly Lazy<Task<IEnumerable<PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
         private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async () => await neighbourhoodsRepository.GetRating());
-
-        private readonly Dictionary<string, HashSet<string>> _nextToRegions = new()
-        {
-            { Regions.South, new() { Regions.West, Regions.Center, Regions.East } },
-            { Regions.West, new() { Regions.South, Regions.Center, Regions.North } },
-            { Regions.North, new() { Regions.West, Regions.Center, Regions.East } },
-            { Regions.East, new() { Regions.South, Regions.Center, Regions.North } },
-            { Regions.Center, new() { Regions.South, Regions.West, Regions.North, Regions.East } }
-        };
-
-        private readonly Dictionary<string, HashSet<string>> _nextToBuildingTypes = new()
-        {
-            { BuildingTypes.Brick, new() { BuildingTypes.EPK } },
-            { BuildingTypes.EPK, new() { BuildingTypes.Brick } },
-            { BuildingTypes.Panel, new() { BuildingTypes.Brick, BuildingTypes.EPK } },
-        };
 
         public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
         {
@@ -45,10 +32,11 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var propertiesGradesByPrice = new PropertiesGradesByPrice(preferences.PriceHigherEnd, properties);
 
                 var recommended = properties
-                    .Select(p => new { p.Id, Grade = GradeProperty(p, preferences, propertiesGradesByPrice) })
-                    .OrderByDescending(p => p.Grade)
-                    .Take(RecommendedCount)
-                    .Select(p => p.Id);
+                    .Select(async p => new { p.Id, Grade = await GradeProperty(p, preferences, propertiesGradesByPrice) })
+                    .OrderByDescending(p => p.Result.Grade)
+                    .Take(_propertiesConfiguration.RecommendedCount)
+                    .Select(p => p.Id)
+                    .ToArray();
 
                 return recommended;
             }
@@ -60,43 +48,57 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private int GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences, PropertiesGradesByPrice propertiesGradesByPrice)
+        private async Task<int> GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences, PropertiesGradesByPrice propertiesGradesByPrice)
         {
             int grade = 0;
 
-            grade += GradeByRegion(property.Region, preferences?.Region);
-            grade += GradeByBuildingType(property.BuildingType, preferences?.BuildingType);
+            grade += await GradeBy(property.Region, preferences?.Region, _nextTo.Region);
+            grade += await GradeBy(property.BuildingType, preferences?.BuildingType, _nextTo.BuildingType);
+            grade += await GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextTo.NumberOfRooms);
+            grade += await GradeByPurpose(property.Neighbourhood, preferences?.Purpose);
             grade += propertiesGradesByPrice.GetPropertyGrade(property.Id);
+
+            if (property.NumberOfImages == 0)
+                return grade < _propertiesConfiguration.ReduceGradeValue ? 0 : grade - _propertiesConfiguration.ReduceGradeValue;
 
             return grade;
         }
 
-        private int GradeByRegion(string propertyRegion, string preferredRegions)
+        private async Task<int> GradeByPurpose(string neighbourhood, string purpose)
         {
-            var regionsCollection = preferredRegions is not null
-                ? preferredRegions.Split("/", StringSplitOptions.RemoveEmptyEntries)
-                : Enumerable.Empty<string>();
-
-            if (regionsCollection.Contains(propertyRegion))
+            var neighbourhoodsRating = await _lazyNeighbourhoodsRating.Value;
+            if (string.IsNullOrWhiteSpace(purpose) || neighbourhoodsRating is null)
                 return 10;
-            else if (_nextToRegions[propertyRegion].Overlaps(regionsCollection))
+
+            if ((purpose.Contains(Purposes.ForLiving) && neighbourhoodsRating.ForLiving.First().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.ForInvestment) && neighbourhoodsRating.ForInvestment.First().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.Budget) && neighbourhoodsRating.Budget.First().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.Luxury) && neighbourhoodsRating.Luxury.First().Contains(neighbourhood)))
+                return 10;
+
+            if ((purpose.Contains(Purposes.ForLiving) && neighbourhoodsRating.ForLiving.Last().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.ForInvestment) && neighbourhoodsRating.ForInvestment.Last().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.Budget) && neighbourhoodsRating.Budget.Last().Contains(neighbourhood))
+                    || (purpose.Contains(Purposes.Luxury) && neighbourhoodsRating.Luxury.Last().Contains(neighbourhood)))
                 return 5;
 
             return 0;
         }
 
-        private int GradeByBuildingType(string propertyBType, string preferredBuildingTypes)
+        private async Task<int> GradeBy(string sourceValue, string preferredValues, IDictionary<string, HashSet<string>> nextToValues)
         {
-            var buildingTypes = string.IsNullOrEmpty(preferredBuildingTypes)
-                ? Enumerable.Empty<string>()
-                : preferredBuildingTypes.Split("/");
+            await Task.Yield();
 
-            if (!buildingTypes.Any())
+            var preferredCollection = preferredValues is not null
+                ? preferredValues.Split("/", StringSplitOptions.RemoveEmptyEntries)
+                : Enumerable.Empty<string>();
+
+            if (!preferredCollection.Any() || preferredCollection.Contains(sourceValue))
                 return 10;
+            else if (nextToValues[sourceValue].Overlaps(preferredCollection))
+                return 5;
 
-            return buildingTypes.Contains(propertyBType) ? 10
-                : _nextToBuildingTypes[propertyBType].Overlaps(buildingTypes) ? 5
-                : 0;
+            return 0;
         }
     }
 }

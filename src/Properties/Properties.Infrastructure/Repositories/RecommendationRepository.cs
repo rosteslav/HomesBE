@@ -11,11 +11,13 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         IOptions<PropertiesConfiguration> propertiesConfiguration,
         IPropertiesStore propertiesStore,
         INeighbourhoodsRepository neighbourhoodsRepository,
+        IRecommendationService recommendationService,
         NextTo nextTo,
         ILogger<RecommendationRepository> logger)
         : IRecommendationRepository
     {
         private readonly PropertiesConfiguration _propertiesConfiguration = propertiesConfiguration.Value;
+        private readonly IRecommendationService _recommendationService = recommendationService;
         private readonly NextTo _nextTo = nextTo;
         private readonly ILogger<RecommendationRepository> _logger = logger;
 
@@ -29,10 +31,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             try
             {
                 var properties = await _lazyProperties.Value;
-                var propertiesGradesByPrice = new PropertiesGradesByPrice(preferences.PriceHigherEnd, properties);
+
+                var recommendedPriceRanges = _recommendationService
+                    .GetBuyerRecommendedPriceRanges(preferences.PriceHigherEnd, properties.Select(p => p.Price));
 
                 var recommended = properties
-                    .Select(async p => new { p.Id, Grade = await GradeProperty(p, preferences, propertiesGradesByPrice) })
+                    .Select(async p => new { p.Id, Grade = await GradeProperty(p, preferences, recommendedPriceRanges) })
                     .OrderByDescending(p => p.Result.Grade)
                     .Take(_propertiesConfiguration.RecommendedCount)
                     .Select(p => p.Id)
@@ -48,7 +52,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private async Task<int> GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences, PropertiesGradesByPrice propertiesGradesByPrice)
+        private async Task<int> GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences, BuyerRecommendedPriceRanges recommendedPriceRanges)
         {
             int grade = 0;
 
@@ -56,12 +60,46 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             grade += await GradeBy(property.BuildingType, preferences?.BuildingType, _nextTo.BuildingType);
             grade += await GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextTo.NumberOfRooms);
             grade += await GradeByPurpose(property.Neighbourhood, preferences?.Purpose);
-            grade += propertiesGradesByPrice.GetPropertyGrade(property.Id);
+            grade += preferences.PriceHigherEnd == 0 ? 10 : await GradeByPrice(property.Price, recommendedPriceRanges);
 
             if (property.NumberOfImages == 0)
                 return grade < _propertiesConfiguration.ReduceGradeValue ? 0 : grade - _propertiesConfiguration.ReduceGradeValue;
 
             return grade;
+        }
+
+        private async Task<int> GradeByPrice(decimal propertyPrice, BuyerRecommendedPriceRanges recommendedPriceRanges)
+        {
+            await Task.Yield();
+
+            if (propertyPrice == recommendedPriceRanges.BestPrice)
+                return 10;
+
+            if (propertyPrice == recommendedPriceRanges.LowestPrice)
+                return 5;
+
+            if (propertyPrice == recommendedPriceRanges.HighestPrice)
+                return 0;
+
+            int grade = 6;
+            foreach (var gapPrice in recommendedPriceRanges.GapsBelow)
+            {
+                if (propertyPrice <= gapPrice)
+                    return grade;
+
+                grade++;
+            }
+
+            grade = 4;
+            foreach (var gapPrice in recommendedPriceRanges.GapsAbove)
+            {
+                if (propertyPrice <= gapPrice)
+                    return grade;
+
+                grade--;
+            }
+
+            return 0;
         }
 
         private async Task<int> GradeByPurpose(string neighbourhood, string purpose)

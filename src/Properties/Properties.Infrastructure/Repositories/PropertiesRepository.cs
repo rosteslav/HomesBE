@@ -15,23 +15,31 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
     public class PropertiesRepository(
         IConfiguration configuration,
         PropertiesDbContext context,
+        IPropertiesStore propertiesStore,
+        INeighbourhoodsRepository neighbourhoodsRepository,
         IMapper mapper,
         ILogger<PropertiesRepository> logger)
         : IPropertiesRepository
     {
         private readonly int PageSize = configuration.GetValue<int>("PropertiesPageSize");
         private readonly PropertiesDbContext _context = context;
+        private readonly IPropertiesStore _propertiesStore = propertiesStore;
+        private readonly INeighbourhoodsRepository _neighbourhoodsRepository = neighbourhoodsRepository;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<PropertiesRepository> _logger = logger;
 
-        public async Task<AddPropertyOutputModel> Add(Property item)
+        public async Task<AddPropertyOutputModel> Add(Property property, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation($"DB add property with seller ID: {item.SellerId}");
-            item.CreatedOnUtcTime = DateTime.UtcNow;
-            await _context.Properties.AddAsync(item);
-            await _context.SaveChangesAsync();
+            _logger.LogInformation($"DB add property with seller ID: {property.SellerId}");
+            property.CreatedOnUtcTime = DateTime.UtcNow;
+            await _context.Properties.AddAsync(property, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
 
-            return new AddPropertyOutputModel { Id = item.Id };
+            var redisModelToBeAdded = _mapper.Map<PropertyRedisModel>(property);
+            redisModelToBeAdded.Region = await _neighbourhoodsRepository.GetNeighbourhoodRegion(property.Neighbourhood, cancellationToken);
+            await _propertiesStore.UpdateProperty(redisModelToBeAdded, cancellationToken);
+
+            return new AddPropertyOutputModel { Id = property.Id };
         }
 
         public async Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query)
@@ -63,27 +71,13 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
                         (query.Exposure == null || query.Exposure.Any(e => EF.Functions.Like(property.Exposure, e))) &&
                         (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date))
-                    .GroupJoin(_context.Images,
-                        property => property.Id,
-                        image => image.PropertyId,
-                        (property, image) => new { Property = property, Images = image })
-                    .Select(pi => new GetAllPropertiesOutputModel
-                    {
-                        Id = pi.Property.Id,
-                        CreatedOnLocalTime = pi.Property.CreatedOnUtcTime.ToLocalTime(),
-                        Details = string.Join(',', pi.Property.BuildingType, pi.Property.Finish, pi.Property.Furnishment, pi.Property.Heating, pi.Property.Exposure),
-                        Neighbourhood = pi.Property.Neighbourhood,
-                        Price = pi.Property.Price,
-                        NumberOfRooms = pi.Property.NumberOfRooms,
-                        Space = pi.Property.Space,
-                        Images = pi.Images.OrderBy(img => img.Id).Select(img => img.ImageURL)
-                    });
+                    .ProjectTo<GetAllPropertiesOutputModel>(_mapper.ConfigurationProvider);
 
                 var orderedProps = query.IsAscending
                     ? properties.OrderBy(orderByPropInfo.GetValue)
                     : properties.OrderByDescending(orderByPropInfo.GetValue);
 
-                return orderedProps.Skip(PageSize * (query.Page - 1)).Take(PageSize);
+                return orderedProps.Skip(PageSize * (query.Page - 1)).Take(PageSize).ToArray();
             }
             catch (Exception ex)
             {
@@ -93,27 +87,84 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<GetAllPropertiesOutputModel>();
         }
 
-        public async Task<PropertyModel> GetById(int id)
+        public async Task<IEnumerable<PropertyRedisModel>> GetForRecommendations(CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("DB get all properties for recommendations");
+
+            try
+            {
+                return await _context.Properties
+                    .Join(_context.Neighborhoods,
+                        p => p.Neighbourhood,
+                        n => n.Description,
+                        (p, n) => new PropertyRedisModel
+                        {
+                            Id = p.Id,
+                            Price = p.Price,
+                            BuildingType = p.BuildingType,
+                            Neighbourhood = p.Neighbourhood,
+                            NumberOfRooms = p.NumberOfRooms,
+                            Region = n.Region
+                        })
+                    .ToArrayAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting all properties");
+            }
+
+            return default;
+        }
+
+        public async Task<PropertyModel> GetById(int id, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("DB get property with ID {id}", id);
 
-            var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id).SingleOrDefaultAsync();
+            var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id).SingleOrDefaultAsync(cancellationToken);
 
             return result;
         }
 
-        public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId)
+        public async Task<IEnumerable<GetAllPropertiesOutputModel>> GetByIds(IEnumerable<int> ids, CancellationToken cancellationToken = default)
+        {
+            if (ids is not null && ids.Any())
+            {
+                _logger.LogInformation("DB get properties");
+
+                try
+                {
+                    var properties = await _context.Properties
+                        .Where(p => ids.Contains(p.Id))
+                        .ProjectTo<GetAllPropertiesOutputModel>(_mapper.ConfigurationProvider)
+                        .ToArrayAsync(cancellationToken);
+
+                    return properties;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while getting properties");
+                }
+            }
+            else
+            {
+                _logger.LogInformation("DB there are no property ids");
+            }
+
+            return Enumerable.Empty<GetAllPropertiesOutputModel>();
+        }
+
+        public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("DB get all properties for broker with id " + brokerId);
 
-            return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId).ToListAsync();
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId)
+        public async Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("DB get all properties for seller with id " + sellerId);
 
-            return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId).ToListAsync();
+            return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId).ToListAsync(cancellationToken);
         }
 
         private IQueryable<T> GetByFilterExpression<T>(Expression<Func<Property, bool>> filterExpression)
@@ -125,43 +176,50 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 .Join(_context.AdditionalUserData,
                     pu => pu.user.Id,
                     additionalUserData => additionalUserData.UserId,
-                    (pu, additionalUserData) => new { pu.user, pu.property, additionalUserData })
-                .GroupJoin(_context.Images,
-                    pua => pua.property.Id,
-                    img => img.PropertyId,
-                    (pua, image) => new PropertyProjectToModel
+                    (pu, additionalUserData) => new PropertyProjectToModel
                     {
-                        Property = pua.property,
-                        User = pua.user,
-                        UserData = pua.additionalUserData,
-                        Images = image.OrderBy(img => img.Id)
+                        Property = pu.property,
+                        User = pu.user,
+                        UserData = additionalUserData
                     })
                 .ProjectTo<T>(_mapper.ConfigurationProvider);
 
-        public async Task DeleteById(int id)
+        public async Task DeleteById(int id, CancellationToken cancellationToken = default)
         {
-            await _context.Properties
+            var redisModelToBeDeleted = await _context.Properties
                 .Where(p => p.Id == id)
-                .ExecuteDeleteAsync();
+                .ProjectTo<PropertyRedisModel>(_mapper.ConfigurationProvider)
+                .FirstAsync(cancellationToken);
 
-            await _context.SaveChangesAsync();
+            await _context.Properties.Where(p => p.Id == id).ExecuteDeleteAsync(cancellationToken);
+
+            redisModelToBeDeleted.Region = await _neighbourhoodsRepository.GetNeighbourhoodRegion(redisModelToBeDeleted.Neighbourhood, cancellationToken);
+            await _propertiesStore.RemoveProperty(redisModelToBeDeleted, cancellationToken);
         }
 
-        public async Task EditById(int id, AddPropertyInputModel editedProperty)
+        public async Task EditById(int id, AddPropertyInputModel editedProperty, CancellationToken cancellationToken = default)
         {
-            var propertyToUpdate = await _context.Properties
-                .FirstAsync(e => e.Id == id);
+            var propertyToBeUpdated = await _context.Properties.FirstAsync(e => e.Id == id, cancellationToken);
 
-            _mapper.Map(editedProperty, propertyToUpdate);
+            var redisModelToBeDeleted = _mapper.Map<PropertyRedisModel>(propertyToBeUpdated);
+            redisModelToBeDeleted.Region = await _neighbourhoodsRepository.GetNeighbourhoodRegion(propertyToBeUpdated.Neighbourhood, cancellationToken);
+            
+            _mapper.Map(editedProperty, propertyToBeUpdated);
+            await _context.SaveChangesAsync(cancellationToken);
 
-            await _context.SaveChangesAsync();
+            await _propertiesStore.RemoveProperty(redisModelToBeDeleted, cancellationToken);
+
+            var redisModelToBeAdded = _mapper.Map<PropertyRedisModel>(propertyToBeUpdated);
+            redisModelToBeAdded.Region = redisModelToBeDeleted.Neighbourhood != propertyToBeUpdated.Neighbourhood 
+                ? await _neighbourhoodsRepository.GetNeighbourhoodRegion(propertyToBeUpdated.Neighbourhood, cancellationToken)
+                : redisModelToBeDeleted.Region;
+            await _propertiesStore.UpdateProperty(redisModelToBeAdded, cancellationToken);
         }
 
-        public async Task<bool> Exists(int id)
-            => await _context.Properties.AnyAsync(p => p.Id == id);
+        public async Task<bool> Exists(int id, CancellationToken cancellationToken = default)
+            => await _context.Properties.AnyAsync(p => p.Id == id, cancellationToken);
 
-        public async Task<bool> IsOwner(string userId, int propertyId)
-            => await _context.Properties
-                .AnyAsync(p => p.Id == propertyId && (p.SellerId == userId || p.BrokerId == userId));
+        public async Task<bool> IsOwner(string userId, int propertyId, CancellationToken cancellationToken = default)
+            => await _context.Properties.AnyAsync(p => p.Id == propertyId && (p.SellerId == userId || p.BrokerId == userId), cancellationToken);
     }
 }

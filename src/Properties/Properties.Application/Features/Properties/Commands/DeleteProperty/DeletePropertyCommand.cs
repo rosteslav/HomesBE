@@ -3,9 +3,12 @@ using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Commands.DeleteProperty
 {
-    public class DeletePropertyCommand : IRequest<DeletePropertyResult>
+    public class DeletePropertyCommand : IRequest<PropertyResult>
     {
         public int PropertyId { get; set; }
+
         public string UserId { get; set; }
+
+        public bool IsAdmin { get; set; }
     }
 }

@@ -4,26 +4,22 @@ using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Commands.DeleteProperty
 {
-    public class DeletePropertyCommandHandler(
-        IPropertiesRepository repository)
-        : IRequestHandler<DeletePropertyCommand, DeletePropertyResult>
+    public class DeletePropertyCommandHandler(IPropertiesRepository repository)
+        : IRequestHandler<DeletePropertyCommand, PropertyResult>
     {
         private readonly IPropertiesRepository _repository = repository;
 
-        public async Task<DeletePropertyResult> Handle(DeletePropertyCommand request, CancellationToken cancellationToken)
+        public async Task<PropertyResult> Handle(DeletePropertyCommand request, CancellationToken cancellationToken)
         {
-            if (!await _repository.Exists(request.PropertyId))
-            {
-                return DeletePropertyResult.NotFound;
-            }
+            if (!await _repository.Exists(request.PropertyId, cancellationToken))
+                return PropertyResult.NotFound;
 
-            if (!await _repository.IsOwner(request.UserId, request.PropertyId))
-            {
-                return DeletePropertyResult.Unauthorized;
-            }
+            if (!request.IsAdmin && !await _repository.IsOwner(request.UserId, request.PropertyId, cancellationToken))
+                return PropertyResult.Unauthorized;
 
-            await _repository.DeleteById(request.PropertyId);
-            return DeletePropertyResult.Success;
+            await _repository.DeleteById(request.PropertyId, cancellationToken);
+
+            return PropertyResult.Success;
         }
     }
 }

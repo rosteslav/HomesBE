@@ -9,6 +9,10 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
     {
         public DbSet<Property> Properties { get; set; }
 
+        public DbSet<Neighborhood> Neighborhoods { get; set; }
+
+        public DbSet<NeighbourhoodsRating> NeighbourhoodsRating { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -30,7 +34,7 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
 
             modelBuilder.Entity<Property>(entity =>
             {
-                entity.ToTable("Properties", "properties");
+                entity.ToTable("Properties", "properties", e => e.ExcludeFromMigrations());
 
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
@@ -105,6 +109,69 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
                     .HasColumnName("created_on_utc_time")
                     .HasColumnType("timestamptz")
                     .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
+            });
+
+            modelBuilder.Entity<Neighborhood>(entity =>
+            {
+                entity.ToTable("Neighbourhoods", "properties", e => e.ExcludeFromMigrations());
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("region")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<NeighbourhoodsRating>(entity =>
+            {
+                entity.ToTable("NeighbourhoodsRating", "properties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ForLiving)
+                    .HasColumnName("for_living")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.Property(e => e.ForInvestment)
+                    .HasColumnName("for_investment")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.Property(e => e.Budget)
+                    .HasColumnName("budget")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.Property(e => e.Luxury)
+                    .HasColumnName("luxury")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.HasData(new NeighbourhoodsRating
+                {
+                    Id = 1,
+                    Budget = "[]",
+                    ForInvestment = "[]",
+                    ForLiving = "[]",
+                    Luxury = "[]",
+                },
+                new NeighbourhoodsRating
+                {
+                    Id = 2,
+                    Budget = "[]",
+                    ForInvestment = "[]",
+                    ForLiving = "[]",
+                    Luxury = "[]",
+                });
             });
         }
     }

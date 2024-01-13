@@ -1,11 +1,14 @@
 ﻿using BuildingMarket.Admins.Application.Contracts;
 using BuildingMarket.Admins.Domain.Entities;
 using BuildingMarket.Admins.Infrastructure.Persistence;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Common.Models.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text;
+using System.Text.Json;
 
 namespace BuildingMarket.Admins.Infrastructure.Repositories
 {
@@ -61,6 +64,43 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             }
         }
 
+        public async Task AddNeighbourhoodsRating(NeighbourhoodsRatingModel rating, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation($"DB add neighbourhoods rating");
+
+            try
+            {
+                var ratings = new[]
+                {
+                    new NeighbourhoodsRating
+                    {
+                        Id = 1,
+                        ForLiving = JsonSerializer.Serialize(rating.ForLiving.First()),
+                        ForInvestment = JsonSerializer.Serialize(rating.ForInvestment.First()),
+                        Budget = JsonSerializer.Serialize(rating.Budget.First()),
+                        Luxury = JsonSerializer.Serialize(rating.Luxury.First())
+                    },
+                    new NeighbourhoodsRating
+                    {
+                        Id = 2,
+                        ForLiving = JsonSerializer.Serialize(rating.ForLiving.Last()),
+                        ForInvestment = JsonSerializer.Serialize(rating.ForInvestment.Last()),
+                        Budget = JsonSerializer.Serialize(rating.Budget.Last()),
+                        Luxury = JsonSerializer.Serialize(rating.Luxury.Last())
+                    }
+                };
+
+                await _context.NeighbourhoodsRating.ExecuteDeleteAsync(cancellationToken);
+
+                await _context.NeighbourhoodsRating.AddRangeAsync(ratings, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding neighbourhoods rating.");
+            }
+        }
+
         public async Task<IEnumerable<IdentityUser>> GetAllBrokers()
         {
             _logger.LogInformation("DB get all brokers");
@@ -76,6 +116,51 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             }
 
             return Enumerable.Empty<IdentityUser>();
+        }
+
+        public async Task<NeighbourhoodsRatingModel> GetNeighbourhoodsRating(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("DB get neighbourhoods rating");
+
+            try
+            {
+                var ratings = await _context.NeighbourhoodsRating.ToArrayAsync(cancellationToken);
+                var result = new NeighbourhoodsRatingModel
+                {
+                    ForLiving = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.ForLiving)),
+                    ForInvestment = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.ForInvestment)),
+                    Budget = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.Budget)),
+                    Luxury = ratings.Select(r => JsonSerializer.Deserialize<IEnumerable<string>>(r.Luxury))
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting neighbourhoods rating");
+            }
+
+            return new NeighbourhoodsRatingModel();
+        }
+
+        public async Task<IDictionary<string, IEnumerable<string>>> GetNeighbourhoodsRegions(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("DB get neighbourhoods regions");
+
+            try
+            {
+                var regions = await _context.Neighborhoods
+                    .GroupBy(n => n.Region)
+                    .ToDictionaryAsync(model => model.Key, model => model.Select(n => n.Description), cancellationToken);
+
+                return regions;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting neighbourhoods regions");
+            }
+
+            return default;
         }
 
         private async Task<IEnumerable<Property>> MapPropertiesFromCsvFile(IFormFile file)

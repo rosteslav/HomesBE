@@ -2,10 +2,12 @@ using BuildingMarket.Common.Models.Security;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.DeleteProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.EditProperty;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.ReportProperty;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetAllProperties;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetByBroker;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetById;
 using BuildingMarket.Properties.Application.Features.Properties.Queries.GetBySeller;
+using BuildingMarket.Properties.Application.Features.Properties.Queries.GetRecommended;
 using BuildingMarket.Properties.Application.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +17,6 @@ using System.Security.Claims;
 namespace BuildingMarket.Properties.Api.Controllers
 {
     [ApiController]
-    [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker + "," + UserRoles.Admin)]
     [Route("[controller]")]
     public class PropertiesController(IMediator mediator, ILogger<PropertiesController> logger) : ControllerBase
     {
@@ -23,6 +24,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         private readonly ILogger<PropertiesController> _logger = logger;
 
         [HttpPost]
+        [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker}")]
         [ProducesResponseType(typeof(AddPropertyOutputModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -45,7 +47,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
+        [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker}")]
         [ProducesResponseType(typeof(IEnumerable<PropertyModelWithId>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -74,7 +76,6 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        [AllowAnonymous]
         [ProducesResponseType(typeof(PropertyModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById([FromRoute] int id)
@@ -88,7 +89,6 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpGet]
         [Route("all")]
-        [AllowAnonymous]
         [ProducesResponseType(typeof(IEnumerable<GetAllPropertiesOutputModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll([FromQuery] GetAllPropertiesQuery query)
         {
@@ -99,7 +99,7 @@ namespace BuildingMarket.Properties.Api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        [Authorize(Roles = UserRoles.Seller + "," + UserRoles.Broker)]
+        [Authorize(Roles = $"{UserRoles.Seller},{UserRoles.Broker},{UserRoles.Admin}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -114,20 +114,21 @@ namespace BuildingMarket.Properties.Api.Controllers
             var result = await _mediator.Send(new DeletePropertyCommand
             {
                 PropertyId = id,
-                UserId = userId
+                UserId = userId,
+                IsAdmin = User.IsInRole(UserRoles.Admin)
             });
 
             switch (result)
             {
-                case DeletePropertyResult.Success:
+                case PropertyResult.Success:
                     _logger.LogInformation("Property with id: {id} was deleted successfully!", id);
 
                     return NoContent();
-                case DeletePropertyResult.NotFound:
+                case PropertyResult.NotFound:
                     _logger.LogInformation("Property with id: {id} was not found!", id);
 
                     return NotFound();
-                case DeletePropertyResult.Unauthorized:
+                case PropertyResult.Unauthorized:
                     _logger.LogInformation("User with id {userId} tried to delete property {id} with no access to it!", userId, id);
 
                     return Unauthorized();
@@ -163,15 +164,15 @@ namespace BuildingMarket.Properties.Api.Controllers
 
             switch (result)
             {
-                case DeletePropertyResult.Success:
+                case PropertyResult.Success:
                     _logger.LogInformation("Property with id: {id} was edited successfully!", id);
 
                     return NoContent();
-                case DeletePropertyResult.NotFound:
+                case PropertyResult.NotFound:
                     _logger.LogInformation("Property with id: {id} was not found!", id);
 
                     return NotFound();
-                case DeletePropertyResult.Unauthorized:
+                case PropertyResult.Unauthorized:
                     _logger.LogInformation("User with id {userId} tried to edit property {id} with no access to it!", userId, id);
 
                     return Unauthorized();
@@ -180,6 +181,44 @@ namespace BuildingMarket.Properties.Api.Controllers
 
                     return BadRequest();
             }
+        }
+
+        [HttpGet]
+        [Route("recommended")]
+        [Authorize(Roles = $"{UserRoles.Buyer}")]
+        [ProducesResponseType(typeof(IEnumerable<GetAllPropertiesOutputModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Recommended()
+        {
+            _logger.LogInformation($"Getting top 6 recommended properties.");
+
+            var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            var properties = await _mediator.Send(new GetRecommendedQuery { BuyerId = userId });
+
+            return Ok(properties);
+        }
+
+        [HttpPost]
+        [Route("{id}/report")]
+        [Authorize(Roles = $"{UserRoles.Buyer},{UserRoles.Seller},{UserRoles.Broker}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Report(
+            [FromRoute] int id,
+            [FromBody] ReportModel model)
+        {
+            var userName = User.Claims.First(x => x.Type == ClaimTypes.GivenName).Value;
+
+            await _mediator.Send(new ReportPropertyCommand
+            {
+                UserName = userName,
+                PropertyId = id,
+                ReportModel = model,
+            });
+
+            return NoContent();
         }
     }
 }

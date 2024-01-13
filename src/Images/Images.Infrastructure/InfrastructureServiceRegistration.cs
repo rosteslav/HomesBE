@@ -18,8 +18,7 @@ namespace BuildingMarket.Images.Infrastructure
 
             services.AddDbContext<ImagesDbContext>(options =>
             {
-                options.UseNpgsql(connectionString)
-                    .UseLazyLoadingProxies();
+                options.UseNpgsql(connectionString);
             },
             ServiceLifetime.Transient);
 
@@ -27,6 +26,7 @@ namespace BuildingMarket.Images.Infrastructure
             services.AddScoped<IPropertyImagesRepository, PropertyImagesRepository>();
             services.AddScoped<IPropertiesRepository, PropertiesRepository>();
             services.AddScoped<IUserImagesRepository, UserImagesRepository>();
+            services.AddSingleton<IPropertyImagesStore, PropertyImagesStore>();
 
             return services;
         }

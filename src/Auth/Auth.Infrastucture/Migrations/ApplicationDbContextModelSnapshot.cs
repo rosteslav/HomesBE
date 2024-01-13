@@ -17,7 +17,7 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "7.0.14")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -63,6 +63,53 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
                     b.ToTable("AdditionalData", "security");
                 });
 
+            modelBuilder.Entity("BuildingMarket.Auth.Domain.Entities.BuildingType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("building_type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BuildingType", "properties", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("BuildingMarket.Auth.Domain.Entities.Neighborhood", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("region");
+
+                    b.Property<string>("Region")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Neighbourhoods", "properties", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("BuildingMarket.Auth.Domain.Entities.Preferences", b =>
                 {
                     b.Property<int>("Id")
@@ -76,6 +123,10 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying")
                         .HasColumnName("building_type");
+
+                    b.Property<string>("NumberOfRooms")
+                        .HasColumnType("character varying")
+                        .HasColumnName("number_of_rooms");
 
                     b.Property<float>("PriceHigherEnd")
                         .HasColumnType("real")
@@ -139,6 +190,28 @@ namespace BuildingMarket.Auth.Infrastructure.Migrations
                         {
                             Id = 4,
                             Preference = "Луксозен"
+                        });
+                });
+
+            modelBuilder.Entity("BuildingMarket.Properties.Domain.Entities.NumberOfRooms", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("number_of_rooms_type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NumberOfRoomsType", "properties", t =>
+                        {
+                            t.ExcludeFromMigrations();
                         });
                 });
 

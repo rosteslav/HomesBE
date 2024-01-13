@@ -12,7 +12,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
         private readonly ILogger<AdditionalUserDataRepository> _logger = logger;
         private readonly ApplicationDbContext _context = context;
 
-        public async Task AddAsync(AdditionalUserData item)
+        public async Task Add(AdditionalUserData item)
         {
             try
             {

@@ -6,9 +6,7 @@ using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty
 {
-    public class AddPropertyCommandHandler(
-        IPropertiesRepository propertiesRepository,
-        IMapper mapper)
+    public class AddPropertyCommandHandler(IPropertiesRepository propertiesRepository, IMapper mapper)
         : IRequestHandler<AddPropertyCommand, AddPropertyOutputModel>
     {
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
@@ -17,7 +15,9 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Commands.Add
         public async Task<AddPropertyOutputModel> Handle(AddPropertyCommand request, CancellationToken cancellationToken)
         {
             var property = _mapper.Map<Property>(request);
-            return await _propertiesRepository.Add(property);
+            var output = await _propertiesRepository.Add(property, cancellationToken);
+
+            return output;
         }
     }
 }

@@ -17,13 +17,94 @@ namespace BuildingMarket.Admins.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.14")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("BuildingMarket.Admins.Domain.Entities.Neighborhood", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("region");
+
+                    b.Property<string>("Region")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Neighbourhoods", "properties", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("BuildingMarket.Admins.Domain.Entities.NeighbourhoodsRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Budget")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("budget");
+
+                    b.Property<string>("ForInvestment")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("for_investment");
+
+                    b.Property<string>("ForLiving")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("for_living");
+
+                    b.Property<string>("Luxury")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("luxury");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NeighbourhoodsRating", "properties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Budget = "[]",
+                            ForInvestment = "[]",
+                            ForLiving = "[]",
+                            Luxury = "[]"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Budget = "[]",
+                            ForInvestment = "[]",
+                            ForLiving = "[]",
+                            Luxury = "[]"
+                        });
+                });
 
             modelBuilder.Entity("BuildingMarket.Admins.Domain.Entities.Property", b =>
                 {
@@ -52,6 +133,11 @@ namespace BuildingMarket.Admins.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<string>("Exposure")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
+                        .HasColumnName("exposure");
 
                     b.Property<string>("Finish")
                         .HasMaxLength(255)
@@ -82,8 +168,9 @@ namespace BuildingMarket.Admins.Infrastructure.Migrations
                         .HasColumnType("character varying")
                         .HasColumnName("neighbourhood");
 
-                    b.Property<int>("NumberOfRooms")
-                        .HasColumnType("integer")
+                    b.Property<string>("NumberOfRooms")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying")
                         .HasColumnName("number_of_rooms");
 
                     b.Property<float>("Price")

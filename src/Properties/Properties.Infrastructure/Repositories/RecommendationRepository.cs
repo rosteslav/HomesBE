@@ -60,7 +60,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             grade += await GradeBy(property.BuildingType, preferences?.BuildingType, _nextTo.BuildingType);
             grade += await GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextTo.NumberOfRooms);
             grade += await GradeByPurpose(property.Neighbourhood, preferences?.Purpose);
-            grade += preferences.PriceHigherEnd == 0 ? 10 : await GradeByPrice(property.Price, recommendedPriceRanges);
+            grade += await GradeByPrice(property.Price, preferences?.PriceHigherEnd ?? 0M, recommendedPriceRanges);
 
             if (property.NumberOfImages == 0)
                 return grade < _propertiesConfiguration.ReduceGradeValue ? 0 : grade - _propertiesConfiguration.ReduceGradeValue;
@@ -68,9 +68,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return grade;
         }
 
-        private async Task<int> GradeByPrice(decimal propertyPrice, BuyerRecommendedPriceRanges recommendedPriceRanges)
+        private async Task<int> GradeByPrice(decimal propertyPrice, decimal priceHigherEnd, BuyerRecommendedPriceRanges recommendedPriceRanges)
         {
             await Task.Yield();
+
+            if (priceHigherEnd <= 0M)
+                return 10;
 
             if (propertyPrice == recommendedPriceRanges.BestPrice)
                 return 10;

@@ -9,12 +9,11 @@
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="12.0.1" />
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-		<PackageReference Include="MediatR" Version="12.1.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" /><FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="MediatR" Version="12.2.0" />
+		<PackageReference Include="MessagePack.Annotations" Version="2.6.100-alpha" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" /><FrameworkReference Include="Microsoft.AspNetCore.App" />
         
 	</ItemGroup>
 

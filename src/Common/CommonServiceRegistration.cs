@@ -1,10 +1,15 @@
-﻿using BuildingMarket.Common.Models;
+﻿using BuildingMarket.Common.Configuration;
+using BuildingMarket.Common.Models;
+using BuildingMarket.Common.Providers;
+using BuildingMarket.Common.Providers.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Reflection;
 using System.Text;
 
 namespace BuildingMarket.Common
@@ -72,6 +77,22 @@ namespace BuildingMarket.Common
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Secret))
                     };
                 });
+
+            return services;
+        }
+
+        public static IServiceCollection AddWorkerConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton(Options.Create(configuration.GetSection(nameof(WorkerConfiguration)).Get<WorkerConfiguration>()));
+
+            return services;
+        }
+
+        public static IServiceCollection AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddSingleton(configuration.GetSection(nameof(RedisConnectionConfig)).Get<RedisConnectionConfig>());
+            services.AddSingleton<IRedisProvider, RedisProvider>();
 
             return services;
         }

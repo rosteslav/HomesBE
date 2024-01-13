@@ -46,7 +46,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                 {
                     BuildingTypes = await _context.BuildingTypes.Select(bt => bt.Description).ToArrayAsync(),
                     Purposes = await _context.PreferencesOptions.Select(p => p.Preference).ToArrayAsync(),
-                    Regions = await _context.Neighborhoods.Select(n => n.Region).Distinct().ToArrayAsync()
+                    Regions = await _context.Neighborhoods.Select(n => n.Region).Distinct().ToArrayAsync(),
+                    NumberOfRooms = await _context.NumberOfRooms.Select(n => n.Description).Distinct().ToArrayAsync()
                 };
             }
             catch (Exception ex)

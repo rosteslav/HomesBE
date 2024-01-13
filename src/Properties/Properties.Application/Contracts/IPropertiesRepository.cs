@@ -8,20 +8,24 @@ namespace BuildingMarket.Properties.Application.Contracts
     {
         Task<IEnumerable<GetAllPropertiesOutputModel>> Get(GetAllPropertiesQuery query);
 
-        Task<PropertyModel> GetById(int id);
+        Task<IEnumerable<PropertyRedisModel>> GetForRecommendations(CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId);
+        Task<PropertyModel> GetById(int id, CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId);
+        Task<IEnumerable<GetAllPropertiesOutputModel>> GetByIds(IEnumerable<int> ids, CancellationToken cancellationToken = default);
 
-        Task<AddPropertyOutputModel> Add(Property item);
+        Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId, CancellationToken cancellationToken = default);
 
-        Task DeleteById(int id);
+        Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId, CancellationToken cancellationToken = default);
 
-        Task EditById(int id, AddPropertyInputModel editedProperty);
+        Task<AddPropertyOutputModel> Add(Property item, CancellationToken cancellationToken = default);
 
-        Task<bool> Exists(int id);
+        Task DeleteById(int id, CancellationToken cancellationToken = default);
 
-        Task<bool> IsOwner(string userId, int propertyId);
+        Task EditById(int id, AddPropertyInputModel editedProperty, CancellationToken cancellationToken = default);
+
+        Task<bool> Exists(int id, CancellationToken cancellationToken = default);
+
+        Task<bool> IsOwner(string userId, int propertyId, CancellationToken cancellationToken = default);
     }
 }

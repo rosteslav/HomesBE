@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace BuildingMarket.Images.Application.Models
 {
     public class ImageData
     {
-        [JsonProperty("display_url")]
+        [JsonPropertyName("display_url")]
         public string DisplayUrl { get; set; }
     }
 }

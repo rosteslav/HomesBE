@@ -4,30 +4,22 @@ using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Commands.EditProperty
 {
-    public class EditPropertyCommandHandler(
-        IPropertiesRepository repository)
-        : IRequestHandler<EditPropertyCommand, DeletePropertyResult>
+    public class EditPropertyCommandHandler(IPropertiesRepository propertiesRepository) 
+        : IRequestHandler<EditPropertyCommand, PropertyResult>
     {
-        private readonly IPropertiesRepository _repository = repository;
+        private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;
 
-        public async Task<DeletePropertyResult> Handle(
-            EditPropertyCommand request,
-            CancellationToken cancellationToken)
+        public async Task<PropertyResult> Handle(EditPropertyCommand request, CancellationToken cancellationToken)
         {
-            if (!await _repository.Exists(request.PropertyId))
-            {
-                return DeletePropertyResult.NotFound;
-            }
+            if (!await _propertiesRepository.Exists(request.PropertyId, cancellationToken))
+                return PropertyResult.NotFound;
 
-            if (!await _repository.IsOwner(request.UserId, request.PropertyId))
-            {
-                return DeletePropertyResult.Unauthorized;
-            }
+            if (!await _propertiesRepository.IsOwner(request.UserId, request.PropertyId, cancellationToken))
+                return PropertyResult.Unauthorized;
 
-            await _repository
-                .EditById(request.PropertyId, request.EditedProperty);
+            await _propertiesRepository.EditById(request.PropertyId, request.EditedProperty, cancellationToken);
 
-            return DeletePropertyResult.Success;
+            return PropertyResult.Success;
         }
     }
 }

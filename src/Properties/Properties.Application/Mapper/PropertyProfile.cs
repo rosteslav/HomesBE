@@ -1,5 +1,7 @@
 using AutoMapper;
+using BuildingMarket.Common.Models;
 using BuildingMarket.Properties.Application.Features.Properties.Commands.AddProperty;
+using BuildingMarket.Properties.Application.Features.Properties.Commands.ReportProperty;
 using BuildingMarket.Properties.Application.Models;
 using BuildingMarket.Properties.Domain.Entities;
 
@@ -10,8 +12,6 @@ namespace BuildingMarket.Properties.Application.Mapper
         public PropertyProfile()
         {
             CreateMap<AddPropertyInputModel, Property>();
-
-            CreateMap<Image, string>().ConvertUsing(img => img.ImageURL);
 
             CreateMap<Property, PropertyModel>()
                 .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()))
@@ -37,8 +37,21 @@ namespace BuildingMarket.Properties.Application.Mapper
                 .ForMember(x => x.Model, opt => opt.MapFrom(src => src))
                 .ReverseMap();
 
+            CreateMap<Property, GetAllPropertiesOutputModel>()
+                .ForMember(x => x.CreatedOnLocalTime, opt => opt.MapFrom(src => src.CreatedOnUtcTime.ToLocalTime()))
+                .ForMember(x => x.Details, opt => opt.MapFrom(src => string.Join(',', src.BuildingType, src.Finish, src.Furnishment, src.Heating, src.Exposure)));
+
+            CreateMap<Property, PropertyRedisModel>();
+
+            CreateMap<AddPropertyInputModel, PropertyRedisModel>();
+
             CreateMap<PublishedOn, PublishedOnModel>();
             CreateMap<OrderBy, OrderByModel>();
+
+            CreateMap<ReportPropertyCommand, ReportRedisModel>()
+                .BeforeMap((_, d) => d.TimeStamp = DateTime.UtcNow)
+                .ForMember(x => x.Reason,
+                    opt => opt.MapFrom(src => src.ReportModel.Reason));
         }
     }
 }

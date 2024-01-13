@@ -4,7 +4,7 @@ using BuildingMarket.Images.Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace BuildingMarket.Images.Infrastructure.Repositories
 {
@@ -43,7 +43,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
 
                 var jsonContent = await response.Content.ReadAsStringAsync();
 
-                var data = JsonConvert.DeserializeObject<ImageResponse>(jsonContent);
+                var data = JsonSerializer.Deserialize<ImageResponse>(jsonContent);
 
                 return data.Data;
             }

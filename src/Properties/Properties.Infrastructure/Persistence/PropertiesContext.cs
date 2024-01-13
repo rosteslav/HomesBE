@@ -24,6 +24,8 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
 
         public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
 
+        public virtual DbSet<NeighbourhoodsRating> NeighbourhoodsRating { get; set; }
+
         public virtual DbSet<NumberOfRooms> NumberOfRooms { get; set; }
 
         public virtual DbSet<OrderBy> OrderBy { get; set; }
@@ -31,8 +33,6 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
         public virtual DbSet<IdentityUser> Users { get; set; }
 
         public virtual DbSet<AdditionalUserData> AdditionalUserData { get; set; }
-
-        public virtual DbSet<Image> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -153,6 +153,38 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnName("region")
                     .HasColumnType("character varying")
                     .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<NeighbourhoodsRating>(entity =>
+            {
+                entity.ToTable("NeighbourhoodsRating", "properties", e => e.ExcludeFromMigrations());
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ForLiving)
+                    .HasColumnName("for_living")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.Property(e => e.ForInvestment)
+                    .HasColumnName("for_investment")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.Property(e => e.Budget)
+                    .HasColumnName("budget")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
+
+                entity.Property(e => e.Luxury)
+                    .HasColumnName("luxury")
+                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
+                    .IsRequired(true);
             });
 
             modelBuilder.Entity<Heating>(entity =>
@@ -314,81 +346,121 @@ namespace BuildingMarket.Properties.Infrastructure.Persistence
                     .HasColumnType("text");
             });
 
-            modelBuilder.Entity<Image>(entity =>
-            {
-                entity.ToTable("Images", "properties", i => i.ExcludeFromMigrations());
-
-                entity.HasKey(img => img.Id);
-
-                entity.Property(img => img.ImageURL)
-                    .HasColumnName("image_url")
-                    .HasColumnType("text");
-
-                entity.Property(img => img.PropertyId)
-                    .HasColumnName("property_id");
-            });
-
             modelBuilder.Entity<Neighborhood>()
                 .HasData(
-                    new { Id = 1, Description = "Банишора", Region = "Север" },
-                    new { Id = 2, Description = "Белите брези", Region = "Юг" },
-                    new { Id = 3, Description = "Бенковски", Region = "Север" },
-                    new { Id = 4, Description = "Борово", Region = "Юг" },
-                    new { Id = 5, Description = "Бояна", Region = "Юг" },
-                    new { Id = 6, Description = "Бъкстон", Region = "Юг" },
-                    new { Id = 7, Description = "Витоша", Region = "Юг" },
-                    new { Id = 8, Description = "Гевгелийски квартал", Region = "Запад" },
-                    new { Id = 9, Description = "Гео Милев", Region = "Изток" },
-                    new { Id = 10, Description = "Гоце Делчев", Region = "Юг" },
-                    new { Id = 12, Description = "Дианабад", Region = "Юг" },
-                    new { Id = 13, Description = "Драгалевци", Region = "Юг" },
-                    new { Id = 14, Description = "Дружба", Region = "Изток" },
-                    new { Id = 15, Description = "Дървеница", Region = "Юг" },
-                    new { Id = 16, Description = "Западен парк", Region = "Запад" },
-                    new { Id = 17, Description = "Захарна фабрика", Region = "Север" },
-                    new { Id = 18, Description = "Иван Вазов", Region = "Юг" },
-                    new { Id = 19, Description = "Изгрев", Region = "Юг" },
-                    new { Id = 20, Description = "Изток", Region = "Изток" },
-                    new { Id = 21, Description = "Илинден", Region = "Север" },
-                    new { Id = 22, Description = "Илиянци", Region = "Север" },
-                    new { Id = 23, Description = "Княжево", Region = "Юг" },
-                    new { Id = 24, Description = "Красна поляна", Region = "Запад" },
-                    new { Id = 25, Description = "Красно село", Region = "Юг" },
-                    new { Id = 26, Description = "Крива река", Region = "Юг" },
-                    new { Id = 27, Description = "Кръстова вада", Region = "Юг" },
-                    new { Id = 28, Description = "Лагерът", Region = "Запад" },
-                    new { Id = 29, Description = "Левски", Region = "Изток" },
-                    new { Id = 30, Description = "Лозенец", Region = "Юг" },
-                    new { Id = 31, Description = "Люлин", Region = "Запад" },
-                    new { Id = 32, Description = "Малашевци", Region = "Изток" },
-                    new { Id = 33, Description = "Малинова долина", Region = "Юг" },
-                    new { Id = 34, Description = "Манастирски ливади", Region = "Юг" },
-                    new { Id = 35, Description = "Младост", Region = "Юг" },
-                    new { Id = 36, Description = "Модерно предградие", Region = "Север" },
-                    new { Id = 37, Description = "Мусагеница", Region = "Юг" },
-                    new { Id = 38, Description = "Надежда", Region = "Север" },
-                    new { Id = 39, Description = "Обеля", Region = "Север" },
-                    new { Id = 40, Description = "Оборище", Region = "Изток" },
-                    new { Id = 41, Description = "Овча купел", Region = "Запад" },
-                    new { Id = 42, Description = "Орландовци", Region = "Север" },
-                    new { Id = 43, Description = "Павлово", Region = "Юг" },
-                    new { Id = 44, Description = "Подуяне", Region = "Изток" },
-                    new { Id = 45, Description = "Разсадника-Коньовица", Region = "Запад" },
-                    new { Id = 46, Description = "Редута", Region = "Изток" },
-                    new { Id = 47, Description = "Света Троица", Region = "Запад" },
-                    new { Id = 48, Description = "Симеоново", Region = "Юг" },
-                    new { Id = 49, Description = "Славия", Region = "Запад" },
-                    new { Id = 50, Description = "Слатина", Region = "Изток" },
-                    new { Id = 51, Description = "Стрелбище", Region = "Юг" },
-                    new { Id = 52, Description = "Студентски град", Region = "Юг" },
-                    new { Id = 53, Description = "Сухата река", Region = "Изток" },
-                    new { Id = 54, Description = "Факултета", Region = "Запад" },
-                    new { Id = 55, Description = "Хаджи Димитър", Region = "Изток" },
-                    new { Id = 56, Description = "Хиподрумът", Region = "Запад" },
-                    new { Id = 57, Description = "Хладилникът", Region = "Юг" },
-                    new { Id = 58, Description = "Христо Ботев", Region = "Изток" },
-                    new { Id = 59, Description = "Център", Region = "Централен" },
-                    new { Id = 60, Description = "Яворов", Region = "Изток" });
+                    new { Id = 1, Description = "Център", Region = "Център" },
+                    new { Id = 2, Description = "Зона Б-18", Region = "Север" },
+                    new { Id = 3, Description = "Света Троица", Region = "Север" },
+                    new { Id = 4, Description = "Захарна фабрика", Region = "Север" },
+                    new { Id = 5, Description = "Модерно предградие", Region = "Север" },
+                    new { Id = 6, Description = "Банишора", Region = "Север" },
+                    new { Id = 7, Description = "Фондови жилища", Region = "Север" },
+                    new { Id = 8, Description = "Триъгълника", Region = "Север" },
+                    new { Id = 9, Description = "Надежда 1", Region = "Север" },
+                    new { Id = 10, Description = "Надежда 3", Region = "Север" },
+                    new { Id = 11, Description = "Връбница 1", Region = "Север" },
+                    new { Id = 12, Description = "Обеля 1", Region = "Север" },
+                    new { Id = 13, Description = "Обеля", Region = "Север" },
+                    new { Id = 14, Description = "Обеля 2", Region = "Север" },
+                    new { Id = 15, Description = "Връбница 2", Region = "Север" },
+                    new { Id = 16, Description = "Илиянци", Region = "Север" },
+                    new { Id = 17, Description = "Свобода", Region = "Север" },
+                    new { Id = 18, Description = "Надежда 4", Region = "Север" },
+                    new { Id = 19, Description = "Надежда 2", Region = "Север" },
+                    new { Id = 20, Description = "Толстой", Region = "Север" },
+                    new { Id = 21, Description = "Военна рампа", Region = "Север" },
+                    new { Id = 22, Description = "Орландовци", Region = "Север" },
+                    new { Id = 23, Description = "Хаджи Димитър", Region = "Север" },
+                    new { Id = 24, Description = "Малашевци", Region = "Север" },
+                    new { Id = 25, Description = "Левски В", Region = "Изток" },
+                    new { Id = 26, Description = "Левски Г", Region = "Север" },
+                    new { Id = 27, Description = "Левски", Region = "Изток" },
+                    new { Id = 28, Description = "Сухата река", Region = "Изток" },
+                    new { Id = 29, Description = "Подуяне", Region = "Изток" },
+                    new { Id = 30, Description = "Яворов", Region = "Изток" },
+                    new { Id = 31, Description = "Редута", Region = "Изток" },
+                    new { Id = 32, Description = "Христо Ботев", Region = "Изток" },
+                    new { Id = 33, Description = "Слатина", Region = "Изток" },
+                    new { Id = 34, Description = "Гео Милев", Region = "Изток" },
+                    new { Id = 35, Description = "Полигона", Region = "Изток" },
+                    new { Id = 36, Description = "7-ми 11-ти километър", Region = "Изток" },
+                    new { Id = 37, Description = "Дружба 1", Region = "Изток" },
+                    new { Id = 38, Description = "Дружба 2", Region = "Изток" },
+                    new { Id = 39, Description = "Оборище", Region = "Изток" },
+                    new { Id = 40, Description = "Докторски паметник", Region = "Изток" },
+                    new { Id = 41, Description = "Медицинска академия", Region = "Юг" },
+                    new { Id = 42, Description = "Хиподрума", Region = "Юг" },
+                    new { Id = 43, Description = "Красно село", Region = "Юг" },
+                    new { Id = 44, Description = "Бъкстон", Region = "Юг" },
+                    new { Id = 45, Description = "Павлово", Region = "Юг" },
+                    new { Id = 46, Description = "м-т Гърдова глава", Region = "Юг" },
+                    new { Id = 47, Description = "Княжево", Region = "Юг" },
+                    new { Id = 48, Description = "в.з.Килиите", Region = "Юг" },
+                    new { Id = 49, Description = "Иван Вазов", Region = "Юг" },
+                    new { Id = 50, Description = "Стрелбище", Region = "Юг" },
+                    new { Id = 51, Description = "Белите брези", Region = "Юг" },
+                    new { Id = 52, Description = "Борово", Region = "Юг" },
+                    new { Id = 53, Description = "Гоце Делчев", Region = "Юг" },
+                    new { Id = 54, Description = "Манастирски ливади", Region = "Юг" },
+                    new { Id = 55, Description = "в.з.Беловодски път", Region = "Юг" },
+                    new { Id = 56, Description = "Бояна", Region = "Юг" },
+                    new { Id = 57, Description = "в.з.Бояна", Region = "Юг" },
+                    new { Id = 58, Description = "в.з.Киноцентъра 3 част", Region = "Юг" },
+                    new { Id = 59, Description = "в.з.Киноцентъра", Region = "Юг" },
+                    new { Id = 60, Description = "Драгалевци", Region = "Юг" },
+                    new { Id = 61, Description = "Кръстова вада", Region = "Юг" },
+                    new { Id = 62, Description = "Витоша", Region = "Юг" },
+                    new { Id = 63, Description = "в.з.Симеоново - Драгалевци", Region = "Юг" },
+                    new { Id = 64, Description = "Симеоново", Region = "Юг" },
+                    new { Id = 65, Description = "в.з.Малинова долина", Region = "Юг" },
+                    new { Id = 66, Description = "Лозенец", Region = "Юг" },
+                    new { Id = 67, Description = "Хладилника", Region = "Юг" },
+                    new { Id = 68, Description = "Изток", Region = "Юг" },
+                    new { Id = 69, Description = "Изгрев", Region = "Юг" },
+                    new { Id = 70, Description = "Дианабад", Region = "Юг" },
+                    new { Id = 71, Description = "Мусагеница", Region = "Юг" },
+                    new { Id = 72, Description = "Дървеница", Region = "Юг" },
+                    new { Id = 73, Description = "Студентски град", Region = "Юг" },
+                    new { Id = 74, Description = "Малинова долина", Region = "Юг" },
+                    new { Id = 75, Description = "в.з.Американски колеж", Region = "Юг" },
+                    new { Id = 76, Description = "Младост 4", Region = "Юг" },
+                    new { Id = 77, Description = "Младост 3", Region = "Юг" },
+                    new { Id = 78, Description = "Младост 2", Region = "Юг" },
+                    new { Id = 79, Description = "Младост 1", Region = "Юг" },
+                    new { Id = 80, Description = "Младост 1А", Region = "Юг" },
+                    new { Id = 81, Description = "Експериментален", Region = "Юг" },
+                    new { Id = 82, Description = "Горубляне", Region = "Юг" },
+                    new { Id = 83, Description = "Карпузица", Region = "Запад" },
+                    new { Id = 84, Description = "Овча купел", Region = "Запад" },
+                    new { Id = 85, Description = "Славия", Region = "Запад" },
+                    new { Id = 86, Description = "Лагера", Region = "Запад" },
+                    new { Id = 87, Description = "Люлин 1", Region = "Запад" },
+                    new { Id = 88, Description = "Люлин 8", Region = "Запад" },
+                    new { Id = 89, Description = "Люлин 9", Region = "Запад" },
+                    new { Id = 90, Description = "Люлин 10", Region = "Запад" },
+                    new { Id = 91, Description = "Гевгелийски", Region = "Запад" },
+                    new { Id = 92, Description = "Илинден", Region = "Запад" },
+                    new { Id = 93, Description = "Зона Б-19", Region = "Запад" },
+                    new { Id = 94, Description = "Зона Б-5", Region = "Запад" },
+                    new { Id = 95, Description = "Зона Б-5-3", Region = "Запад" },
+                    new { Id = 96, Description = "Сердика", Region = "Запад" },
+                    new { Id = 97, Description = "Горна баня", Region = "Запад" },
+                    new { Id = 98, Description = "Овча купел 2", Region = "Запад" },
+                    new { Id = 99, Description = "Овча купел 1", Region = "Запад" },
+                    new { Id = 100, Description = "Факултета", Region = "Запад" },
+                    new { Id = 101, Description = "Красна поляна 2", Region = "Запад" },
+                    new { Id = 102, Description = "Красна поляна 3", Region = "Запад" },
+                    new { Id = 103, Description = "Разсадника", Region = "Запад" },
+                    new { Id = 104, Description = "Красна поляна 1", Region = "Запад" },
+                    new { Id = 105, Description = "Западен парк", Region = "Запад" },
+                    new { Id = 106, Description = "Люлин 7", Region = "Запад" },
+                    new { Id = 107, Description = "Люлин 6", Region = "Запад" },
+                    new { Id = 108, Description = "Люлин 5", Region = "Запад" },
+                    new { Id = 109, Description = "Люлин 4", Region = "Запад" },
+                    new { Id = 110, Description = "Люлин 3", Region = "Запад" },
+                    new { Id = 111, Description = "Люлин 2", Region = "Запад" },
+                    new { Id = 112, Description = "Люлин - център", Region = "Запад" }
+                  );
 
             // Heating Type
             modelBuilder.Entity<Heating>()

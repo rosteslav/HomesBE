@@ -5,14 +5,14 @@ namespace BuildingMarket.Properties.Application.Contracts
 {
     public interface IPropertiesStore
     {
-        Task<IDictionary<int, PropertyRedisModel>> GetProperties(CancellationToken cancellationToken = default);
+        Task<IEnumerable<PropertyRedisModel>> GetProperties(CancellationToken cancellationToken = default);
 
-        Task RemoveProperty(int id, CancellationToken cancellationToken = default);
+        Task RemoveProperty(PropertyRedisModel model, CancellationToken cancellationToken = default);
 
-        Task UpdateProperty(int id, PropertyRedisModel model, CancellationToken cancellationToken = default);
+        Task UpdateProperty(PropertyRedisModel model, CancellationToken cancellationToken = default);
 
-        Task UploadProperties(IDictionary<int, PropertyRedisModel> properties, CancellationToken cancellationToken);
+        Task UploadProperties(IEnumerable<PropertyRedisModel> properties, CancellationToken cancellationToken);
 
-        Task UploadReport(ReportPropertyCommand model, CancellationToken cancellationToken);
+        Task UploadReport(ReportPropertyCommand model, CancellationToken cancellationToken = default);
     }
 }

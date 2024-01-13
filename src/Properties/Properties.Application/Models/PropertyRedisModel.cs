@@ -6,21 +6,24 @@ namespace BuildingMarket.Properties.Application.Models
     public class PropertyRedisModel
     {
         [Key(0)]
-        public decimal Price { get; set; }
+        public int Id { get; set; }
 
         [Key(1)]
-        public string Neighbourhood { get; set; }
+        public decimal Price { get; set; }
 
         [Key(2)]
-        public string Region { get; set; }
+        public string Neighbourhood { get; set; }
 
         [Key(3)]
-        public string NumberOfRooms { get; set; }
+        public string Region { get; set; }
 
         [Key(4)]
-        public string BuildingType { get; set; }
+        public string NumberOfRooms { get; set; }
 
         [Key(5)]
+        public string BuildingType { get; set; }
+
+        [Key(6)]
         public int NumberOfImages { get; set; }
     }
 }

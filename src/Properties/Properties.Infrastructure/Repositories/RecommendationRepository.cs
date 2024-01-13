@@ -11,15 +11,17 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         IOptions<PropertiesConfiguration> propertiesConfiguration,
         IPropertiesStore propertiesStore,
         INeighbourhoodsRepository neighbourhoodsRepository,
+        IRecommendationService recommendationService,
         NextTo nextTo,
         ILogger<RecommendationRepository> logger)
         : IRecommendationRepository
     {
         private readonly PropertiesConfiguration _propertiesConfiguration = propertiesConfiguration.Value;
+        private readonly IRecommendationService _recommendationService = recommendationService;
         private readonly NextTo _nextTo = nextTo;
         private readonly ILogger<RecommendationRepository> _logger = logger;
 
-        private readonly Lazy<Task<IDictionary<int, PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
+        private readonly Lazy<Task<IEnumerable<PropertyRedisModel>>> _lazyProperties = new(async () => await propertiesStore.GetProperties());
         private readonly Lazy<Task<NeighbourhoodsRatingModel>> _lazyNeighbourhoodsRating = new(async () => await neighbourhoodsRepository.GetRating());
 
         public async Task<IEnumerable<int>> GetRecommended(BuyerPreferencesRedisModel preferences, CancellationToken cancellationToken)
@@ -28,10 +30,15 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             try
             {
-                var recommended = (await _lazyProperties.Value)
-                    .Select(async p => new { Id = p.Key, Grade = await GradeProperty(p.Value, preferences) })
+                var properties = await _lazyProperties.Value;
+
+                var recommendedPriceRanges = _recommendationService
+                    .GetBuyerRecommendedPriceRanges(preferences.PriceHigherEnd, properties.Select(p => p.Price));
+
+                var recommended = properties
+                    .Select(async p => new { p.Id, Grade = await GradeProperty(p, preferences, recommendedPriceRanges) })
                     .OrderByDescending(p => p.Result.Grade)
-                    .Take(RecommendedCount)
+                    .Take(_propertiesConfiguration.RecommendedCount)
                     .Select(p => p.Id)
                     .ToArray();
 
@@ -45,19 +52,57 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             return Enumerable.Empty<int>();
         }
 
-        private async Task<int> GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences)
+        private async Task<int> GradeProperty(PropertyRedisModel property, BuyerPreferencesRedisModel preferences, BuyerRecommendedPriceRanges recommendedPriceRanges)
         {
             int grade = 0;
 
-            grade += await GradeBy(property.Region, preferences?.Region, _nextToRegions);
-            grade += await GradeBy(property.BuildingType, preferences?.BuildingType, _nextToBuildingTypes);
-            grade += await GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextToNumberOfRooms);
+            grade += await GradeBy(property.Region, preferences?.Region, _nextTo.Region);
+            grade += await GradeBy(property.BuildingType, preferences?.BuildingType, _nextTo.BuildingType);
+            grade += await GradeBy(property.NumberOfRooms, preferences?.NumberOfRooms, _nextTo.NumberOfRooms);
             grade += await GradeByPurpose(property.Neighbourhood, preferences?.Purpose);
+            grade += await GradeByPrice(property.Price, preferences?.PriceHigherEnd ?? 0M, recommendedPriceRanges);
 
             if (property.NumberOfImages == 0)
                 return grade < _propertiesConfiguration.ReduceGradeValue ? 0 : grade - _propertiesConfiguration.ReduceGradeValue;
 
             return grade;
+        }
+
+        private async Task<int> GradeByPrice(decimal propertyPrice, decimal priceHigherEnd, BuyerRecommendedPriceRanges recommendedPriceRanges)
+        {
+            await Task.Yield();
+
+            if (priceHigherEnd <= 0M)
+                return 10;
+
+            if (propertyPrice == recommendedPriceRanges.BestPrice)
+                return 10;
+
+            if (propertyPrice == recommendedPriceRanges.LowestPrice)
+                return 5;
+
+            if (propertyPrice == recommendedPriceRanges.HighestPrice)
+                return 0;
+
+            int grade = 6;
+            foreach (var gapPrice in recommendedPriceRanges.GapsBelow)
+            {
+                if (propertyPrice <= gapPrice)
+                    return grade;
+
+                grade++;
+            }
+
+            grade = 4;
+            foreach (var gapPrice in recommendedPriceRanges.GapsAbove)
+            {
+                if (propertyPrice <= gapPrice)
+                    return grade;
+
+                grade--;
+            }
+
+            return 0;
         }
 
         private async Task<int> GradeByPurpose(string neighbourhood, string purpose)

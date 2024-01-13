@@ -2,6 +2,7 @@
 using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Infrastructure.Persistence;
 using BuildingMarket.Properties.Infrastructure.Repositories;
+using BuildingMarket.Properties.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,7 @@ namespace BuildingMarket.Properties.Infrastructure
             services.AddSingleton<IPreferencesStore, PreferencesStore>();
             services.AddSingleton<IRecommendationStore, RecommendationStore>();
             services.AddSingleton<IPropertiesStore, PropertiesStore>();
+            services.AddSingleton<IRecommendationService, RecommendationService>();
 
             return services;
         }

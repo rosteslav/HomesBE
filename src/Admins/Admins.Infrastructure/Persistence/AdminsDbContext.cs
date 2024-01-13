@@ -155,6 +155,23 @@ namespace BuildingMarket.Admins.Infrastructure.Persistence
                     .HasColumnType("character varying")
                     .HasMaxLength(255)
                     .IsRequired(true);
+
+                entity.HasData(new NeighbourhoodsRating
+                {
+                    Id = 1,
+                    Budget = "[]",
+                    ForInvestment = "[]",
+                    ForLiving = "[]",
+                    Luxury = "[]",
+                },
+                new NeighbourhoodsRating
+                {
+                    Id = 2,
+                    Budget = "[]",
+                    ForInvestment = "[]",
+                    ForLiving = "[]",
+                    Luxury = "[]",
+                });
             });
         }
     }

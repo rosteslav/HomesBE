@@ -33,7 +33,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var properties = await _lazyProperties.Value;
 
                 var recommendedPriceRanges = _recommendationService
-                    .GetBuyerRecommendedPriceRanges(preferences.PriceHigherEnd, properties.Select(p => p.Price));
+                    .GetBuyerRecommendedPriceRanges(preferences?.PriceHigherEnd ?? 0M, properties.Select(p => p.Price));
 
                 var recommended = properties
                     .Select(async p => new { p.Id, Grade = await GradeProperty(p, preferences, recommendedPriceRanges) })

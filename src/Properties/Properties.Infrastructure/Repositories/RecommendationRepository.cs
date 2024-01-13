@@ -36,8 +36,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     .GetBuyerRecommendedPriceRanges(preferences?.PriceHigherEnd ?? 0M, properties.Select(p => p.Price));
 
                 var recommended = properties
-                    .Select(async p => new { p.Id, Grade = await GradeProperty(p, preferences, recommendedPriceRanges) })
-                    .OrderByDescending(p => p.Result.Grade)
+                    .Select(p => (p.Id, Grade: GradeProperty(p, preferences, recommendedPriceRanges).Result ))
+                    .OrderByDescending(p => p.Grade)
                     .Take(_propertiesConfiguration.RecommendedCount)
                     .Select(p => p.Id)
                     .ToArray();

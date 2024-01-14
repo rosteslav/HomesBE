@@ -46,38 +46,40 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
         {
             await Task.Yield();
             _logger.LogInformation("DB get all properties");
-            query ??= new();
+            var input = query.Input ?? new();
 
-            if (query.Exposure != null)
+            if (input.Exposure != null)
             {
-                for (int i = 0; i < query.Exposure.Length; i++)
-                    query.Exposure[i] = "%" + query.Exposure[i] + "%";
+                for (int i = 0; i < input.Exposure.Length; i++)
+                    input.Exposure[i] = "%" + input.Exposure[i] + "%";
             }
 
             try
             {
-                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(query.OrderBy ?? nameof(GetAllPropertiesOutputModel.CreatedOnLocalTime));
+                var orderByPropInfo = typeof(GetAllPropertiesOutputModel).GetProperty(input.OrderBy ?? nameof(GetAllPropertiesOutputModel.CreatedOnLocalTime));
                 var properties = _context.Properties
                     .Where(property =>
-                        (query.Neighbourhood == null || query.Neighbourhood.Contains(property.Neighbourhood)) &&
-                        (query.NumberOfRooms == null || query.NumberOfRooms.Contains(property.NumberOfRooms)) &&
-                        (query.SpaceFrom == 0 || query.SpaceFrom <= property.Space) &&
-                        (query.SpaceTo == 0 || query.SpaceTo >= property.Space) &&
-                        (query.PriceFrom == 0 || query.PriceFrom <= property.Price) &&
-                        (query.PriceTo == 0 || query.PriceTo >= property.Price) &&
-                        (query.Finish == null || query.Finish.Contains(property.Finish)) &&
-                        (query.Furnishment == null || query.Furnishment.Contains(property.Furnishment)) &&
-                        (query.Heating == null || query.Heating.Contains(property.Heating)) &&
-                        (query.BuildingType == null || query.BuildingType.Contains(property.BuildingType)) &&
-                        (query.Exposure == null || query.Exposure.Any(e => EF.Functions.Like(property.Exposure, e))) &&
-                        (query.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-query.PublishedOn).Date))
+                        (input.Neighbourhood == null || input.Neighbourhood.Contains(property.Neighbourhood)) &&
+                        (input.NumberOfRooms == null || input.NumberOfRooms.Contains(property.NumberOfRooms)) &&
+                        (input.SpaceFrom == 0 || input.SpaceFrom <= property.Space) &&
+                        (input.SpaceTo == 0 || input.SpaceTo >= property.Space) &&
+                        (input.PriceFrom == 0 || input.PriceFrom <= property.Price) &&
+                        (input.PriceTo == 0 || input.PriceTo >= property.Price) &&
+                        (input.Finish == null || input.Finish.Contains(property.Finish)) &&
+                        (input.Furnishment == null || input.Furnishment.Contains(property.Furnishment)) &&
+                        (input.Heating == null || input.Heating.Contains(property.Heating)) &&
+                        (input.BuildingType == null || input.BuildingType.Contains(property.BuildingType)) &&
+                        (input.Exposure == null || input.Exposure.Any(e => EF.Functions.Like(property.Exposure, e))) &&
+                        (input.PublishedOn == 0 || property.CreatedOnUtcTime.Date > DateTime.UtcNow.AddDays(-input.PublishedOn).Date))
                     .ProjectTo<GetAllPropertiesOutputModel>(_mapper.ConfigurationProvider);
 
-                var orderedProps = query.IsAscending
+                var orderedProps = input.IsAscending
                     ? properties.OrderBy(orderByPropInfo.GetValue)
                     : properties.OrderByDescending(orderByPropInfo.GetValue);
 
-                return orderedProps.Skip(PageSize * (query.Page - 1)).Take(PageSize).ToArray();
+                return query.IsAdmin
+                    ? orderedProps
+                    : orderedProps.Skip(PageSize * (input.Page - 1)).Take(PageSize).ToArray();
             }
             catch (Exception ex)
             {

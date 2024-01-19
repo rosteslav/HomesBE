@@ -29,7 +29,7 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.AddProperty
             string ext = Path.GetExtension(request.FormFile.FileName);
             var imageName = $"{request.PropertyId}-{Guid.NewGuid()}{ext}";
 
-            ImageData imageData = await _imgbbService
+            ImageOutputModel imageData = await _imgbbService
                 .UploadImage(request.FormFile, imageName);
 
             if (imageData is null)

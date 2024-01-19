@@ -90,10 +90,14 @@ namespace BuildingMarket.Properties.Api.Controllers
         [HttpGet]
         [Route("all")]
         [ProducesResponseType(typeof(IEnumerable<GetAllPropertiesOutputModel>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll([FromQuery] GetAllPropertiesQuery query)
+        public async Task<IActionResult> GetAll([FromQuery] GetAllPropertiesInputModel input)
         {
             _logger.LogInformation("Attempt to get all properties");
-            var properties = await _mediator.Send(query);
+            var properties = await _mediator.Send(new GetAllPropertiesQuery
+            {
+                Input = input,
+                IsAdmin = User.IsInRole(UserRoles.Admin)
+            });
             return Ok(properties);
         }
 

@@ -5,6 +5,6 @@ namespace BuildingMarket.Images.Application.Contracts
 {
     public interface IImgbbService
     {
-        Task<ImageData> UploadImage(IFormFile image, string fileName);
+        Task<ImageOutputModel> UploadImage(IFormFile image, string fileName);
     }
 }

@@ -20,7 +20,7 @@ namespace BuildingMarket.Images.Api.Controllers
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        [ProducesResponseType(typeof(ImageData), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ImageOutputModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -42,7 +42,7 @@ namespace BuildingMarket.Images.Api.Controllers
         [HttpPut]
         [Route("{userId}")]
         [Consumes("multipart/form-data")]
-        [ProducesResponseType(typeof(ImageData), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ImageOutputModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

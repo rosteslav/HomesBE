@@ -15,7 +15,9 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetA
             var properties = await _propertiesRepository.Get(request);
             if (properties.Any())
             {
-                var propertiesIds = properties.Select(p => p.Id.ToString()).ToArray();
+                var propertiesIds = properties
+                    .Select(p => p.Id.ToString())
+                    .ToArray();
                 var propertiesImages = await _propertyImagesStore.GetPropertiesImages(propertiesIds);
                 if (propertiesImages.Any())
                 {

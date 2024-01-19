@@ -6,6 +6,6 @@ namespace BuildingMarket.Images.Application.Models
     {
 
         [JsonPropertyName("data")]
-        public ImageData Data { get; set; }
+        public ImageData ImageData { get; set; }
     }
 }

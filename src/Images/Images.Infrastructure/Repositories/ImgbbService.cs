@@ -15,7 +15,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         private readonly ILogger<ImgbbService> _logger = logger;
         private readonly IConfiguration _configuration = configuration;
 
-        public async Task<ImageData> UploadImage(
+        public async Task<ImageOutputModel> UploadImage(
             IFormFile image,
             string fileName)
         {
@@ -45,7 +45,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
 
                 var data = JsonSerializer.Deserialize<ImageResponse>(jsonContent);
 
-                return data.Data;
+                return new() { DisplayUrl = data.ImageData.DisplayUrl };
             }
             catch (Exception ex)
             {

@@ -10,17 +10,11 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.AddUserImag
 
         public async Task<ImageOutputModel> Handle(AddUserImageCommand request, CancellationToken cancellationToken)
         {
-            string ext = Path.GetExtension(request.FormFile.FileName);
+            var ext = Path.GetExtension(request.FormFile.FileName);
             var imageName = $"UserImg-{Guid.NewGuid()}{ext}";
+            var output = await _imgbbService.UploadImage(request.FormFile, imageName);
 
-            ImageOutputModel output = await _imgbbService.UploadImage(request.FormFile, imageName);
-
-            if (output is null)
-            {
-                return new();
-            }
-
-            return output;
+            return output is null ? new() : output;
         }
     }
 }

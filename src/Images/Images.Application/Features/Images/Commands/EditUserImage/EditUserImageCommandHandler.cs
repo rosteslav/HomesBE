@@ -15,16 +15,12 @@ namespace BuildingMarket.Images.Application.Features.Images.Commands.EditUserIma
             EditUserImageCommand request,
             CancellationToken cancellationToken)
         {
-            string ext = Path.GetExtension(request.FormFile.FileName);
+            var ext = Path.GetExtension(request.FormFile.FileName);
             var imageName = $"{request.UserId}-{Guid.NewGuid()}{ext}";
-
-            ImageOutputModel output = await _imgbbService
-                .UploadImage(request.FormFile, imageName);
+            var output = await _imgbbService.UploadImage(request.FormFile, imageName);
 
             if (output is null)
-            {
                 return new();
-            }
 
             await _repository.Add(output.DisplayUrl, request.UserId);
 

@@ -78,7 +78,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     : properties.OrderByDescending(orderByPropInfo.GetValue);
 
                 return query.IsAdmin
-                    ? orderedProps
+                    ? [.. orderedProps]
                     : orderedProps.Skip(PageSize * (input.Page - 1)).Take(PageSize).ToArray();
             }
             catch (Exception ex)

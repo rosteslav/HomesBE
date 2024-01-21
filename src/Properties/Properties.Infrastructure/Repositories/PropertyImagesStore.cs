@@ -38,8 +38,8 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var propertiesImages = entries
                     .Select(entry => new PropertyImagesModel
                     {
-                        Images = entry.HasValue 
-                            ? MessagePackSerializer.Deserialize<IEnumerable<string>>(entry) 
+                        Images = entry.HasValue
+                            ? MessagePackSerializer.Deserialize<IEnumerable<string>>(entry)
                             : Enumerable.Empty<string>()
                     })
                     .ToArray();
@@ -48,7 +48,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while retrieving images from Redis in {0}", nameof(PropertyImagesStore));
+                _logger.LogError(ex, $"Error while retrieving images from Redis in {nameof(PropertyImagesStore)}");
             }
             finally
             {
@@ -71,12 +71,12 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                 var entries = await _redisDb.HashGetAllAsync(key);
 
                 return entries.ToFrozenDictionary(
-                    e => int.Parse(e.Name), 
+                    e => int.Parse(e.Name),
                     e => MessagePackSerializer.Deserialize<IEnumerable<string>>(e.Value).Count());
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while retrieving property ids with images count from Redis in {store}", nameof(PropertyImagesStore));
+                _logger.LogError(ex, $"Error while retrieving property ids with images count from Redis in {nameof(PropertyImagesStore)}");
             }
             finally
             {

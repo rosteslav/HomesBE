@@ -60,9 +60,9 @@ namespace BuildingMarket.Properties.Infrastructure.Utilities
         {
             if (bestPrice <= lowestPrice)
                 return Enumerable.Empty<decimal>();
-         
+
             decimal gapRange = (bestPrice - lowestPrice) / 4;
-            
+
             return Enumerable.Range(1, 4).Select(gap => lowestPrice + (gapRange * gap)).ToArray();
         }
 
@@ -70,9 +70,9 @@ namespace BuildingMarket.Properties.Infrastructure.Utilities
         {
             if (priceHigherEnd >= highestPrice)
                 return Enumerable.Empty<decimal>();
-            
+
             decimal gapRange = (highestPrice - priceHigherEnd) / 5;
-            
+
             return Enumerable.Range(1, 5).Select(gap => priceHigherEnd + (gapRange * gap)).ToArray();
         }
     }

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace BuildingMarket.Admins.Application.Features.Admins.Queries.GetNeighbourhoodsRating
 {
-    public class GetNeighbourhoodsRatingQueryHandler(IAdminRepository adminRepository) 
+    public class GetNeighbourhoodsRatingQueryHandler(IAdminRepository adminRepository)
         : IRequestHandler<GetNeighbourhoodsRatingQuery, NeighbourhoodsRatingModel>
     {
         private readonly IAdminRepository _adminRepository = adminRepository;

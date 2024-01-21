@@ -94,7 +94,7 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             {
                 var preferences = _mapper.Map<PreferencesModel>(model);
                 preferences.UserId = user.Id;
-                
+
                 await _authOptionsRepository.AddPreferences(preferences);
 
                 var buyerPreferences = _mapper.Map<BuyerPreferencesRedisModel>(preferences);

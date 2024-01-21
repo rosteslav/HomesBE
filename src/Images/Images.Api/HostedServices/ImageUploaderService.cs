@@ -23,7 +23,7 @@ namespace BuildingMarket.Images.Api.HostedServices
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             await Task.Yield();
-            _logger.LogInformation("{0} is started", nameof(ImageUploaderService));
+            _logger.LogInformation($"{nameof(ImageUploaderService)} is started");
 
             while (!cancellationToken.IsCancellationRequested)
             {

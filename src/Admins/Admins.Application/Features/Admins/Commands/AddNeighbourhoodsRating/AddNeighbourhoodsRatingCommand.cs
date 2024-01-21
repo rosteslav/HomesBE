@@ -20,13 +20,13 @@ namespace BuildingMarket.Admins.Application.Features.Admins.Commands.AddNeighbou
         {
             if (ForLiving.Count() != 2)
                 yield return new ValidationResult("Invalid neighbourhoods for living.");
-            
+
             if (ForInvestment.Count() != 2)
                 yield return new ValidationResult("Invalid neighbourhoods for investment.");
-            
+
             if (Budget.Count() != 2)
                 yield return new ValidationResult("Invalid budget neighbourhoods.");
-            
+
             if (Luxury.Count() != 2)
                 yield return new ValidationResult("Invalid luxury neighbourhoods.");
         }

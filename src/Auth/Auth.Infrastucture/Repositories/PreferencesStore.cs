@@ -38,11 +38,11 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                     .ToArray();
 
                 await _redisDb.HashSetAsync(key, entries);
-                _logger.LogInformation("Preferences of {0} buyers have been uploaded to Redis.", entries.Length);
+                _logger.LogInformation($"Preferences of {entries.Length} buyers have been uploaded to Redis.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while uploading buyers preferences into Redis in {0}", nameof(PreferencesStore));
+                _logger.LogError(ex, $"Error while uploading buyers preferences into Redis in {nameof(PreferencesStore)}");
             }
             finally
             {
@@ -65,11 +65,11 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
                     key,
                     userId,
                     MessagePackSerializer.Serialize(preferencesModel));
-                _logger.LogInformation("Preferences of buyer with id: {id} has been uploaded to Redis.", userId);
+                _logger.LogInformation($"Preferences of buyer with id: {userId} has been uploaded to Redis.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while uploading buyers preferences into Redis in {0}", nameof(PreferencesStore));
+                _logger.LogError(ex, $"Error while uploading buyers preferences into Redis in {nameof(PreferencesStore)}");
             }
             finally
             {

@@ -23,7 +23,7 @@ namespace BuildingMarket.Properties.Api.HostedServices
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             await Task.Yield();
-            _logger.LogInformation("{service} is started", nameof(RecommendationUploaderService));
+            _logger.LogInformation($"{nameof(RecommendationUploaderService)} is started");
 
             while (!cancellationToken.IsCancellationRequested)
             {

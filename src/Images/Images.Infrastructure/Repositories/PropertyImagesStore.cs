@@ -31,11 +31,11 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
                 var key = new RedisKey(_storeSettings.ImagesHashKey);
                 await _redisDb.HashSetAsync(key, propertyId, MessagePackSerializer.Serialize(imageURLs, options: null, cancellationToken));
 
-                _logger.LogInformation("A {0} images were successfully added to Redis for property with ID: {1}", imageURLs.Count(), propertyId);
+                _logger.LogInformation($"A {imageURLs.Count()} images were successfully added to Redis for property with ID: {propertyId}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while adding images into Redis for property with ID: {0} in {1}", propertyId, nameof(PropertyImagesStore));
+                _logger.LogError(ex, $"Error while adding images into Redis for property with ID: {propertyId} in {nameof(PropertyImagesStore)}");
             }
             finally
             {
@@ -56,11 +56,11 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
                     .ToArray();
 
                 await _redisDb.HashSetAsync(key, entries);
-                _logger.LogInformation("Images of {0} properties have been uploaded to Redis", entries.Length);
+                _logger.LogInformation($"Images of {entries.Length} properties have been uploaded to Redis");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while uploading images into Redis in {0}", nameof(PropertyImagesStore));
+                _logger.LogError(ex, $"Error while uploading images into Redis in {nameof(PropertyImagesStore)}");
             }
             finally
             {

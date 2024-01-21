@@ -36,7 +36,7 @@ namespace BuildingMarket.Admins.Api.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeletePropertyReports(int id)
         {
-            _logger.LogInformation("Attempting to delete reports of property with id: {id}.", id);
+            _logger.LogInformation($"Attempting to delete reports of property with id: {id}.");
             await _mediator.Send(new DeletePropertyReportsCommand
             {
                 PropertyId = id

@@ -9,7 +9,6 @@ using MessagePack;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
-using System.Collections.Frozen;
 
 namespace BuildingMarket.Properties.Infrastructure.Repositories
 {
@@ -42,7 +41,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while getting properties from Redis in {store}", nameof(PropertiesStore));
+                _logger.LogError(ex, $"Error while getting properties from Redis in {nameof(PropertiesStore)}");
             }
             finally
             {
@@ -109,11 +108,11 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     .ToArray();
 
                 await _redisDb.SortedSetAddAsync(key, entries);
-                _logger.LogInformation("A {count} properties have been uploaded to Redis", entries.Length);
+                _logger.LogInformation($"A {entries.Length} properties have been uploaded to Redis");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while uploading properties into Redis in {store}", nameof(PropertiesStore));
+                _logger.LogError(ex, $"Error while uploading properties into Redis in {nameof(PropertiesStore)}");
             }
             finally
             {
@@ -142,11 +141,11 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                         model.PropertyId,
                         MessagePackSerializer.Serialize(deserializedReports, cancellationToken: cancellationToken));
 
-                _logger.LogInformation("Report for property with Id: {id} with Reason: {reason} has been uploaded to Redis.", model.PropertyId, model.ReportModel.Reason);
+                _logger.LogInformation($"Report for property with Id: {model.PropertyId} with Reason: {model.ReportModel.Reason} has been uploaded to Redis.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while uploading report to Redis in {store}", nameof(PropertiesStore));
+                _logger.LogError(ex, $"Error while uploading report to Redis in {nameof(PropertiesStore)}");
             }
             finally
             {

@@ -35,11 +35,11 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
                     .ToArray();
 
                 await _redisDb.HashSetAsync(key, fields);
-                _logger.LogInformation("Recommendations of {count} buyers have been successfully uploaded to Redis", buyersRecommendations.Count);
+                _logger.LogInformation($"Recommendations of {buyersRecommendations.Count} buyers have been successfully uploaded to Redis");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while uploading recommendations to Redis in {store}", nameof(RecommendationStore));
+                _logger.LogError(ex, $"Error while uploading recommendations to Redis in {nameof(RecommendationStore)}");
             }
             finally
             {
@@ -52,7 +52,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             await Task.Yield();
             await _semaphore.WaitAsync(cancellationToken);
 
-            _logger.LogInformation("Getting all recommendations for buyer with id: {id}.", buyerId);
+            _logger.LogInformation($"Getting all recommendations for buyer with id: {buyerId}.");
 
             try
             {
@@ -67,7 +67,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while uploading recommendations to Redis in {store}", nameof(RecommendationStore));
+                _logger.LogError(ex, $"Error while uploading recommendations to Redis in {nameof(RecommendationStore)}");
             }
             finally
             {

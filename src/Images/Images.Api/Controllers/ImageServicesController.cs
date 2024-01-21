@@ -6,8 +6,8 @@ namespace BuildingMarket.Images.Api.Controllers
     [Route("[controller]")]
     [ApiController]
     public class ImageServicesController(
-        ILogger<ImageServicesController> logger, 
-        ImageUploaderService imageUploaderService) 
+        ILogger<ImageServicesController> logger,
+        ImageUploaderService imageUploaderService)
         : ControllerBase
     {
         private readonly ILogger<ImageServicesController> _logger = logger;
@@ -20,7 +20,7 @@ namespace BuildingMarket.Images.Api.Controllers
         {
             await Task.Yield();
 
-            _logger.LogInformation("{service} is forced", nameof(ImageUploaderService));
+            _logger.LogInformation($"{nameof(ImageUploaderService)} is forced");
 
             _imageUploaderService.IsForced = true;
 

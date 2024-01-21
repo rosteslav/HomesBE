@@ -1,7 +1,6 @@
 ﻿using BuildingMarket.Properties.Application.Contracts;
 using BuildingMarket.Properties.Application.Models;
 using MediatR;
-using System.Reflection.Metadata.Ecma335;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetRecommended
 {
@@ -28,7 +27,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetR
                 var preferences = _preferencesStore.GetPreferences(request.BuyerId, cancellationToken);
                 recommendedIds = await _recommendationRepository.GetRecommended(await preferences, cancellationToken);
             }
-            
+
             var properties = await _propertiesRepository.GetByIds(recommendedIds, cancellationToken);
 
             if (properties.Any())

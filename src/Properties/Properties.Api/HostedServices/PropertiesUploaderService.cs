@@ -7,9 +7,9 @@ using NCrontab;
 namespace BuildingMarket.Properties.Api.HostedServices
 {
     public class PropertiesUploaderService(
-        IMediator mediator, 
+        IMediator mediator,
         ILogger<PropertiesUploaderService> logger,
-        IOptions<WorkerConfiguration> workerConfig) 
+        IOptions<WorkerConfiguration> workerConfig)
         : BackgroundService
     {
         private readonly IMediator _mediator = mediator;
@@ -23,7 +23,7 @@ namespace BuildingMarket.Properties.Api.HostedServices
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             await Task.Yield();
-            _logger.LogInformation("{service} is started", nameof(PropertiesUploaderService));
+            _logger.LogInformation($"{nameof(PropertiesUploaderService)} is started");
 
             while (!cancellationToken.IsCancellationRequested)
             {

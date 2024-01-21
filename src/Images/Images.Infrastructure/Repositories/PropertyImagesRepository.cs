@@ -19,14 +19,14 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         {
             try
             {
-                _logger.LogInformation("Attempting to add new Image with ImageURL: {ImageURL}", image.ImageURL);
+                _logger.LogInformation($"Attempting to add new Image with ImageURL: {image.ImageURL}");
 
                 await _context.Images.AddAsync(image);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message}. An error occured while trying to add new image with ImageURL: {ImageURL} to the database.", ex.Message, image.ImageURL);
+                _logger.LogError($"{ex.Message}. An error occured while trying to add new image with ImageURL: {image.ImageURL} to the database.");
             }
         }
 
@@ -34,7 +34,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         {
             try
             {
-                _logger.LogInformation("Attempting to delete Image with Id: {imageId}", imageId);
+                _logger.LogInformation($"Attempting to delete Image with Id: {imageId}");
 
                 await _context.Images
                         .Where(i => i.Id == imageId)
@@ -44,7 +44,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message}. An error occured while trying to remove image with Id: {imageId} from the database.", ex.Message, imageId);
+                _logger.LogError($"{ex.Message}. An error occured while trying to remove image with Id: {imageId} from the database.");
             }
         }
 
@@ -52,13 +52,13 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         {
             try
             {
-                _logger.LogInformation("Checking if Image with Id: {imageId} exists.", imageId);
+                _logger.LogInformation($"Checking if Image with Id: {imageId} exists.");
 
                 return await _context.Images.AnyAsync(i => i.Id == imageId);
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message}. An error occured while trying to check if image with Id: {imageId} exists.", ex.Message, imageId);
+                _logger.LogError($"{ex.Message}. An error occured while trying to check if image with Id: {imageId} exists.");
 
                 return false;
             }
@@ -93,7 +93,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         {
             try
             {
-                _logger.LogInformation("Attempting to retrieve all the images for property with id: {propertyId}", propertyId);
+                _logger.LogInformation($"Attempting to retrieve all the images for property with id: {propertyId}");
 
                 var imgs = await _context.Images
                     .Where(img => img.PropertyId == propertyId)
@@ -104,7 +104,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message}. Failed to retrieve all the images for property with id: {propertyId}", ex.Message, propertyId);
+                _logger.LogError($"{ex.Message}. Failed to retrieve all the images for property with id: {propertyId}");
                 return Enumerable.Empty<Image>();
             }
         }
@@ -113,7 +113,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         {
             try
             {
-                _logger.LogInformation("Attempting to retrieve image with Id: {imageId}", imageId);
+                _logger.LogInformation($"Attempting to retrieve image with Id: {imageId}");
 
                 var img = await _context.Images
                     .FirstAsync(img => img.Id == imageId);
@@ -122,7 +122,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message}. Failed to retrieve image with Id: {imageId}", ex.Message, imageId);
+                _logger.LogError($"{ex.Message}. Failed to retrieve image with Id: {imageId}");
                 return default;
             }
         }

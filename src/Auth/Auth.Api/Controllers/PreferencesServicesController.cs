@@ -18,7 +18,7 @@ namespace BuildingMarket.Auth.Api.Controllers
         public async Task<IActionResult> ForceSetBuyersPreferences()
         {
             await Task.Yield();
-            _logger.LogInformation("{service} is forced.", nameof(BuyerPreferencesService));
+            _logger.LogInformation($"{nameof(BuyerPreferencesService)} is forced.");
 
             _preferencesService.IsForced = true;
 

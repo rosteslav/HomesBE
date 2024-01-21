@@ -4,7 +4,7 @@ using MediatR;
 
 namespace BuildingMarket.Properties.Application.Features.Properties.Commands.EditProperty
 {
-    public class EditPropertyCommandHandler(IPropertiesRepository propertiesRepository) 
+    public class EditPropertyCommandHandler(IPropertiesRepository propertiesRepository)
         : IRequestHandler<EditPropertyCommand, PropertyResult>
     {
         private readonly IPropertiesRepository _propertiesRepository = propertiesRepository;

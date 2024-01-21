@@ -22,7 +22,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         {
             await Task.Yield();
 
-            _logger.LogInformation("{service} is forced", nameof(PropertiesUploaderService));
+            _logger.LogInformation($"{nameof(PropertiesUploaderService)} is forced");
 
             _propertiesService.IsForced = true;
 
@@ -36,7 +36,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         {
             await Task.Yield();
 
-            _logger.LogInformation("{service} is forced", nameof(RecommendationUploaderService));
+            _logger.LogInformation($"{nameof(RecommendationUploaderService)} is forced");
 
             _recommendationService.IsForced = true;
 

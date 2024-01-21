@@ -20,8 +20,8 @@ namespace BuildingMarket.Auth.Infrastructure.Repositories
             try
             {
                 var preferences = await _context.Preferences.ToDictionaryAsync(
-                    m => m.UserId, 
-                    _mapper.Map<BuyerPreferencesRedisModel>, 
+                    m => m.UserId,
+                    _mapper.Map<BuyerPreferencesRedisModel>,
                     cancellationToken);
 
                 return preferences;

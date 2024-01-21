@@ -67,7 +67,7 @@ namespace BuildingMarket.Images.Api.Controllers
         [Route("{propertyId}")]
         public async Task<IActionResult> GetAllImages([FromRoute] int propertyId)
         {
-            _logger.LogInformation("Getting all images for property with Id {propertyId}", propertyId);
+            _logger.LogInformation($"Getting all images for property with Id {propertyId}");
 
             var images = await _mediator.Send(new GetAllImagesCommand
             {
@@ -90,7 +90,7 @@ namespace BuildingMarket.Images.Api.Controllers
             var userId = User.Claims
                .First(x => x.Type == ClaimTypes.Sid).Value;
 
-            _logger.LogInformation("User with id: {userId} attempts to delete image with id: {id}", userId, id);
+            _logger.LogInformation($"User with id: {userId} attempts to delete image with id: {id}");
 
             var result = await _mediator.Send(new DeletePropertyImageCommand
             {
@@ -101,15 +101,15 @@ namespace BuildingMarket.Images.Api.Controllers
             switch (result)
             {
                 case DeleteImageResult.Success:
-                    _logger.LogInformation("Image with Id: {id} deleted successfully!", id);
+                    _logger.LogInformation($"Image with Id: {id} deleted successfully!");
                     return NoContent();
                 case DeleteImageResult.ImageNotFound:
                 case DeleteImageResult.PropertyNotFound:
-                    _logger.LogInformation("Image with Id: {id} or it's property was not found!", id);
+                    _logger.LogInformation($"Image with Id: {id} or it's property was not found!");
                     return NotFound();
                 case DeleteImageResult.UserHasNoAccess:
                 default:
-                    _logger.LogInformation("User with Id: {userId} who has no access tried to delete image with Id: {id}", userId, id);
+                    _logger.LogInformation($"User with Id: {userId} who has no access tried to delete image with Id: {id}");
                     return Unauthorized();
             }
         }

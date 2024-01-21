@@ -23,7 +23,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Commands.Upl
             if (buyersPreferences is not null && buyersPreferences.Any())
             {
                 var buyersRecommendations = buyersPreferences.ToFrozenDictionary(
-                    b => b.Key, 
+                    b => b.Key,
                     b => _recommendationRepository.GetRecommended(b.Value, cancellationToken).Result);
 
                 if (buyersRecommendations.Count > 0)

@@ -21,7 +21,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
         {
             try
             {
-                _logger.LogInformation("Attempting to upload image to imgbb with filename: {FileName}", fileName);
+                _logger.LogInformation($"Attempting to upload image to imgbb with filename: {fileName}");
 
                 var memoryStream = await FormFileExtensions
                     .ToMemoryStream(image);
@@ -49,7 +49,7 @@ namespace BuildingMarket.Images.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError("{Message} Image upload with filename: {FileName} was not successful!", ex.Message, image.Name);
+                _logger.LogError($"{ex.Message} Image upload with filename: {image.Name} was not successful!");
             }
 
             return null;

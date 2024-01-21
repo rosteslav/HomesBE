@@ -14,7 +14,7 @@ namespace BuildingMarket.Admins.Infrastructure
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionsConfig = configuration.GetSection("ConnectionStrings").Get<ConnectionsConfig>();
-            
+
             services.AddDbContext<AdminsDbContext>(options =>
             {
                 options.UseNpgsql(connectionsConfig.PostgresConnectionString)

@@ -41,7 +41,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while retrieving preferences from Redis in {store}", nameof(PreferencesStore));
+                _logger.LogError(ex, $"Error while retrieving preferences from Redis in {nameof(PreferencesStore)}");
             }
             finally
             {
@@ -71,7 +71,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while retrieving preferences from Redis for buyer with ID: {buyerId} in {service}", buyerId, nameof(PreferencesStore));
+                _logger.LogError(ex, $"Error while retrieving preferences from Redis for buyer with ID: {buyerId} in {nameof(PreferencesStore)}");
             }
             finally
             {

@@ -120,7 +120,7 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task<PropertyModel> GetById(int id, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("DB get property with ID {id}", id);
+            _logger.LogInformation($"DB get property with ID {id}");
 
             var result = await GetByFilterExpression<PropertyModel>(x => x.Id == id).SingleOrDefaultAsync(cancellationToken);
 
@@ -157,14 +157,14 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
         public async Task<IEnumerable<PropertyModelWithId>> GetByBroker(string brokerId, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("DB get all properties for broker with id " + brokerId);
+            _logger.LogInformation($"DB get all properties for broker with id {brokerId}");
 
             return await GetByFilterExpression<PropertyModelWithId>(x => x.BrokerId == brokerId).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<PropertyModelWithId>> GetBySeller(string sellerId, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("DB get all properties for seller with id " + sellerId);
+            _logger.LogInformation($"DB get all properties for seller with id {sellerId}");
 
             return await GetByFilterExpression<PropertyModelWithId>(x => x.SellerId == sellerId).ToListAsync(cancellationToken);
         }
@@ -205,14 +205,14 @@ namespace BuildingMarket.Properties.Infrastructure.Repositories
 
             var redisModelToBeDeleted = _mapper.Map<PropertyRedisModel>(propertyToBeUpdated);
             redisModelToBeDeleted.Region = await _neighbourhoodsRepository.GetNeighbourhoodRegion(propertyToBeUpdated.Neighbourhood, cancellationToken);
-            
+
             _mapper.Map(editedProperty, propertyToBeUpdated);
             await _context.SaveChangesAsync(cancellationToken);
 
             await _propertiesStore.RemoveProperty(redisModelToBeDeleted, cancellationToken);
 
             var redisModelToBeAdded = _mapper.Map<PropertyRedisModel>(propertyToBeUpdated);
-            redisModelToBeAdded.Region = redisModelToBeDeleted.Neighbourhood != propertyToBeUpdated.Neighbourhood 
+            redisModelToBeAdded.Region = redisModelToBeDeleted.Neighbourhood != propertyToBeUpdated.Neighbourhood
                 ? await _neighbourhoodsRepository.GetNeighbourhoodRegion(propertyToBeUpdated.Neighbourhood, cancellationToken)
                 : redisModelToBeDeleted.Region;
             await _propertiesStore.UpdateProperty(redisModelToBeAdded, cancellationToken);

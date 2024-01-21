@@ -31,11 +31,11 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
                 var key = new RedisKey(_storeSettings.ReportsHashKey);
                 await _redisDb.HashDeleteAsync(key, propertyId);
 
-                _logger.LogInformation("Reports for property with id: {id} were deleted successfully.", propertyId);
+                _logger.LogInformation($"Reports for property with id: {propertyId} were deleted successfully.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while deleting all the reports for property with id: {propId} from Redis in {store}.", propertyId, nameof(ReportsStore));
+                _logger.LogError(ex, $"Error while deleting all the reports for property with id: {propertyId} from Redis in {nameof(ReportsStore)}.");
             }
             finally
             {
@@ -66,7 +66,7 @@ namespace BuildingMarket.Admins.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while retrieving all the reports from Redis in {store}.", nameof(ReportsStore));
+                _logger.LogError(ex, $"Error while retrieving all the reports from Redis in {nameof(ReportsStore)}.");
             }
             finally
             {

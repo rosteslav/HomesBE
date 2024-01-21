@@ -111,7 +111,7 @@ namespace BuildingMarket.Properties.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
-            _logger.LogInformation("Attempting to get delete property with id: {id}", id);
+            _logger.LogInformation($"Attempting to get delete property with id: {id}");
 
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
 
@@ -125,19 +125,19 @@ namespace BuildingMarket.Properties.Api.Controllers
             switch (result)
             {
                 case PropertyResult.Success:
-                    _logger.LogInformation("Property with id: {id} was deleted successfully!", id);
+                    _logger.LogInformation($"Property with id: {id} was deleted successfully!");
 
                     return NoContent();
                 case PropertyResult.NotFound:
-                    _logger.LogInformation("Property with id: {id} was not found!", id);
+                    _logger.LogInformation($"Property with id: {id} was not found!");
 
                     return NotFound();
                 case PropertyResult.Unauthorized:
-                    _logger.LogInformation("User with id {userId} tried to delete property {id} with no access to it!", userId, id);
+                    _logger.LogInformation($"User with id {userId} tried to delete property {id} with no access to it!");
 
                     return Unauthorized();
                 default:
-                    _logger.LogInformation("Deleting property with id {id} failed.", id);
+                    _logger.LogInformation($"Deleting property with id {id} failed.");
 
                     return BadRequest();
             }
@@ -155,7 +155,7 @@ namespace BuildingMarket.Properties.Api.Controllers
             [FromRoute] int id,
             [FromBody] AddPropertyInputModel model)
         {
-            _logger.LogInformation("Attempting to edit property with id: {id}", id);
+            _logger.LogInformation($"Attempting to edit property with id: {id}");
 
             var userId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
 
@@ -169,19 +169,19 @@ namespace BuildingMarket.Properties.Api.Controllers
             switch (result)
             {
                 case PropertyResult.Success:
-                    _logger.LogInformation("Property with id: {id} was edited successfully!", id);
+                    _logger.LogInformation($"Property with id: {id} was edited successfully!");
 
                     return NoContent();
                 case PropertyResult.NotFound:
-                    _logger.LogInformation("Property with id: {id} was not found!", id);
+                    _logger.LogInformation($"Property with id: {id} was not found!");
 
                     return NotFound();
                 case PropertyResult.Unauthorized:
-                    _logger.LogInformation("User with id {userId} tried to edit property {id} with no access to it!", userId, id);
+                    _logger.LogInformation($"User with id {userId} tried to edit property {id} with no access to it!");
 
                     return Unauthorized();
                 default:
-                    _logger.LogInformation("Editing property with id {id} failed.", id);
+                    _logger.LogInformation($"Editing property with id {id} failed.");
 
                     return BadRequest();
             }

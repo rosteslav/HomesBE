@@ -65,7 +65,7 @@ namespace BuildingMarket.Admins.Api.Controllers
             var adminId = User.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
             _logger.LogInformation($"Attempt to insert neighbourhoods rating from the admin with ID {adminId}");
             await _mediator.Send(command);
-            
+
             return NoContent();
         }
 

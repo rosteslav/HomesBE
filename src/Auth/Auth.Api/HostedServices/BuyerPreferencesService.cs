@@ -24,7 +24,7 @@ namespace BuildingMarket.Auth.Api.HostedServices
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             await Task.Yield();
-            _logger.LogInformation("{serviceName} is started.", nameof(BuyerPreferencesService));
+            _logger.LogInformation($"{nameof(BuyerPreferencesService)} is started.");
 
             while (!cancellationToken.IsCancellationRequested)
             {

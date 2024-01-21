@@ -48,7 +48,7 @@ namespace BuildingMarket.Images.Api.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> EditImage([FromRoute] string userId, [ValidImage] IFormFile image)
         {
-            _logger.LogInformation("Attempting to edit image to user with id: {userId}.", userId);
+            _logger.LogInformation($"Attempting to edit image to user with id: {userId}.");
 
             var result = await _mediator.Send(new EditUserImageCommand
             {

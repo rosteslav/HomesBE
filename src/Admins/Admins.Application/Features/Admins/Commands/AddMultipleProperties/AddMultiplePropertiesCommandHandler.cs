@@ -3,7 +3,7 @@ using MediatR;
 
 namespace BuildingMarket.Admins.Application.Features.Admins.Commands.AddMultipleProperties
 {
-    public class AddMultiplePropertiesCommandHandler(IAdminRepository adminRepository) 
+    public class AddMultiplePropertiesCommandHandler(IAdminRepository adminRepository)
         : IRequestHandler<AddMultiplePropertiesCommand>
     {
         private readonly IAdminRepository _adminRepository = adminRepository;

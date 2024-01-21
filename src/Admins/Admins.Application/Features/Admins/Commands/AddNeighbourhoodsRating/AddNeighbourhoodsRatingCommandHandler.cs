@@ -7,7 +7,7 @@ namespace BuildingMarket.Admins.Application.Features.Admins.Commands.AddNeighbou
 {
     public class AddNeighbourhoodsRatingCommandHandler(
         IAdminRepository adminRepository,
-        IMapper mapper) 
+        IMapper mapper)
         : IRequestHandler<AddNeighbourhoodsRatingCommand>
     {
         private readonly IAdminRepository _adminRepository = adminRepository;

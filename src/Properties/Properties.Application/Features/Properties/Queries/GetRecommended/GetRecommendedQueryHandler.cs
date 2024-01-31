@@ -36,7 +36,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetR
 
                 properties = properties.Zip(await propertiesImages, (prop, img) =>
                 {
-                    prop.Images = img.Images;
+                    prop.Images = img.Images.Distinct();
                     return prop;
                 });
 

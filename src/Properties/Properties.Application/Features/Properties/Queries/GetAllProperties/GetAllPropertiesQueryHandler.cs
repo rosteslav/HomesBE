@@ -22,7 +22,7 @@ namespace BuildingMarket.Properties.Application.Features.Properties.Queries.GetA
                 if (propertiesImages.Any())
                 {
                     for (int i = 0; i < propertiesImages.Count(); i++)
-                        properties.ElementAt(i).Images = propertiesImages.ElementAt(i).Images;
+                        properties.ElementAt(i).Images = propertiesImages.ElementAt(i).Images.Distinct();
                 }
             }
 

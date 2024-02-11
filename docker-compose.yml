@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  real.cache:
+    image: redis:alpine
+
+  real.db:
+    image: postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+
+  admins.api:
+    image: rosteslav/adminsapi
+    build:
+      context: .
+      dockerfile: src/Admins/Admins.Api/Dockerfile
+
+  auth.api:
+    image: rosteslav/authapi
+    build:
+      context: .
+      dockerfile: src/Auth/Auth.Api/Dockerfile
+      
+  images.api:
+    image: rosteslav/imagesapi
+    build:
+      context: .
+      dockerfile: src/Images/Images.Api/Dockerfile
+      
+  properties.api:
+    image: rosteslav/propertiesapi
+    build:
+      context: .
+      dockerfile: src/Properties/Properties.Api/Dockerfile
+
+volumes:
+  postgres_data:
+  pgadmin_data:  

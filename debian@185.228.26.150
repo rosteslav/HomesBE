@@ -1,0 +1,96 @@
+version: '3.4'
+
+services:
+  real.cache:
+    container_name: real.cache
+    restart: always
+    ports:
+      - "6379:6379"
+
+  real.db:
+    container_name: real.db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin1234
+      - POSTGRES_DB=realDb
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      
+  pgadmin:
+    container_name: pdadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=rosteslav.yordanov@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=admin1234
+    restart: always
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/root/.pgadmin
+    
+  admins.api:
+    container_name: admins.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Prod
+      - ConnectionStrings:PostgresConnectionString=Host=real.db;Port=5432;Database=realDb;Username=admin;Password=admin1234;ApplicationName=BuildingMarket;
+      - RedisConnectionConfig:Host=real.cache
+      - RedisConnectionConfig:Port=6379
+      - JWT:Secret=R3@1R3@13$7@7370|<3|-|M3g@$3c()R3|)
+    depends_on:
+      - real.cache
+      - real.db
+    ports:
+      - "5222:8080"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+
+  auth.api:
+    container_name: auth.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Prod
+      - ConnectionStrings:PostgresConnectionString=Host=real.db;Port=5432;Database=realDb;Username=admin;Password=admin1234;ApplicationName=BuildingMarket;
+      - RedisConnectionConfig:Host=real.cache
+      - RedisConnectionConfig:Port=6379
+      - JWT:Secret=R3@1R3@13$7@7370|<3|-|M3g@$3c()R3|)
+    depends_on:
+      - real.cache
+      - real.db
+    ports:
+      - "5220:8080"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+
+  images.api:
+    container_name: images.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Prod
+      - ConnectionStrings:PostgresConnectionString=Host=real.db;Port=5432;Database=realDb;Username=admin;Password=admin1234;ApplicationName=BuildingMarket;
+      - RedisConnectionConfig:Host=real.cache
+      - RedisConnectionConfig:Port=6379
+      - JWT:Secret=R3@1R3@13$7@7370|<3|-|M3g@$3c()R3|)
+      - Imgbb=66b2c1defb3cc9dc8b7f86acaad4f407
+    depends_on:
+      - real.cache
+      - real.db
+    ports:
+      - "5223:8080"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+
+  properties.api:
+    container_name: properties.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Prod
+      - ConnectionStrings:PostgresConnectionString=Host=real.db;Port=5432;Database=realDb;Username=admin;Password=admin1234;ApplicationName=BuildingMarket;
+      - RedisConnectionConfig:Host=real.cache
+      - RedisConnectionConfig:Port=6379
+      - JWT:Secret=R3@1R3@13$7@7370|<3|-|M3g@$3c()R3|)
+    depends_on:
+      - real.cache
+      - real.db
+    ports:
+      - "5221:8080"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
